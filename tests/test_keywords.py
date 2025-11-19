@@ -194,14 +194,14 @@ class Test_Keywords(unittest.TestCase):
         func_name = inspect.currentframe().f_code.co_name
         for hdr in self.hdrs_list:
             for _, row in self.header_content.iterrows():
+                kw = row["Keyword"]
                 try:
-                    kw = row["Keyword"]
                     keyword_val = hdr[kw]
                     type = self.var_types[row["Type"]]
                     self.verify_type(kw, keyword_val, type, hdr["FILENAME"], func_name)
                 except Exception as e:
                     logging.error(
-                        f"Test: {func_name}, filename: {hdr["FILENAME"]}, {repr(e)}"
+                        f"Test: {func_name}, filename: {hdr["FILENAME"]}, keyword: {kw}, {repr(e)}"
                     )
         return
 
