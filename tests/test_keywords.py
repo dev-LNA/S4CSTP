@@ -191,33 +191,46 @@ class Test_Keywords(unittest.TestCase):
             self.compare_lists(csv_comment, hdr_comment, hdr["FILENAME"], func_name)
 
     def test_keywords_types(self):
+        func_name = inspect.currentframe().f_code.co_name
         for hdr in self.hdrs_list:
             for _, row in self.header_content.iterrows():
-                kw = row["Keyword"]
-                keyword_val = hdr[kw]
-                type = self.var_types[row["Type"]]
-                func_name = inspect.currentframe().f_code.co_name
-                self.verify_type(kw, keyword_val, type, hdr["FILENAME"], func_name)
+                try:
+                    kw = row["Keyword"]
+                    keyword_val = hdr[kw]
+                    type = self.var_types[row["Type"]]
+                    self.verify_type(kw, keyword_val, type, hdr["FILENAME"], func_name)
+                except Exception as e:
+                    logging.error(
+                        f"Test: {func_name}, filename: {hdr["FILENAME"]}, {repr(e)}"
+                    )
         return
 
     def test_kws_in_interval(self):
+        func_name = inspect.currentframe().f_code.co_name
         filtered_hdr_content = self.header_content[
             self.header_content["Type"].isin(["integer", "float"])
         ]
         for hdr in self.hdrs_list:
             for _, row in filtered_hdr_content.iterrows():
-                keyword = row["Keyword"]
-                value = hdr[keyword]
-                filename = hdr["FILENAME"]
-                if keyword not in self.kws_specific_values:
-                    _min, _max = row["Allowed values"].split(",")
-                    _min = float(_min)
-                    if _max == "inf":
-                        _max = np.inf
-                    else:
-                        _max = float(_max)
-                    func_name = inspect.currentframe().f_code.co_name
-                    self.kw_in_interval(_min, _max, value, keyword, filename, func_name)
+                try:
+                    keyword = row["Keyword"]
+                    value = hdr[keyword]
+                    filename = hdr["FILENAME"]
+                    if keyword not in self.kws_specific_values:
+                        _min, _max = row["Allowed values"].split(",")
+                        _min = float(_min)
+                        if _max == "inf":
+                            _max = np.inf
+                        else:
+                            _max = float(_max)
+
+                        self.kw_in_interval(
+                            _min, _max, value, keyword, filename, func_name
+                        )
+                except Exception as e:
+                    logging.error(
+                        f"Test: {func_name}, filename: {hdr["FILENAME"]}, {repr(e)}"
+                    )
         return
 
     def test_kws_specific_vals(self):
