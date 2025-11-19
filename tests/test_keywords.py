@@ -212,11 +212,11 @@ class Test_Keywords(unittest.TestCase):
         ]
         for hdr in self.hdrs_list:
             for _, row in filtered_hdr_content.iterrows():
+                kw = row["Keyword"]
                 try:
-                    keyword = row["Keyword"]
-                    value = hdr[keyword]
+                    value = hdr[kw]
                     filename = hdr["FILENAME"]
-                    if keyword not in self.kws_specific_values:
+                    if kw not in self.kws_specific_values:
                         _min, _max = row["Allowed values"].split(",")
                         _min = float(_min)
                         if _max == "inf":
@@ -224,9 +224,7 @@ class Test_Keywords(unittest.TestCase):
                         else:
                             _max = float(_max)
 
-                        self.kw_in_interval(
-                            _min, _max, value, keyword, filename, func_name
-                        )
+                        self.kw_in_interval(_min, _max, value, kw, filename, func_name)
                 except Exception as e:
                     logging.error(
                         f"Test: {func_name}, filename: {hdr["FILENAME"]}, keyword: {kw}, {repr(e)}"
