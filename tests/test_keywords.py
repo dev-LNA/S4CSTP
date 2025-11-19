@@ -229,7 +229,7 @@ class Test_Keywords(unittest.TestCase):
                         )
                 except Exception as e:
                     logging.error(
-                        f"Test: {func_name}, filename: {hdr["FILENAME"]}, {repr(e)}"
+                        f"Test: {func_name}, filename: {hdr["FILENAME"]}, keyword: {kw}, {repr(e)}"
                     )
         return
 
