@@ -50,8 +50,7 @@ except FileNotFoundError as e:
 channel = config.get("channel configuration", "channel")
 logging.info(f"This machine correspons to ACS{channel}.")
 log_folder = join(
-    Path(config.get("channel configuration", "log file path").strip(r"\"")),
-    f"s4acs{channel}",
+    Path(config.get("channel configuration", "log file path").strip(r"\""))
 )
 logging.info(f"The path in which the log files are saved is {log_folder}.")
 
