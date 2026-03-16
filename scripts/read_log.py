@@ -14,7 +14,6 @@ Usage:
 
 """
 
-
 import configparser
 import logging
 import os
@@ -23,7 +22,6 @@ import sys
 from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from getpass import getuser
 from os.path import join
 from pathlib import Path
 
@@ -62,7 +60,7 @@ log_file = join(log_folder, f"{yesterday}_events.log")
 try:
     with open(log_file) as file:
         lines = file.read().splitlines()
-    logging.info(f"The log file has been read.")
+    logging.info("The log file has been read.")
 except FileNotFoundError as e:
     logging.info(f"The file {yesterday}_events.log was not found." + repr(e))
 

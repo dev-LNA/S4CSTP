@@ -46,10 +46,11 @@ class Test_Keywords(unittest.TestCase):
         "CALW",
     ]
     regex_expressions = {
-        "FILENAME": r"\d{8}_s4c[1-4]_\d{6}(_[a-z0-9]+)?\.fits",
-        "DATE-OBS": r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}",
-        "UTTIME": r"\d{2}:\d{2}:\d{2}\.\d{6}",
-        "UTDATE": r"\d{4}-\d{2}-\d{2}",
+        "FILENAME": r"\d{8}_s4c[1-4]_\d{6}(_[a-z0-9]+)?\.fits$",
+        "DATE-OBS": r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}$",
+        "DATEFILE": r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}$",
+        "UTTIME": r"\d{2}:\d{2}:\d{2}\.\d{6}$",
+        "UTDATE": r"\d{4}-\d{2}-\d{2}$",
         "RA": r"[\+-]?\d{2}:\d{2}:\d{2}\.\d+",
         "DEC": r"[\+-]?\d{2}:\d{2}:\d{2}\.\d+",
         "TCSHA": r"[\+-]?\d{2}:\d{2}:\d{2}(\.\d+)?",
@@ -58,7 +59,7 @@ class Test_Keywords(unittest.TestCase):
         "GUIVRSN": r"v\d+\.\d+\.\d+",
         "ICSVRSN": r"v\d+\.\d+\.\d+",
     }
-    kws_fixed_str_size = [("PROJID", 15), ("OBJECT", 30), ("OBSERVER", 54)]
+    kws_fixed_str_size = [("PROPID", 15), ("OBJECT", 30), ("OBSERVER", 54)]
     simulated_mode_kws = [
         "ACSMODE",
         "WPROMODE",
@@ -71,20 +72,20 @@ class Test_Keywords(unittest.TestCase):
     ]
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         cfg = cls._read_config_file()
         cls.image_folder = cls._get_image_folder(cfg)
         cls.hdrs_list = cls._get_headers(cls.image_folder)
         cls.read_noises, cls.ccd_gains, cls.header_content = cls._read_csvs()
 
-    def _read_config_file():
+    def _read_config_file() -> configparser.ConfigParser:
         sparc4_folder = join("C:\\", "Users", getuser(), "SPARC4", "ACS")
         cfg_file = join(sparc4_folder, "acs_config.cfg")
         cfg = configparser.ConfigParser()
         cfg.read(cfg_file)
         return cfg
 
-    def _get_image_folder(cfg):
+    def _get_image_folder(cfg) -> Path | str:
         today = Path(cfg.get("channel configuration", "image path").strip(r"\""))
         today_list = [file for file in listdir(today) if ".fits" in file]
         if today_list != []:
@@ -95,7 +96,7 @@ class Test_Keywords(unittest.TestCase):
             raise FileNotFoundError(f"The folder {yesterday} does not exist.")
         return yesterday
 
-    def _get_headers(image_folder):
+    def _get_headers(image_folder) -> list:
         hdrs_list = []
         folder = join(image_folder)
         for file in listdir(folder):
@@ -105,7 +106,7 @@ class Test_Keywords(unittest.TestCase):
             hdrs_list.append(hdr)
         return hdrs_list
 
-    def _read_csvs():
+    def _read_csvs() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         read_noises = pd.read_csv(join("csv", "read_noises.csv"))
         ccd_gains = pd.read_csv(join("csv", "preamp_gains.csv"))
         header_content = pd.read_csv(join("csv", "header_content.csv"), delimiter=";")
@@ -113,14 +114,14 @@ class Test_Keywords(unittest.TestCase):
 
     # ----------------------------------------------------------------------------------------
     @staticmethod
-    def compare_numbers(expected, received, filename, func_name):
+    def compare_numbers(expected, received, filename, func_name) -> None:
         if not np.allclose(expected, received):
             logging.error(
                 f"Test: {func_name}, filename: {filename}, expected val: {expected}, received val: {received}"
             )
 
     @staticmethod
-    def compare_lists(expected, received, filename, func_name):
+    def compare_lists(expected, received, filename, func_name) -> None:
         expected, received = set(expected), set(received)
         if expected != received:
             logging.error(
@@ -128,7 +129,7 @@ class Test_Keywords(unittest.TestCase):
             )
 
     @staticmethod
-    def verify_if_different(expected, received, filename, func_name):
+    def verify_if_different(expected, received, filename, func_name) -> None:
         expected, received = set(expected), set(received)
         if expected == received:
             logging.error(
@@ -136,35 +137,35 @@ class Test_Keywords(unittest.TestCase):
             )
 
     @staticmethod
-    def verify_type(kw, value, _type, filename, func_name):
+    def verify_type(kw, value, _type, filename, func_name) -> None:
         if not isinstance(value, _type):
             logging.error(
                 f"Test: {func_name}, filename: {filename}, keyword {kw} is not an instance of {_type}: an {type(value)} was found."
             )
 
     @staticmethod
-    def kw_in_interval(_min, _max, value, kw, filename, func_name):
+    def kw_in_interval(_min, _max, value, kw, filename, func_name) -> None:
         if not _min <= value <= _max:
             logging.error(
                 f"Test: {func_name}, filename: {filename}, keyword {kw} is not in the interval [{_min}, {_max}]: {value}"
             )
 
     @staticmethod
-    def val_in_list(value, _list, kw, filename, func_name):
+    def val_in_list(value, _list, kw, filename, func_name) -> None:
         if not value in _list:
             logging.error(
                 f"Test: {func_name}, filename: {filename}, keyword {kw} is not in {_list}: {value}"
             )
 
     @staticmethod
-    def verify_regex(value, expression, kw, filename, func_name):
+    def verify_regex(value, expression, kw, filename, func_name) -> None:
         if not re.match(expression, value):
             logging.error(
                 f"Test: {func_name}, filename: {filename}, an unexpected value was found for the keyword {kw}: {value}"
             )
 
     @staticmethod
-    def verify_str_size(value, str_size, kw, filename, func_name):
+    def verify_str_size(value, str_size, kw, filename, func_name) -> None:
         if (n := len(value)) > str_size:
             logging.error(
                 f"Test: {func_name}, filename: {filename}, the expected size for the keyword {kw} is {str_size}. However, {n} characters were found."
@@ -172,7 +173,7 @@ class Test_Keywords(unittest.TestCase):
 
     # -------------------------------------------------------------------------------------
 
-    def test_missing_keywords(self):
+    def test_missing_keywords(self) -> None:
         for hdr in self.hdrs_list:
             if "COMMENT" in hdr.keys():
                 del hdr["COMMENT"]
@@ -181,7 +182,7 @@ class Test_Keywords(unittest.TestCase):
             func_name = inspect.currentframe().f_code.co_name
             self.compare_lists(csv_keywords, hdr_keywords, hdr["FILENAME"], func_name)
 
-    def test_kw_comments(self):
+    def test_kw_comments(self) -> None:
         for hdr in self.hdrs_list:
             if "COMMENT" in hdr.keys():
                 del hdr["COMMENT"]
@@ -190,7 +191,7 @@ class Test_Keywords(unittest.TestCase):
             func_name = inspect.currentframe().f_code.co_name
             self.compare_lists(csv_comment, hdr_comment, hdr["FILENAME"], func_name)
 
-    def test_keywords_types(self):
+    def test_keywords_types(self) -> None:
         func_name = inspect.currentframe().f_code.co_name
         for hdr in self.hdrs_list:
             for _, row in self.header_content.iterrows():
@@ -201,11 +202,11 @@ class Test_Keywords(unittest.TestCase):
                     self.verify_type(kw, keyword_val, type, hdr["FILENAME"], func_name)
                 except Exception as e:
                     logging.error(
-                        f"Test: {func_name}, filename: {hdr["FILENAME"]}, keyword: {kw}, {repr(e)}"
+                        f"Test: {func_name}, filename: {hdr['FILENAME']}, keyword: {kw}, {repr(e)}"
                     )
         return
 
-    def test_kws_in_interval(self):
+    def test_kws_in_interval(self) -> None:
         func_name = inspect.currentframe().f_code.co_name
         filtered_hdr_content = self.header_content[
             self.header_content["Type"].isin(["integer", "float"])
@@ -227,11 +228,11 @@ class Test_Keywords(unittest.TestCase):
                         self.kw_in_interval(_min, _max, value, kw, filename, func_name)
                 except Exception as e:
                     logging.error(
-                        f"Test: {func_name}, filename: {hdr["FILENAME"]}, keyword: {kw}, {repr(e)}"
+                        f"Test: {func_name}, filename: {hdr['FILENAME']}, keyword: {kw}, {repr(e)}"
                     )
         return
 
-    def test_kws_specific_vals(self):
+    def test_kws_specific_vals(self) -> None:
         for hdr in self.hdrs_list:
             for kw in self.kws_specific_values:
                 row = self.header_content[self.header_content["Keyword"] == kw]
@@ -247,7 +248,7 @@ class Test_Keywords(unittest.TestCase):
                 self.val_in_list(value, allowed_vals, kw, file_name, func_name)
                 assert hdr[kw] in allowed_vals
 
-    def test_kws_regex(self):
+    def test_kws_regex(self) -> None:
         for hdr in self.hdrs_list:
             for kw in self.regex_expressions:
                 expression = self.regex_expressions[kw]
@@ -257,7 +258,7 @@ class Test_Keywords(unittest.TestCase):
                 self.verify_regex(value, expression, kw, filename, func_name)
         return
 
-    def test_WPPOS(self):
+    def test_WPPOS(self) -> None:
         for hdr in self.hdrs_list:
             if (hdr["INSTMODE"] == "POLAR") & (hdr["WPPOS"] == 0):
                 raise ValueError(
@@ -266,7 +267,7 @@ class Test_Keywords(unittest.TestCase):
                 )
         return
 
-    def test_comment_kw(self):
+    def test_comment_kw(self) -> None:
         for hdr in self.hdrs_list:
             if "COMMENT" in hdr.keys():
                 filename = hdr["FILENAME"]
@@ -277,7 +278,7 @@ class Test_Keywords(unittest.TestCase):
 
     # -------------------- tests to verify the keywords content ----------------------------
 
-    def test_observatory_coords(self):
+    def test_observatory_coords(self) -> None:
         for hdr in self.hdrs_list:
             filename = hdr["FILENAME"]
             func_name = inspect.currentframe().f_code.co_name
@@ -294,14 +295,14 @@ class Test_Keywords(unittest.TestCase):
             expected = 1864.0
             self.compare_numbers(expected, received, filename, func_name)
 
-    def test_ccd_gain(self):
+    def test_ccd_gain(self) -> None:
         for hdr in self.hdrs_list:
             em_mode = hdr["EMMODE"]
             if em_mode != "Conventional":
                 em_mode = "EM"
             readout = hdr["READRATE"]
             preamp = float(hdr["PREAMP"][-1])
-            serial_number = f'{hdr["CCDSERN"]}'
+            serial_number = f"{hdr['CCDSERN']}"
             gain = hdr["GAIN"]
             filter = (
                 (self.ccd_gains["EM Mode"] == em_mode)
@@ -317,14 +318,14 @@ class Test_Keywords(unittest.TestCase):
             func_name = inspect.currentframe().f_code.co_name
             self.compare_numbers(expected, received, filename, func_name)
 
-    def test_read_noise(self):
+    def test_read_noise(self) -> None:
         for hdr in self.hdrs_list:
             em_mode = hdr["EMMODE"]
             if em_mode != "Conventional":
                 em_mode = "EM"
             readout = hdr["READRATE"]
             preamp = float(hdr["PREAMP"][-1])
-            serial_number = f'{hdr["CCDSERN"]}'
+            serial_number = f"{hdr['CCDSERN']}"
             read_noise = hdr["RDNOISE"]
             filter = (
                 (self.read_noises["EM Mode"] == em_mode)
@@ -340,19 +341,19 @@ class Test_Keywords(unittest.TestCase):
             func_name = inspect.currentframe().f_code.co_name
             self.compare_numbers(expected, received, filename, func_name)
 
-    def test_equinox(self):
+    def test_equinox(self) -> None:
         for hdr in self.hdrs_list:
             filename, expected, received = (hdr["FILENAME"], 2000.0, hdr["EQUINOX"])
             func_name = inspect.currentframe().f_code.co_name
             self.compare_numbers(expected, received, filename, func_name)
 
-    def test_BSCALE(self):
+    def test_BSCALE(self) -> None:
         for hdr in self.hdrs_list:
             filename, expected, received = (hdr["FILENAME"], 1, hdr["BSCALE"])
             func_name = inspect.currentframe().f_code.co_name
             self.compare_numbers(expected, received, filename, func_name)
 
-    def test_BZERO(self):
+    def test_BZERO(self) -> None:
         for hdr in self.hdrs_list:
             received = hdr["BZERO"]
             expected = 2**15
@@ -360,26 +361,26 @@ class Test_Keywords(unittest.TestCase):
             func_name = inspect.currentframe().f_code.co_name
             self.compare_numbers(expected, received, filename, func_name)
 
-    def test_BITPIX(self):
+    def test_BITPIX(self) -> None:
         for hdr in self.hdrs_list:
             filename, expected, received = (hdr["FILENAME"], 16, hdr["BITPIX"])
             func_name = inspect.currentframe().f_code.co_name
             self.compare_numbers(expected, received, filename, func_name)
 
-    def test_NAXIS(self):
+    def test_NAXIS(self) -> None:
         for hdr in self.hdrs_list:
             filename, expected, received = (hdr["FILENAME"], 2, hdr["NAXIS"])
             func_name = inspect.currentframe().f_code.co_name
             self.compare_numbers(expected, received, filename, func_name)
 
-    def test_kw_sizes(self):
+    def test_kw_sizes(self) -> None:
         for hdr in self.hdrs_list:
             for kw, str_size in self.kws_fixed_str_size:
                 kw_value, filename = hdr[kw], hdr["FILENAME"]
                 func_name = inspect.currentframe().f_code.co_name
                 self.verify_str_size(kw_value, str_size, kw, filename, func_name)
 
-    def test_simulated_mode(self):
+    def test_simulated_mode(self) -> None:
         func_name = inspect.currentframe().f_code.co_name
         for hdr in self.hdrs_list:
             for kw in self.simulated_mode_kws:
@@ -388,7 +389,7 @@ class Test_Keywords(unittest.TestCase):
                         f"Test: {func_name}, filename: {hdr['FILENAME']}, the keyword {kw} was set in the simulated mode."
                     )
 
-    def test_empty_observer_kw(self):
+    def test_empty_observer_kw(self) -> None:
         func_name = inspect.currentframe().f_code.co_name
         for hdr in self.hdrs_list:
             if hdr["OBSERVER"] == "":
