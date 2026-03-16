@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "s4cstp"
+version = "0.1.0"
+description = "SPARC4 Control System Test Package"
+authors = ["DBernardes <denis.bernardes099@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+package-mode = false # poetry in the non-package mode, just dependency management
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[tool.poetry.group.dev.dependencies]
+astropy = "^7.0.1"
+scipy = "^1.15.2"
+numpy = "^2.2.4"
+pandas = "^2.2.3"
+ipykernel = "^6.29.5"
+taskipy = "^1.14.1"
+python-dotenv = "^1.1.1"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.5"
+pytest-coverage = "^0.0"
+pytest-html = "^4.1.1"
+pytest-logging = "^2015.11.4"
+
+
+[tool.poetry.group.lint.dependencies]
+isort = "^6.0.1"
+black = {extras = ["jupyter"], version = "^25.1.0"}
+
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.6.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+
+[tool.taskipy.tasks]
+lint = "black --check --diff . && isort --check --diff . "
+test = "pytest tests -v --html=tests\\report.html --log-file=tests\\test.log --log-date-format=\"%Y-%m-%d %H:%M:%S\" --log-format=\"%(asctime)s [%(levelname)s] %(message)s\""
+git-pull = "git fetch origin && git reset --hard origin/main"
+open-report = "start tests\\report.html"
