@@ -13,6 +13,7 @@ import inspect
 import logging
 import re
 import unittest
+import warnings
 from datetime import datetime, timedelta
 from getpass import getuser
 from os import listdir
@@ -22,6 +23,7 @@ from pathlib import Path
 import astropy.io.fits as fits
 import numpy as np
 import pandas as pd
+from astropy.utils.exceptions import AstropyUserWarning
 
 
 class Test_Keywords(unittest.TestCase):
@@ -74,8 +76,9 @@ class Test_Keywords(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cfg = cls._read_config_file()
-        cls.image_folder = cls._get_image_folder(cfg)
-        cls.hdrs_list = cls._get_headers(cls.image_folder)
+        cls.images_folder = cls._get_images_folder(cfg)
+        cls.files = cls._get_files_in_folder(cls.images_folder)
+        cls.hdrs_list = cls._get_headers(cls.images_folder, cls.files)
         cls.read_noises, cls.ccd_gains, cls.header_content = cls._read_csvs()
 
     def _read_config_file() -> configparser.ConfigParser:
@@ -85,7 +88,7 @@ class Test_Keywords(unittest.TestCase):
         cfg.read(cfg_file)
         return cfg
 
-    def _get_image_folder(cfg) -> Path | str:
+    def _get_images_folder(cfg) -> Path | str:
         today = Path(cfg.get("channel configuration", "image path").strip(r"\""))
         today_list = [file for file in listdir(today) if ".fits" in file]
         if today_list != []:
@@ -96,13 +99,13 @@ class Test_Keywords(unittest.TestCase):
             raise FileNotFoundError(f"The folder {yesterday} does not exist.")
         return yesterday
 
-    def _get_headers(image_folder) -> list:
+    def _get_files_in_folder(folder_path) -> list:
+        return [file for file in listdir(folder_path) if file[-4:] == "fits"]
+
+    def _get_headers(images_folder, files) -> list:
         hdrs_list = []
-        folder = join(image_folder)
-        for file in listdir(folder):
-            if file[-4:] != "fits":
-                continue
-            hdr = fits.getheader(join(folder, file))
+        for file in files:
+            hdr = fits.getheader(join(images_folder, file))
             hdrs_list.append(hdr)
         return hdrs_list
 
@@ -384,7 +387,7 @@ class Test_Keywords(unittest.TestCase):
         func_name = inspect.currentframe().f_code.co_name
         for hdr in self.hdrs_list:
             for kw in self.simulated_mode_kws:
-                if hdr[kw] == False:
+                if not hdr[kw]:
                     logging.error(
                         f"Test: {func_name}, filename: {hdr['FILENAME']}, the keyword {kw} was set in the simulated mode."
                     )
@@ -395,4 +398,16 @@ class Test_Keywords(unittest.TestCase):
             if hdr["OBSERVER"] == "":
                 logging.error(
                     f"Test: {func_name}, filename: {hdr['FILENAME']}, the keyword OBSERVER is empty."
+                )
+
+    def test_checksum_datasum(self) -> None:
+        func_name = inspect.currentframe().f_code.co_name
+        for file in self.files:
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("always", AstropyUserWarning)
+                hdu = fits.open(join(self.images_folder, file), checksum=True)[0]
+            for warn in w:
+                print(warn.message)
+                logging.error(
+                    f"Test: {func_name}, filename: {hdu.header['FILENAME']}, {str(warn.message).replace('\n', '')}"
                 )
