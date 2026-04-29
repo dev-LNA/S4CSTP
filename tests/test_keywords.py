@@ -155,7 +155,7 @@ class Test_Keywords(unittest.TestCase):
 
     @staticmethod
     def val_in_list(value, _list, kw, filename, func_name) -> None:
-        if not value in _list:
+        if value not in _list:
             logging.error(
                 f"Test: {func_name}, filename: {filename}, keyword {kw} is not in {_list}: {value}"
             )
@@ -265,7 +265,7 @@ class Test_Keywords(unittest.TestCase):
         for hdr in self.hdrs_list:
             if (hdr["INSTMODE"] == "POLAR") & (hdr["WPPOS"] == 0):
                 raise ValueError(
-                    f"The value WPPOS=0 was found the polarimetric mode.",
+                    "The value WPPOS=0 was found the polarimetric mode.",
                     hdr["FILENAME"],
                 )
         return
