@@ -395,7 +395,7 @@ class Test_Keywords(unittest.TestCase):
     def test_empty_kws(self) -> None:
         func_name = inspect.currentframe().f_code.co_name
         for hdr in self.hdrs_list:
-            for kw in ["OBSERVER", "PROPID"]:
+            for kw in ["OBSERVER", "PROPID", "OBJECT"]:
                 if hdr[kw] == "":
                     logging.error(
                         f"Test: {func_name}, filename: {hdr['FILENAME']}, the keyword {kw} is empty."
