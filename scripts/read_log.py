@@ -40,7 +40,7 @@ logging.info(f"The python interpreter used in this run is {sys.executable}")
 
 
 # --------- Read CFG file ---------------
-username = getpass.getuser()
+username = cwd.split("\\")[2]
 config_file = Path(f"C:/Users/{username}/SPARC4/ACS") / "acs_config.cfg"
 if not config_file.exists():
     logging.error(f"file {config_file} not found")
