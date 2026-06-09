@@ -155,14 +155,15 @@ class Led_Status(StrEnum):
     WARNING = "warning"
 
 
-class Test:
-    def __init__(self, request_str: str) -> None:
-        self._str: str = request_str
+class Command:
+    def __init__(self, command_str: str) -> None:
+        self._str: str = command_str
         self.__dict: dict = {}
-        self.req_len: int = 0
+        self.command_len: int = 0
         self._valid: bool = False
-        self._status: str = "off"
-        self._recipient: str = "off"
+        self._supported: str = "off"
+        self._timeout: str = "off"
+        self._executed: str = "off"
 
     @property
     def str(self) -> str:
@@ -173,34 +174,38 @@ class Test:
         return self._valid
 
     @property
-    def status(self) -> str:
-        return self._status
-
-    @status.setter
-    def status(self, val: str) -> None:
-        self._status = val
-
-    @property
-    def recipient(self) -> str:
-        return self._recipient
-
-    @recipient.setter
-    def recipient(self, val: str) -> None:
-        self._recipient = val
-
-    @property
     def _dict(self) -> dict:
         return self.__dict
 
     @property
-    def command(self) -> str:
-        return self._str.split(" ", 1)[1]
+    def supported(self) -> str:
+        return self._supported
+
+    @supported.setter
+    def supported(self, val: str) -> None:
+        self._supported = val
+
+    @property
+    def timeout(self) -> str:
+        return self._timeout
+
+    @timeout.setter
+    def timeout(self, val: str) -> None:
+        self._timeout = val
+
+    @property
+    def executed(self) -> str:
+        return self._executed
+
+    @executed.setter
+    def executed(self, val: str) -> None:
+        self._executed = val
 
     def validate(self) -> None:
-        splitted_req = self._str.split(" ")
-        self.req_len = len(splitted_req)
-        self._valid = self.req_len <= 4
-        for idx, word in enumerate(splitted_req):
+        splitted_command = self._str.split(" ")
+        self.command_len = len(splitted_command)
+        self._valid = self.command_len <= 3
+        for idx, word in enumerate(splitted_command):
             self.__dict[f"field{idx + 1}"] = word
 
 

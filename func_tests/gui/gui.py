@@ -34,9 +34,9 @@ class GUI(QMainWindow):
         self.update_timer.start(200)
 
     def update_app(self) -> None:
-        s4acs_status = self.framework.s4acs.status
         self._update_framework()
         self._update_comm_status()
+        # s4acs_status = self.framework.s4acs.status
         # self._update_s4acs(instrument_status)
 
     def _update_framework(self) -> None:
