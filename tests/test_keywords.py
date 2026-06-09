@@ -46,6 +46,7 @@ class Test_Keywords(unittest.TestCase):
         "CTRLINTE",
         "WPSEL",
         "CALW",
+        "CCDSERN",
     ]
     regex_expressions = {
         "FILENAME": r"\d{8}_s4c[1-4]_\d{6}(_[a-z0-9]+)?\.fits$",
@@ -82,20 +83,20 @@ class Test_Keywords(unittest.TestCase):
         cls.read_noises, cls.ccd_gains, cls.header_content = cls._read_csvs()
 
     def _read_config_file() -> configparser.ConfigParser:
-        sparc4_folder = join("C:\\", "Users", getuser(), "SPARC4", "ACS")
-        cfg_file = join(sparc4_folder, "acs_config.cfg")
+        sparc4_folder = Path(f"C:/Users/{getuser()}/SPARC4/ACS")
+        cfg_file = sparc4_folder / "acs_config.cfg"
         cfg = configparser.ConfigParser()
         cfg.read(cfg_file)
         return cfg
 
-    def _get_images_folder(cfg) -> Path | str:
+    def _get_images_folder(cfg) -> Path:
         today = Path(cfg.get("channel configuration", "image path").strip(r"\""))
         today_list = [file for file in listdir(today) if ".fits" in file]
         if today_list != []:
             return today
         yesterday = datetime.now() - timedelta(days=1)
-        yesterday = join(today, "..", yesterday.strftime("%Y%m%d"))
-        if not isdir(yesterday):
+        yesterday = today / ".." / yesterday.strftime("%Y%m%d")
+        if not yesterday.exists:
             raise FileNotFoundError(f"The folder {yesterday} does not exist.")
         return yesterday
 
@@ -217,6 +218,8 @@ class Test_Keywords(unittest.TestCase):
         for hdr in self.hdrs_list:
             for _, row in filtered_hdr_content.iterrows():
                 kw = row["Keyword"]
+                if kw in self.kws_specific_values:
+                    continue
                 try:
                     value = hdr[kw]
                     filename = hdr["FILENAME"]

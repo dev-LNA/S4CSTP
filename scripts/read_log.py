@@ -15,7 +15,6 @@ Usage:
 """
 
 import configparser
-import getpass
 import logging
 import os
 import smtplib
