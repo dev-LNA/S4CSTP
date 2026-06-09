@@ -53,7 +53,7 @@ class Functionalities_Tests_Framework:
         with open(log_file, "a") as file:
             now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
             file.write(
-                "\n======================================================================================\n"
+                "\n========================================================================================\n"
                 "S4ACS Functionalities Tests Framework - Event Log\n"
                 "========================================================================================\n\n"
                 "Description     : this file logs important events occured during the framework execution\n"
@@ -61,9 +61,9 @@ class Functionalities_Tests_Framework:
                 "Log Type        : Operational Events\n"
                 f"Log level       : {self.log_level.name}\n"
                 f"Created at (UTC): {now}\n"
-                "-----------------------------------------------------------------------------------\n"
+                "----------------------------------------------------------------------------------------\n"
                 "Timestamp           Level          Message\n"
-                "-----------------------------------------------------------------------------------\n\n"
+                "----------------------------------------------------------------------------------------\n\n"
             )
         return
 
@@ -76,12 +76,9 @@ class Functionalities_Tests_Framework:
         self.s4acs.end()
         logging.info("Framework was stopped")
 
-    def get_status_message(self) -> None:
-        self.s4acs.get_status_message()
-
     def run(self) -> None:
         while not self._stop_thread:
-            self.get_status_message()
+            self.s4acs.get_status_message()
             sleep(0.2)
 
     # ================ Returns ====================

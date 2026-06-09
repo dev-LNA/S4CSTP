@@ -25,7 +25,7 @@ class GUI(QMainWindow):
         self.gui_widgets.stop_btn.clicked.connect(self.stop_application)
         self.gui_widgets.start_btn.clicked.connect(self.start_application)
 
-        s4acs = data_types.Component_Creator().create("fake")
+        s4acs = data_types.Component_Creator().create("real")
         self.framework = framework.Functionalities_Tests_Framework(s4acs)
         self._thread = Thread(target=self.framework.run)
 
@@ -36,8 +36,8 @@ class GUI(QMainWindow):
     def update_app(self) -> None:
         self._update_framework()
         self._update_comm_status()
-        # s4acs_status = self.framework.s4acs.status
-        # self._update_s4acs(instrument_status)
+        s4acs_status = self.framework.s4acs.status
+        self._update_s4acs(s4acs_status)
 
     def _update_framework(self) -> None:
         self.gui_widgets.framework_current_state.setText(self.framework.state)
@@ -73,7 +73,7 @@ class GUI(QMainWindow):
         gui_widgets.s4acs_frames_done.setValue(cam_status["frames_done"])
         gui_widgets.s4acs_cycles.setValue(acq_config["cycles"])
         gui_widgets.s4acs_cycles_done.setValue(cam_status["cycles_done"])
-        gui_widgets.s4acs_exe_status.setText(self.framework.container.s4acs.exe_status)
+        gui_widgets.s4acs_exe_status.setText(self.framework.s4acs.exe_status)
 
     def _update_comm_status(self) -> None:
         led_status = {True: "on", False: "off"}
@@ -90,5 +90,16 @@ class GUI(QMainWindow):
         sys.exit()
 
     def start_application(self) -> None:
+        log_level = self._return_log_level()
+        self.framework.set_log_level(log_level)
         self.framework.initialize()
         self._thread.start()
+
+    def _return_log_level(self) -> data_types.Log_Level:
+        return {
+            "DEBUG": data_types.Log_Level.DEBUG,
+            "INFO": data_types.Log_Level.INFO,
+            "WARNING": data_types.Log_Level.WARNING,
+            "ERROR": data_types.Log_Level.ERROR,
+            "CRITICAL": data_types.Log_Level.CRITICAL,
+        }[self.gui_widgets.framework_log_level.currentText()]

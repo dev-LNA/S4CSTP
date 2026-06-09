@@ -19,7 +19,8 @@ class Component(ABC):  # pragma: no cover
     ) -> None:
         self._subscriber = subscriber
         self._requester = requester
-        self._state: comp_state.State
+        self.state: comp_state.State
+        self.command: data_types.Command
 
         self._status: dict | None = None
         self._exe_status = data_types.Execution_Status.NONE
@@ -27,20 +28,16 @@ class Component(ABC):  # pragma: no cover
         self.transition_to(comp_state.Not_Initialized())
 
     @property
-    def status(self) -> dict | None:
+    def status(self) -> None:
         return self._status
-
-    @property
-    def state(self) -> comp_state.State:
-        return self._state
 
     @property
     def exe_status(self) -> str:
         return self._exe_status.name
 
     def transition_to(self, state: comp_state.State) -> None:
-        self._state = state
-        self._state.component = self
+        self.state = state
+        self.state.component = self
 
     @abstractmethod
     def get_status_message(self) -> None:

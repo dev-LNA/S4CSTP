@@ -21,34 +21,9 @@ class State(ABC):  # pragma: no cover
             f"You cannot initialize framework in {type(self).__name__} state."
         )
 
-    def receive_client_request(self) -> None:
-        raise RuntimeError(
-            f"You cannot receive client request in {type(self).__name__} state."
-        )
-
-    def validate_request(self) -> None:
-        raise RuntimeError(
-            f"You cannot validate request in {type(self).__name__} state."
-        )
-
     def dispatch_command(self) -> None:
         raise RuntimeError(
             f"You cannot dispatch command in {type(self).__name__} state."
-        )
-
-    def handle_invalid_request(self) -> None:
-        raise RuntimeError(
-            f"You cannot handle invalid request in {type(self).__name__} state."
-        )
-
-    def handle_invalid_recipient(self) -> None:
-        raise RuntimeError(
-            f"You cannot handle invalid recipient in {type(self).__name__} state."
-        )
-
-    def verify_request_recipient(self) -> None:
-        raise RuntimeError(
-            f"You cannot verify the request recipient in {type(self).__name__} state."
         )
 
     def verify_component_availability(self) -> None:
@@ -79,50 +54,7 @@ class Not_Initialized(State):
         logging.debug("Framework was initialized succesfully")
 
 
-class Idle(State):
-    def receive_client_request(self) -> None:
-        for _component in self.framework.container.values:
-            _component.command = data_types.Command("")
-        self.framework.transition_to(Request_Received())
-        self.framework._state.validate_request()
-        return
-
-
-class Request_Received(State):
-    def validate_request(self) -> None:
-        request = self.framework.client_request
-        if request.valid:
-            logging.debug("The request is valid")
-            request.status = data_types.Led_Status.ON
-            self.framework.transition_to(Request_Validated())
-            self.framework._state.verify_request_recipient()
-            return
-        self.framework._state.handle_invalid_request()
-
-    def handle_invalid_request(self) -> None:
-        request = self.framework.client_request
-        request.status = data_types.Led_Status.ERROR
-        logging.warning(f"Invalid request {request.str}")
-        self.framework.transition_to(Idle())
-
-
-class Request_Validated(State):
-    def verify_request_recipient(self) -> None:
-        request = self.framework.client_request
-        valid_recipient = request._dict["field1"] in self.framework.container.keys
-        if valid_recipient:
-            logging.debug("The recipient is valid")
-            request.recipient = data_types.Led_Status.ON
-            self.framework.transition_to(Recipient_Validated())
-            self.framework._state.verify_component_availability()
-            return
-        self.framework._state.handle_invalid_recipient()
-
-    def handle_invalid_recipient(self) -> None:
-        request = self.framework.client_request
-        request.recipient = data_types.Led_Status.ERROR
-        logging.warning(f"Invalid recipient {request.str}")
-        self.framework.transition_to(Idle())
+class Idle(State): ...
 
 
 class Recipient_Validated(State):
