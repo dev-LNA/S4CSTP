@@ -1,10 +1,7 @@
 from .comm_protocol import (
-    MQTT,
-    Communication_Protocol,
-    Fake_Replier,
+    Communication_Channel,
     Fake_Requester,
     Fake_Subscriber,
-    ZeroMQ_REP,
     ZeroMQ_REQ,
     ZeroMQ_SUB,
 )

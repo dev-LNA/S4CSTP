@@ -1,20 +1,18 @@
 import json
 
-import src.comm_protocol as comm_protocol
-import src.component as comp
-import src.data_types as data_types
-import src.mediator as mediator
-from src.devices import Camera
+import func_tests.comm_channel as comm_channel
+import func_tests.component as comp
+import func_tests.data_types as data_types
+from func_tests.devices import Camera
 
 
-class EACS(comp.Component):
+class S4ACS(comp.Component):
     def __init__(
         self,
-        mediator: mediator.Mediator | None,
-        subscriber: comm_protocol.Communication_Protocol,
-        requester: comm_protocol.Communication_Protocol,
+        subscriber: comm_channel.Communication_Channel,
+        requester: comm_channel.Communication_Channel,
     ) -> None:
-        super().__init__(mediator, subscriber, requester)
+        super().__init__(subscriber, requester)
         self._allowed_commands = [  # criar uma classe Command?
             "EXPOSE",
             "SET",

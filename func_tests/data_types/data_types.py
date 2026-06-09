@@ -1,4 +1,5 @@
-from enum import Enum, StrEnum, auto
+import logging
+from enum import Enum, IntEnum, StrEnum, auto
 from ipaddress import IPv4Address, IPv6Address
 
 from pydantic import BaseModel, Field, field_validator
@@ -211,3 +212,11 @@ class End_Point(BaseModel):
 
     def to_str(self) -> str:
         return f"tcp://{self.ip}:{self.port}"
+
+
+class Log_Level(IntEnum):  # TODO adicionar ao diagrama de classes
+    DEBUG = logging.DEBUG
+    INFO = logging.INFO
+    WARNING = logging.WARNING
+    ERROR = logging.ERROR
+    CRITICAL = logging.CRITICAL

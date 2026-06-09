@@ -1,6 +1,6 @@
 import json
 
-import src.data_types as data_types
+import func_tests.data_types as data_types
 
 
 class Camera:
