@@ -2,8 +2,8 @@ import logging
 from abc import ABC
 from datetime import datetime, timedelta
 
-import src.component as component
-import src.data_types as data_types
+import func_tests.component as component
+import func_tests.data_types as data_types
 
 
 class State(ABC):  # pragma: no cover

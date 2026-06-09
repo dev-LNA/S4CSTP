@@ -1,24 +1,24 @@
 import logging
 from abc import ABC
 
-import src.data_types as data_types
-import src.mediator as mediator
+import func_tests.data_types as data_types
+import func_tests.ftf as ftf
 
 
 class State(ABC):  # pragma: no cover
     timeout_time = 1  # sec
 
     @property
-    def mediator(self) -> mediator.EMCS:
-        return self._mediator
+    def framework(self) -> ftf.Functionalities_Tests_Framework:
+        return self._framework
 
-    @mediator.setter
-    def mediator(self, mediator: mediator.EMCS) -> None:
-        self._mediator = mediator
+    @framework.setter
+    def framework(self, framework: ftf.Functionalities_Tests_Framework) -> None:
+        self._framework = framework
 
     def initialize(self) -> None:
         raise RuntimeError(
-            f"You cannot initialize mediator in {type(self).__name__} state."
+            f"You cannot initialize framework in {type(self).__name__} state."
         )
 
     def receive_client_request(self) -> None:
@@ -56,7 +56,7 @@ class State(ABC):  # pragma: no cover
             f"You cannot verify the component availability in {type(self).__name__} state."
         )
 
-    def handle_busy_mediator(self) -> None:  # TODO: tratar isso melhor
+    def handle_busy_framework(self) -> None:  # TODO: tratar isso melhor
         raise RuntimeError(
             f"Control system is not in the Idle state: {type(self).__name__}."
         )
@@ -72,92 +72,92 @@ class State(ABC):  # pragma: no cover
 
 class Not_Initialized(State):
     def initialize(self) -> None:
-        self.mediator.create_log_file()
+        self.framework.create_log_file()
         logging.info("EMCS was started")
-        for component in self.mediator._container.values:
+        for component in self.framework._container.values:
             component.state.initialize()
-        self.mediator.transition_to(Idle())
+        self.framework.transition_to(Idle())
         logging.debug("EMCS was initialized succesfully")
 
 
 class Idle(State):
     def receive_client_request(self) -> None:
-        for _component in self.mediator.container.values:
+        for _component in self.framework.container.values:
             _component.command = data_types.Command("")
-        self.mediator.transition_to(Request_Received())
-        self.mediator._state.validate_request()
+        self.framework.transition_to(Request_Received())
+        self.framework._state.validate_request()
         return
 
 
 class Request_Received(State):
     def validate_request(self) -> None:
-        request = self.mediator.client_request
+        request = self.framework.client_request
         if request.valid:
             logging.debug("The request is valid")
             request.status = data_types.Led_Status.ON
-            self.mediator.transition_to(Request_Validated())
-            self.mediator._state.verify_request_recipient()
+            self.framework.transition_to(Request_Validated())
+            self.framework._state.verify_request_recipient()
             return
-        self.mediator._state.handle_invalid_request()
+        self.framework._state.handle_invalid_request()
 
     def handle_invalid_request(self) -> None:
-        request = self.mediator.client_request
+        request = self.framework.client_request
         request.status = data_types.Led_Status.ERROR
         logging.warning(f"Invalid request {request.str}")
-        self.mediator.transition_to(Idle())
+        self.framework.transition_to(Idle())
 
 
 class Request_Validated(State):
     def verify_request_recipient(self) -> None:
-        request = self.mediator.client_request
-        valid_recipient = request._dict["field1"] in self.mediator.container.keys
+        request = self.framework.client_request
+        valid_recipient = request._dict["field1"] in self.framework.container.keys
         if valid_recipient:
             logging.debug("The recipient is valid")
             request.recipient = data_types.Led_Status.ON
-            self.mediator.transition_to(Recipient_Validated())
-            self.mediator._state.verify_component_availability()
+            self.framework.transition_to(Recipient_Validated())
+            self.framework._state.verify_component_availability()
             return
-        self.mediator._state.handle_invalid_recipient()
+        self.framework._state.handle_invalid_recipient()
 
     def handle_invalid_recipient(self) -> None:
-        request = self.mediator.client_request
+        request = self.framework.client_request
         request.recipient = data_types.Led_Status.ERROR
         logging.warning(f"Invalid recipient {request.str}")
-        self.mediator.transition_to(Idle())
+        self.framework.transition_to(Idle())
 
 
 class Recipient_Validated(State):
     def verify_component_availability(self) -> None:
-        request = self.mediator.client_request
+        request = self.framework.client_request
         recipient = request._dict["field1"]
-        _component = self.mediator.container._dict[recipient]
+        _component = self.framework.container._dict[recipient]
         if _component.exe_status != "IDLE":
             self.handle_not_idle_component()
             return
-        self.mediator.transition_to(Component_Available())
-        self.mediator._state.dispatch_command()
+        self.framework.transition_to(Component_Available())
+        self.framework._state.dispatch_command()
 
     def handle_not_idle_component(self) -> None:
-        request = self.mediator.client_request
+        request = self.framework.client_request
         recipient = request._dict["field1"]
         request.recipient = data_types.Led_Status.WARNING
         logging.warning(f"{recipient} is not in the IDLE execution state")
-        self.mediator.transition_to(Idle())
+        self.framework.transition_to(Idle())
 
 
 class Component_Available(State):
     def dispatch_command(self) -> None:
-        request = self.mediator.client_request
+        request = self.framework.client_request
         recipient = request._dict["field1"]
-        _component = self.mediator.container._dict[recipient]
+        _component = self.framework.container._dict[recipient]
         _component.command = data_types.Command(request.command)
         _component.state.handle_command()
 
-        self.mediator.transition_to(Command_Dispatched())
-        self.mediator._state.return_to_idle()
+        self.framework.transition_to(Command_Dispatched())
+        self.framework._state.return_to_idle()
 
 
 class Command_Dispatched(State):
     def return_to_idle(self) -> None:
-        self.mediator.transition_to(Idle())
+        self.framework.transition_to(Idle())
         return

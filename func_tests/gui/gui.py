@@ -6,6 +6,7 @@ from PyQt6 import uic
 from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QMainWindow
 
+import func_tests.data_types as data_types
 import func_tests.ftf as ftf
 import func_tests.gui as gui
 
@@ -24,7 +25,8 @@ class GUI(QMainWindow):
         self.gui_widgets.stop_btn.clicked.connect(self.stop_application)
         self.gui_widgets.start_btn.clicked.connect(self.start_application)
 
-        self.ftf = ftf.Functionalities_Test_Framework()
+        s4acs = data_types.Component_Creator().create("fake")
+        self.ftf = ftf.Functionalities_Tests_Framework(s4acs)
         # self._thread = Thread(target=self.ftf.run)
 
         # self.update_timer = QTimer(self)

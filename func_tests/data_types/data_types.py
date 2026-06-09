@@ -2,7 +2,12 @@ import logging
 from enum import Enum, IntEnum, StrEnum, auto
 from ipaddress import IPv4Address, IPv6Address
 
+import zmq
 from pydantic import BaseModel, Field, field_validator
+
+import func_tests.comm_channel as comm_channel
+import func_tests.component as component
+from func_tests.component.s4acs import S4ACS
 
 
 class Camera_Configuration(BaseModel):
@@ -220,3 +225,28 @@ class Log_Level(IntEnum):  # TODO adicionar ao diagrama de classes
     WARNING = logging.WARNING
     ERROR = logging.ERROR
     CRITICAL = logging.CRITICAL
+
+
+class Component_Creator:
+    def create(self, _type: str) -> component.Component:
+        """create a Component
+
+        Args:
+            _type (str): _description_
+
+        Returns:
+            component.Component: _description_
+        """
+        if _type == "fake":
+            end_point = End_Point(ip="192.168.0.1", port=5555)
+            subscriber = comm_channel.Fake_Subscriber(end_point)
+            requester = comm_channel.Fake_Requester(end_point)
+            return component.Fake_Component(subscriber, requester)
+
+        if _type == "real":
+            context = zmq.Context()
+            end_point = End_Point(ip="200.131.64.25", port=5555)
+            subscriber = comm_channel.ZeroMQ_SUB(end_point, context)
+            end_point = End_Point(ip="200.131.64.25", port=5556)
+            requester = comm_channel.ZeroMQ_REQ(end_point, context)
+            return S4ACS(subscriber, requester)

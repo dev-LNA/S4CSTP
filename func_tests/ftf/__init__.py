@@ -1,1 +1,1 @@
-from .ftf import Functionalities_Test_Framework
+from .ftf import Functionalities_Tests_Framework

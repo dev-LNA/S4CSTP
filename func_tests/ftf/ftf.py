@@ -5,24 +5,23 @@ from time import sleep
 
 import func_tests.component as component
 import func_tests.data_types as data_types
-import func_tests.state.mediator as med_state
+import func_tests.state.ftf as ftf_state
 
 
 class Functionalities_Tests_Framework:
     _stop_thread = False
-    _state: med_state.State
+    _state: ftf_state.State
 
     def __init__(
         self,
-        s4acs: component.component,
-        state: med_state.State,
+        s4acs: component.Component,
     ) -> None:
         self.s4acs = s4acs
         self.log_dir = Path("_logs")
         self.log_level: data_types.Log_Level
 
         self.log_dir.mkdir(parents=True, exist_ok=True)
-        self.transition_to(state)
+        self.transition_to(ftf_state.Not_Initialized())
         return
 
     @property
@@ -68,7 +67,7 @@ class Functionalities_Tests_Framework:
             )
         return
 
-    def transition_to(self, state: med_state.State) -> None:
+    def transition_to(self, state: ftf_state.State) -> None:
         self._state = state
         self._state.mediator = self
         return

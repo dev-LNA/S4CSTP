@@ -13,7 +13,7 @@ class S4ACS(comp.Component):
         requester: comm_channel.Communication_Channel,
     ) -> None:
         super().__init__(subscriber, requester)
-        self._allowed_commands = [  # criar uma classe Command?
+        self._allowed_commands = [
             "EXPOSE",
             "SET",
             "STOP_APP",
