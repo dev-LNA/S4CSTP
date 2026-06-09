@@ -1,0 +1,115 @@
+<diagram program="umletino" version="15.1"><zoom_level>9</zoom_level><help_text></help_text><element><id>UMLClass</id><coordinates><x>247</x><y>684</y><w>216</w><h>162</h></coordinates><panel_attributes>&lt;Interface&gt;
+/Communication_Protocol/
+--
+- received_msg: str
+- comm_status: bool
+- msg_timestamp: TimeStamp
+- end_point: End_Point
+--
+/+ initialize_comm(): void/
+/+ send_message(message: string): void/
+/+ receive_message(): void/
+/+ close_communication(): void/
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1021</x><y>909</y><w>207</w><h>117</h></coordinates><panel_attributes>EACS
+--
+- camera: Camera
+--
++ start_acquisition(): void
++ set_op_mode(op_mode: dict): void
++ stop_acquisition(): void
++ abort_acquisition(): void</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>1017</y><w>27</w><h>135</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;130</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1021</x><y>1134</y><w>216</w><h>72</h></coordinates><panel_attributes>Camera
+--
+- cam_config: Camera_Configuration
+- acq_config: Acquisition_Configuration
+- cam_status: Camera_Status</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>841</x><y>1305</y><w>135</w><h>90</h></coordinates><panel_attributes>Camera_Configuration
+--
+- readout_rate: int
+- vshift_speed: int
+- sub_image: tuple
+- binning: int
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>895</x><y>1197</y><w>252</w><h>126</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>260;10;260;70;10;70;10;120</additional_attributes></element><element><id>UMLClass</id><coordinates><x>49</x><y>243</y><w>198</w><h>117</h></coordinates><panel_attributes>Request
+--
++ field1: str
++ field2: str
++ field3: str
+- request_size: int
+- valid_request: bool
+--
++ validate_request(request: str): bool
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>346</x><y>9</y><w>513</w><h>477</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+
+</panel_attributes><additional_attributes>550;20;10;20;10;510</additional_attributes></element><element><id>UMLClass</id><coordinates><x>751</x><y>630</y><w>234</w><h>189</h></coordinates><panel_attributes>&lt;Interface&gt;
+Component
+--
+- requester: Communication_Protocol
+- subscriber: Communication_Protocol
+- mediator: Mediator
+- state: CState
+- status: dict
+- allowed_commands: list
+--
+/+ initialize(): void/
+/+ get_status(): void/
+/+ end(): void/
++ transition_to(state: State): void</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>454</x><y>738</y><w>315</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>330;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>31</x><y>756</y><w>90</w><h>27</h></coordinates><panel_attributes>0MQ_Sub</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>859</x><y>198</y><w>135</w><h>450</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=4</panel_attributes><additional_attributes>130;10;10;480</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1129</x><y>180</y><w>126</w><h>54</h></coordinates><panel_attributes>&lt;Interface&gt;
+Mediator_State
+--
+- meditator: Mediator
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>976</x><y>783</y><w>144</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;140;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>31</x><y>693</y><w>90</w><h>27</h></coordinates><panel_attributes>0MQ_Pub</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>31</x><y>585</y><w>90</w><h>27</h></coordinates><panel_attributes>0MQ_Req</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>31</x><y>639</y><w>90</w><h>27</h></coordinates><panel_attributes>0MQ_Rep</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>112</x><y>756</y><w>153</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>150;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>112</x><y>693</y><w>153</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>150;80;50;80;50;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>112</x><y>648</y><w>153</w><h>135</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>150;130;50;130;50;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>112</x><y>594</y><w>153</w><h>189</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>150;190;50;190;50;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>810</y><w>396</w><h>108</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>420;10;420;70;10;70;10;100</additional_attributes></element><element><id>Relation</id><coordinates><x>859</x><y>810</y><w>27</w><h>108</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;100</additional_attributes></element><element><id>Relation</id><coordinates><x>859</x><y>810</y><w>279</w><h>117</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;70;290;70;290;110</additional_attributes></element><element><id>Relation</id><coordinates><x>346</x><y>549</y><w>27</w><h>153</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1201</x><y>18</y><w>108</w><h>54</h></coordinates><panel_attributes>&lt;Interface&gt;
+Mediator</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1057</x><y>36</y><w>162</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>160;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1048</x><y>1305</y><w>171</w><h>117</h></coordinates><panel_attributes>Acquisition_Configuration
+--
+- exp_time: float
+- frames: int
+- cycles: int
+- suffix: str
+- cooler: int
+- temperature: float</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>1197</y><w>27</w><h>126</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;120</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1273</x><y>1305</y><w>171</w><h>198</h></coordinates><panel_attributes>Camera_Status
+--
+-cycles_done: int
+- frames_done: int
+- used_disk_space: int
+- current_exp_time: float
+- acquiring: bool
+- last_image_name: str
+- status: str
+- current_temp: float
+- temp_status: str
+- serial_number: int
+- power: bool
+- acs_mode: bool</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>1197</y><w>252</w><h>126</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70;260;70;260;120</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1057</x><y>1611</y><w>153</w><h>27</h></coordinates><panel_attributes>/pydantic.BaseModel/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>1413</y><w>27</w><h>216</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;220;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>904</x><y>1386</y><w>243</w><h>243</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>250;250;250;200;10;200;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>1494</y><w>252</w><h>135</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;130;10;80;260;80;260;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>76</x><y>927</y><w>117</w><h>63</h></coordinates><panel_attributes>End_Point
+--
+ip: str
+port: int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>130</x><y>837</y><w>171</w><h>108</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>170;10;170;70;10;70;10;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>841</x><y>0</y><w>225</w><h>207</h></coordinates><panel_attributes>EMCS
+--
+- inst error: Error
+- container: Components_Container
+- client: Client
+- state: Mediator_State
+--
++ publis_status(): void
++ log_info(message: string): void
++ raise_error(): void
++ park_instrument(): void
++ initialize(): void
++ end(): void
++ run(): void
++ transition_to(state: State): void
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>562</x><y>90</y><w>162</w><h>90</h></coordinates><panel_attributes>EMCS_GUI
+--
+- mediator: Mediator
+- thread: threading.Thread
+--
++ update_app(): void
++ stop_app(): void</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>238</x><y>288</y><w>135</w><h>36</h></coordinates><panel_attributes>lt=-
+m1=0..1</panel_attributes><additional_attributes>10;10;130;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1102</x><y>765</y><w>144</w><h>54</h></coordinates><panel_attributes>&lt;Interface&gt;
+Component_State
+--
+- component: Component
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>634</x><y>171</y><w>27</w><h>81</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;10;10;70</additional_attributes></element><element><id>Relation</id><coordinates><x>715</x><y>135</y><w>144</w><h>27</h></coordinates><panel_attributes>lt=-&gt;&gt;&gt;&gt;</panel_attributes><additional_attributes>140;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1228</x><y>63</y><w>27</w><h>135</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;130</additional_attributes></element><element><id>Relation</id><coordinates><x>976</x><y>63</y><w>324</w><h>639</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>340;10;340;690;10;690</additional_attributes></element></diagram>
