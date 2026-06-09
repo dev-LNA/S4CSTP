@@ -2,18 +2,18 @@ import logging
 from abc import ABC
 
 import func_tests.data_types as data_types
-import func_tests.ftf as ftf
+import func_tests.framework as framework
 
 
 class State(ABC):  # pragma: no cover
     timeout_time = 1  # sec
 
     @property
-    def framework(self) -> ftf.Functionalities_Tests_Framework:
+    def framework(self) -> framework.Functionalities_Tests_Framework:
         return self._framework
 
     @framework.setter
-    def framework(self, framework: ftf.Functionalities_Tests_Framework) -> None:
+    def framework(self, framework: framework.Functionalities_Tests_Framework) -> None:
         self._framework = framework
 
     def initialize(self) -> None:
@@ -74,7 +74,7 @@ class Not_Initialized(State):
     def initialize(self) -> None:
         self.framework.create_log_file()
         logging.info("Framework was started")
-        self.framework.s4acs.initialize()
+        self.framework.s4acs.state.initialize()
         self.framework.transition_to(Idle())
         logging.debug("Framework was initialized succesfully")
 

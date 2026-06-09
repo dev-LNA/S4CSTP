@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>665</width>
+    <width>712</width>
     <height>311</height>
    </rect>
   </property>
@@ -967,7 +967,7 @@ color: rgb(255, 255, 255);
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:24pt; font-weight:600; color:#ffffff;&quot;&gt;S4ACS functionalities tests framework&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:24pt; font-weight:600; color:#ffffff;&quot;&gt;S4ACS Functionalities Tests Framework&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -978,7 +978,7 @@ color: rgb(255, 255, 255);
            <item row="0" column="0">
             <widget class="QLabel" name="label_54">
              <property name="text">
-              <string>Communication</string>
+              <string>S4ACS comm</string>
              </property>
              <property name="text_label" stdset="0">
               <bool>true</bool>
@@ -986,7 +986,7 @@ color: rgb(255, 255, 255);
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QLabel" name="eacs2_led_comm_9">
+            <widget class="QLabel" name="s4acs_led_comm">
              <property name="styleSheet">
               <string notr="true"/>
              </property>
@@ -1001,22 +1001,93 @@ color: rgb(255, 255, 255);
           </layout>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>168</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
+          <layout class="QFormLayout" name="formLayout_3">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_55">
+             <property name="text">
+              <string>Current state</string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="framework_current_state">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QFormLayout" name="formLayout_2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="emcs_log_level_2">
+             <property name="text">
+              <string>log level</string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="framework_log_level">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QCombBox{
+    text-align: right;
+}</string>
+             </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+             <property name="currentText">
+              <string>INFO</string>
+             </property>
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
+             <property name="maxVisibleItems">
+              <number>10</number>
+             </property>
+             <item>
+              <property name="text">
+               <string>DEBUG</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>INFO</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>WARNING</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>ERROR</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>CRITICAL</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QPushButton" name="ftf_start_btn">
+            <widget class="QPushButton" name="framework_start_btn">
              <property name="styleSheet">
               <string notr="true">font: 75 8pt &quot;MS Shell Dlg 2&quot;;
 background-color: rgb(0, 170, 0);
@@ -1028,7 +1099,7 @@ color: rgb(255,255,255);</string>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="ftf_stop_btn">
+            <widget class="QPushButton" name="framework_stop_btn">
              <property name="styleSheet">
               <string notr="true">background-color: rgb(255, 95, 84);
 font: 75 8pt &quot;MS Shell Dlg 2&quot;;
