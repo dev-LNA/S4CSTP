@@ -34,7 +34,7 @@ class GUI(QMainWindow):
     def update_app(self) -> None:
         instrument_status = self.ftf.return_components_status()
         self._update_master()
-        self._update_eacs1(instrument_status)
+        self._update_s4acs(instrument_status)
 
     def _update_master(self) -> None:
         self.gui_widgets.ftf_current_state.setText(self.ftf.state)
@@ -44,7 +44,7 @@ class GUI(QMainWindow):
         obj.style().polish(obj)
         obj.update()
 
-    def _update_eacs1(self, instrument_status) -> None:
+    def _update_s4acs(self, instrument_status) -> None:
         acs_status = instrument_status["EACS1"]
         if acs_status is None:
             return
