@@ -3,10 +3,10 @@ from datetime import datetime, timedelta, timezone
 
 import zmq
 
-import src.data_types as data_types
+import func_tests.data_types as data_types
 
 
-class Communication_Protocol(ABC):
+class Communication_Channel(ABC):
     TIME_OUT = 200  # ms
     INTERVAL_BTW_MSGS = 5  # s
 
@@ -56,7 +56,7 @@ class Communication_Protocol(ABC):
         self._comm_status = delay.seconds < self.INTERVAL_BTW_MSGS
 
 
-class ZeroMQ_SUB(Communication_Protocol):
+class ZeroMQ_SUB(Communication_Channel):
     def __init__(
         self,
         end_point: data_types.End_Point,
@@ -81,7 +81,7 @@ class ZeroMQ_SUB(Communication_Protocol):
         self._verify_comm_status()
 
 
-class ZeroMQ_REQ(Communication_Protocol):
+class ZeroMQ_REQ(Communication_Channel):
     def __init__(self, end_point: data_types.End_Point, context: zmq.Context) -> None:
         super().__init__(end_point)
         self.context = context
@@ -103,42 +103,7 @@ class ZeroMQ_REQ(Communication_Protocol):
             self._last_msg_timestamp = datetime.now(timezone.utc)
 
 
-class ZeroMQ_REP(Communication_Protocol):
-    def __init__(self, end_point: data_types.End_Point, context: zmq.Context) -> None:
-        super().__init__(end_point)
-        self.context = context
-
-    def initialize_comm(self) -> None:
-        self.socket = self.context.socket(zmq.REP)
-        self.socket.bind(self._end_point.to_str())
-
-    def close_comm(self) -> None:
-        self.socket.close()
-
-    def receive_msg(self) -> None:
-        self._new_msg = self.socket.poll(timeout=self.TIME_OUT) != 0
-        if self._new_msg:
-            self._received_msg = self.socket.recv_string(zmq.NOBLOCK)
-            self.socket.send_string("ACK")
-            self._last_msg_timestamp = datetime.now(timezone.utc)
-            return
-        self._received_msg = ""
-
-
-class MQTT(Communication_Protocol): ...
-
-
-class Fake_Replier(Communication_Protocol):
-    def initialize_comm(self) -> None: ...
-
-    def close_comm(self) -> None: ...
-
-    def receive_msg(self) -> None:
-        self._last_msg_timestamp = datetime.now(timezone.utc)
-        return
-
-
-class Fake_Subscriber(Communication_Protocol):
+class Fake_Subscriber(Communication_Channel):
     def initialize_comm(self) -> None: ...
 
     def close_comm(self) -> None: ...
@@ -148,7 +113,7 @@ class Fake_Subscriber(Communication_Protocol):
         self._verify_comm_status()
 
 
-class Fake_Requester(Communication_Protocol):
+class Fake_Requester(Communication_Channel):
     def initialize_comm(self) -> None: ...
 
     def close_comm(self) -> None: ...
