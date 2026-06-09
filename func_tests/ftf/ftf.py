@@ -17,8 +17,8 @@ class Functionalities_Tests_Framework:
         s4acs: component.Component,
     ) -> None:
         self.s4acs = s4acs
-        self.log_dir = Path("_logs")
-        self.log_level: data_types.Log_Level
+        self.log_dir = Path("func_tests/_logs")
+        self.log_level = data_types.Log_Level.INFO
 
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.transition_to(ftf_state.Not_Initialized())
@@ -69,7 +69,7 @@ class Functionalities_Tests_Framework:
 
     def transition_to(self, state: ftf_state.State) -> None:
         self._state = state
-        self._state.mediator = self
+        self._state.framework = self
         return
 
     def end(self) -> None:

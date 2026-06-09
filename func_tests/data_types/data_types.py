@@ -219,7 +219,7 @@ class End_Point(BaseModel):
         return f"tcp://{self.ip}:{self.port}"
 
 
-class Log_Level(IntEnum):  # TODO adicionar ao diagrama de classes
+class Log_Level(IntEnum):
     DEBUG = logging.DEBUG
     INFO = logging.INFO
     WARNING = logging.WARNING

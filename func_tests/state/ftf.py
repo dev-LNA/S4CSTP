@@ -73,11 +73,10 @@ class State(ABC):  # pragma: no cover
 class Not_Initialized(State):
     def initialize(self) -> None:
         self.framework.create_log_file()
-        logging.info("EMCS was started")
-        for component in self.framework._container.values:
-            component.state.initialize()
+        logging.info("Framework was started")
+        self.framework.s4acs.initialize()
         self.framework.transition_to(Idle())
-        logging.debug("EMCS was initialized succesfully")
+        logging.debug("Framework was initialized succesfully")
 
 
 class Idle(State):
