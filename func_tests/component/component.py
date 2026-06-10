@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 
 import func_tests.comm_channel as comm_channel
 import func_tests.data_types as data_types
-import func_tests.state.component as comp_state
 
 
 class Component(ABC):  # pragma: no cover
@@ -19,13 +18,11 @@ class Component(ABC):  # pragma: no cover
     ) -> None:
         self._subscriber = subscriber
         self._requester = requester
-        self.state: comp_state.State
         self.command: data_types.Command
 
         self._status: dict | None = None
         self._exe_status = data_types.Execution_Status.NONE
         self._allowed_commands = []
-        self.transition_to(comp_state.Not_Initialized())
 
     @property
     def status(self) -> None:
@@ -34,10 +31,6 @@ class Component(ABC):  # pragma: no cover
     @property
     def exe_status(self) -> str:
         return self._exe_status.name
-
-    def transition_to(self, state: comp_state.State) -> None:
-        self.state = state
-        self.state.component = self
 
     @abstractmethod
     def get_status_message(self) -> None:

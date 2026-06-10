@@ -1,12 +1,12 @@
 import json
 
 import func_tests.comm_channel as comm_channel
-import func_tests.component as comp
+import func_tests.component as component
 import func_tests.data_types as data_types
 from func_tests.devices import Camera
 
 
-class S4ACS(comp.Component):
+class S4ACS(component.Component):
     def __init__(
         self,
         subscriber: comm_channel.Communication_Channel,

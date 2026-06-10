@@ -232,6 +232,12 @@ class Log_Level(IntEnum):
     CRITICAL = logging.CRITICAL
 
 
+class Test_Result(BaseModel):
+    success: bool
+    test_code: int
+    message: str
+
+
 class Component_Creator:
     def create(self, _type: str) -> component.Component:
         """create a Component
@@ -255,3 +261,6 @@ class Component_Creator:
             end_point = End_Point(ip="200.131.64.25", port=5556)
             requester = comm_channel.ZeroMQ_REQ(end_point, context)
             return S4ACS(subscriber, requester)
+
+
+class Tests_List_Creator: ...

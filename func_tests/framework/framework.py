@@ -5,12 +5,10 @@ from time import sleep
 
 import func_tests.component as component
 import func_tests.data_types as data_types
-import func_tests.state.framework as framework_state
 
 
 class Functionalities_Tests_Framework:
     _stop_thread = False
-    _state: framework_state.State
 
     def __init__(
         self,
@@ -21,12 +19,7 @@ class Functionalities_Tests_Framework:
         self.log_level = data_types.Log_Level.INFO
 
         self.log_dir.mkdir(parents=True, exist_ok=True)
-        self.transition_to(framework_state.Not_Initialized())
         return
-
-    @property
-    def state(self) -> str:
-        return type(self._state).__name__.upper()
 
     def set_log_level(self, log_level: data_types.Log_Level) -> None:
         self.log_level = log_level
@@ -65,11 +58,6 @@ class Functionalities_Tests_Framework:
                 "Timestamp           Level          Message\n"
                 "----------------------------------------------------------------------------------------\n\n"
             )
-        return
-
-    def transition_to(self, state: framework_state.State) -> None:
-        self._state = state
-        self._state.framework = self
         return
 
     def end(self) -> None:
