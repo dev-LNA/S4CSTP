@@ -6,21 +6,21 @@
     "python.analysis.autoImportCompletions": true,
     // Test settings    
     "python.testing.autoTestDiscoverOnSaveEnabled": true,
-    "python.testing.cwd": "${workspaceFolder}\\tests",
+    "python.testing.cwd": "${workspaceFolder}\\unit_tests",
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
-    "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python",
+    "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
     // terminal
-    "terminal.integrated.profiles.windows": {
-        "PowerShell": {
-            "source": "PowerShell",
-            "icon": "terminal-powershell",
-            "args": [
-                "-NoExit",
-                "-Command",
-                ".\\.venv\\Scripts\\activate "
-            ]
-        },
-    },
-    "python-envs.defaultEnvManager": "ms-python.python:system"
+    // "terminal.integrated.profiles.windows": {
+    //     "PowerShell": {
+    //         "source": "PowerShell",
+    //         "icon": "terminal-powershell",
+    //         "args": [
+    //             "-NoExit",
+    //             "-Command",
+    //             ".\\.venv\\Scripts\\activate "
+    //         ]
+    //     },
+    // },
+    // "python-envs.defaultEnvManager": "ms-python.python:system"
 }

@@ -26,10 +26,11 @@ class GUI(QMainWindow):
         self.gui_widgets.framework_start_btn.clicked.connect(self.start_application)
         self.gui_widgets.framework_run_tests_btn.clicked.connect(self.run_tests)
 
-        s4acs = data_types.Component_Creator().create("fake")
+        s4acs = data_types.Component_Creator().create("real")
         tests_list = data_types.Tests_List_Creator().create("fake")
         self.framework = framework.Functionalities_Tests_Framework(s4acs, tests_list)
-        self._thread = Thread(target=self.framework.get_status)
+        self._thread1 = Thread(target=self.framework.get_status)
+        self._thread2 = Thread(target=self.framework.run_tests)
 
         self.update_timer = QTimer(self)
         self.update_timer.timeout.connect(self.update_app)
@@ -38,8 +39,8 @@ class GUI(QMainWindow):
     def update_app(self) -> None:
         self._update_framework()
         self._update_comm_status()
-        s4acs_status = self.framework.s4acs.status
-        self._update_s4acs(s4acs_status)
+        self._update_tests()
+        self._update_s4acs()
 
     def _update_framework(self) -> None:
         # self.gui_widgets.framework_current_state.setText(self.framework.state)
@@ -50,7 +51,8 @@ class GUI(QMainWindow):
         obj.style().polish(obj)
         obj.update()
 
-    def _update_s4acs(self, s4acs_status) -> None:
+    def _update_s4acs(self) -> None:
+        s4acs_status = self.framework.s4acs.status
         if s4acs_status is None:
             return
         cam_status = s4acs_status["cam_status"]
@@ -78,6 +80,18 @@ class GUI(QMainWindow):
         gui_widgets.s4acs_cycles_done.setValue(cam_status["cycles_done"])
         gui_widgets.s4acs_exe_status.setText(self.framework.s4acs.exe_status)
 
+    def _update_tests(self) -> None:
+        led_status = {True: "on", False: "off"}
+        for idx, _test in enumerate(self.framework.tests_list):
+            led, test_code, test_msg = self.gui_widgets.tests_dict[idx + 1]
+            result = _test.result
+            if result is None:
+                continue
+            led.setProperty("led_status", led_status[result.success])
+            self._update_gui_obj(led)
+            test_code.setText(result.test_code)
+            test_msg.setText(result.message)
+
     def _update_comm_status(self) -> None:
         led_status = {True: "on", False: "off"}
         comm_status = self.framework.s4acs.return_comm_status()
@@ -88,7 +102,8 @@ class GUI(QMainWindow):
 
     def stop_application(self) -> None:
         self.framework.stop_thread()
-        self._thread.join()
+        self._thread1.join()
+        self._thread2.join()
         self.framework.end()
         sys.exit()
 
@@ -96,7 +111,7 @@ class GUI(QMainWindow):
         log_level = self._return_log_level()
         self.framework.set_log_level(log_level)
         self.framework.initialize()
-        self._thread.start()
+        self._thread1.start()
 
     def _return_log_level(self) -> data_types.Log_Level:
         return {
@@ -108,5 +123,6 @@ class GUI(QMainWindow):
         }[self.gui_widgets.framework_log_level.currentText()]
 
     def run_tests(self) -> None:
-        self.framework.run_tests()
+        self._thread2.start()
+        # self._thread2.join()
         return

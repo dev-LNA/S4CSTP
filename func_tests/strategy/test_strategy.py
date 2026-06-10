@@ -10,7 +10,7 @@ class Test_Strategy(ABC):
     def __init__(self) -> None:
         self._component: component.Component
         self._commands_list: list[data_types.Command]
-        self.result: data_types.Test_Result | None
+        self.result: data_types.Test_Result | None = None
         self._test_code = "F000"
 
     @abstractmethod

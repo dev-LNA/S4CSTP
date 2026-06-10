@@ -79,6 +79,7 @@ class Functionalities_Tests_Framework:
         logging.debug("Starting the tests...")
         for _test in self.tests_list:
             _test.run_test()
+        logging.debug("The tests were finished")
 
     # ================ Returns ====================
 

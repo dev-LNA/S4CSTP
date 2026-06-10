@@ -25,7 +25,7 @@ class Component(ABC):  # pragma: no cover
         self._allowed_commands = []
 
     @property
-    def status(self) -> None:
+    def status(self) -> dict | None:
         return self._status
 
     @property

@@ -88,16 +88,16 @@ USER = os.getenv("GMAIL_USER")
 PASSWORD = os.getenv("GMAIL_KEY")
 RECEIVERS = [USER]
 msg = MIMEMultipart()
-msg["From"] = USER
+msg["From"] = USER  # type: ignore
 msg["Subject"] = f"{yesterday}: errors found for the SPARC4 channel {channel}."
 msg.attach(MIMEText(EMAIL_STRING, "plain"))
 try:
     server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-    server.login(USER, PASSWORD)
+    server.login(USER, PASSWORD)  # type: ignore
     texto = msg.as_string()
     for receiver in RECEIVERS:
-        msg["To"] = receiver
-        server.sendmail(USER, receiver, texto)
+        msg["To"] = receiver  # type: ignore
+        server.sendmail(USER, receiver, texto)  # type: ignore
         logging.info(f"The email has been sent to {receiver} succesfully.")
     server.quit()
 except Exception as e:
