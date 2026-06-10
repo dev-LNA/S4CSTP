@@ -542,7 +542,7 @@ color: rgb(255, 255, 255);
      </disabled>
     </palette>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_4">
+   <layout class="QVBoxLayout" name="verticalLayout_5">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
@@ -1083,7 +1083,7 @@ color: rgb(255,255,255);</string>
            <item row="1" column="0">
             <widget class="QLabel" name="label_55">
              <property name="text">
-              <string>Current state</string>
+              <string>Current test</string>
              </property>
              <property name="text_label" stdset="0">
               <bool>true</bool>
@@ -1479,366 +1479,399 @@ color: rgb(255,255,255);</string>
         <property name="title">
          <string/>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="eacs2_led_comm">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QPushButton" name="framework_run_tests_btn">
+             <property name="styleSheet">
+              <string notr="true">font: 75 8pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255,255,255);
+background-color: rgb(0, 170, 255);</string>
+             </property>
+             <property name="text">
+              <string>Run</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_36">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLineEdit" name="lineEdit">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_4">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="label_37">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QLineEdit" name="lineEdit_2">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_5">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLabel" name="label_38">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QLineEdit" name="lineEdit_3">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_6">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLabel" name="label_39">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QLineEdit" name="lineEdit_4">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_7">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLabel" name="label_40">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="2">
-          <widget class="QLineEdit" name="lineEdit_5">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_8">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QLabel" name="label_41">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="2">
-          <widget class="QLineEdit" name="lineEdit_6">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_14">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QLabel" name="label_61">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="2">
-          <widget class="QLineEdit" name="lineEdit_21">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_13">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1">
-          <widget class="QLabel" name="label_59">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="2">
-          <widget class="QLineEdit" name="lineEdit_24">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_12">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QLabel" name="label_62">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="2">
-          <widget class="QLineEdit" name="lineEdit_23">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_9">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="1">
-          <widget class="QLabel" name="label_54">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="2">
-          <widget class="QLineEdit" name="lineEdit_20">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_10">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="1">
-          <widget class="QLabel" name="label_60">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="2">
-          <widget class="QLineEdit" name="lineEdit_22">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="0">
-          <widget class="QLabel" name="eacs2_led_comm_11">
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="led" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="led_status" stdset="0">
-            <string>off</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="1">
-          <widget class="QLabel" name="label_58">
-           <property name="text">
-            <string>Test 1: </string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="2">
-          <widget class="QLineEdit" name="lineEdit_19">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
+         <item>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="eacs2_led_comm">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="label_36">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLineEdit" name="lineEdit">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_4">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="label_37">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLineEdit" name="lineEdit_2">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_5">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLabel" name="label_38">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLineEdit" name="lineEdit_3">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_6">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLabel" name="label_39">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QLineEdit" name="lineEdit_4">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_7">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLabel" name="label_40">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2">
+            <widget class="QLineEdit" name="lineEdit_5">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_8">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLabel" name="label_41">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="2">
+            <widget class="QLineEdit" name="lineEdit_6">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_14">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QLabel" name="label_61">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="2">
+            <widget class="QLineEdit" name="lineEdit_21">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_13">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <widget class="QLabel" name="label_59">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="2">
+            <widget class="QLineEdit" name="lineEdit_24">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_12">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="1">
+            <widget class="QLabel" name="label_62">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="2">
+            <widget class="QLineEdit" name="lineEdit_23">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_9">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="1">
+            <widget class="QLabel" name="label_54">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="2">
+            <widget class="QLineEdit" name="lineEdit_20">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_10">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="1">
+            <widget class="QLabel" name="label_60">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="2">
+            <widget class="QLineEdit" name="lineEdit_22">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0">
+            <widget class="QLabel" name="eacs2_led_comm_11">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="led" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="led_status" stdset="0">
+              <string>off</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1">
+            <widget class="QLabel" name="label_58">
+             <property name="text">
+              <string>Test 1: </string>
+             </property>
+             <property name="text_label" stdset="0">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="2">
+            <widget class="QLineEdit" name="lineEdit_19">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>

@@ -7,7 +7,8 @@ from pydantic import BaseModel, Field, field_validator
 
 import func_tests.comm_channel as comm_channel
 import func_tests.component as component
-from func_tests.component.s4acs import S4ACS
+import func_tests.strategy as strategy
+from func_tests import data_types
 
 
 class Camera_Configuration(BaseModel):
@@ -234,7 +235,7 @@ class Log_Level(IntEnum):
 
 class Test_Result(BaseModel):
     success: bool
-    test_code: int
+    test_code: str
     message: str
 
 
@@ -260,7 +261,11 @@ class Component_Creator:
             subscriber = comm_channel.ZeroMQ_SUB(end_point, context)
             end_point = End_Point(ip="200.131.64.25", port=5556)
             requester = comm_channel.ZeroMQ_REQ(end_point, context)
-            return S4ACS(subscriber, requester)
+            return component.S4ACS(subscriber, requester)
 
 
-class Tests_List_Creator: ...
+class Tests_List_Creator:
+    def create(self, _type: str) -> list[strategy.Test_Strategy]:
+
+        if _type == "fake":
+            return [strategy.Fake_Test] * 10

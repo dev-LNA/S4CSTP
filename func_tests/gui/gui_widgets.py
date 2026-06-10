@@ -20,8 +20,11 @@ class GUI_Widgets:
             QLineEdit, "framework_current_state"
         )
         self.framework_log_level = window.findChild(QComboBox, "framework_log_level")
-        self.stop_btn = window.findChild(QPushButton, "framework_stop_btn")
-        self.start_btn = window.findChild(QPushButton, "framework_start_btn")
+        self.framework_stop_btn = window.findChild(QPushButton, "framework_stop_btn")
+        self.framework_start_btn = window.findChild(QPushButton, "framework_start_btn")
+        self.framework_run_tests_btn = window.findChild(
+            QPushButton, "framework_run_tests_btn"
+        )
 
         # ================ S4ACS ================
         self.s4acs_led_comm = window.findChild(QLabel, "s4acs_led_comm")

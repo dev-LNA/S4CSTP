@@ -5,15 +5,13 @@ from time import sleep
 
 import func_tests.component as component
 import func_tests.data_types as data_types
+import func_tests.strategy as strategy
 
 
 class Functionalities_Tests_Framework:
     _stop_thread = False
 
-    def __init__(
-        self,
-        s4acs: component.Component,
-    ) -> None:
+    def __init__(self, s4acs: component.Component) -> None:
         self.s4acs = s4acs
         self.log_dir = Path("func_tests/_logs")
         self.log_level = data_types.Log_Level.INFO
@@ -28,7 +26,11 @@ class Functionalities_Tests_Framework:
     # ================ Execution ====================
 
     def initialize(self) -> None:
-        self._state.initialize()
+        self.create_log_file()
+        logging.info("Framework was started")
+        self.s4acs.initialize()
+        logging.debug("Framework was initialized succesfully")
+        return
 
     def create_log_file(self) -> None:
         log_file = self.log_dir / "log.log"
@@ -64,10 +66,15 @@ class Functionalities_Tests_Framework:
         self.s4acs.end()
         logging.info("Framework was stopped")
 
-    def run(self) -> None:
+    def get_status(self) -> None:
         while not self._stop_thread:
             self.s4acs.get_status_message()
             sleep(0.2)
+
+    def run_tests(
+        self, tests_list: list[strategy.Test_Strategy]
+    ) -> list[data_types.Test_Result]:
+        return [_test.run_test() for _test in tests_list]
 
     # ================ Returns ====================
 

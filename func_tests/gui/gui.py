@@ -22,12 +22,13 @@ class GUI(QMainWindow):
         # self.resize(1150, 400)
 
         self.gui_widgets = gui.GUI_Widgets(self)
-        self.gui_widgets.stop_btn.clicked.connect(self.stop_application)
-        self.gui_widgets.start_btn.clicked.connect(self.start_application)
+        self.gui_widgets.framework_stop_btn.clicked.connect(self.stop_application)
+        self.gui_widgets.framework_start_btn.clicked.connect(self.start_application)
+        self.gui_widgets.framework_run_tests_btn.clicked.connect(self.run_tests)
 
-        s4acs = data_types.Component_Creator.create("fake")
+        s4acs = data_types.Component_Creator().create("fake")
         self.framework = framework.Functionalities_Tests_Framework(s4acs)
-        self._thread = Thread(target=self.framework.run)
+        self._thread = Thread(target=self.framework.get_status)
 
         self.update_timer = QTimer(self)
         self.update_timer.timeout.connect(self.update_app)
@@ -40,7 +41,8 @@ class GUI(QMainWindow):
         self._update_s4acs(s4acs_status)
 
     def _update_framework(self) -> None:
-        self.gui_widgets.framework_current_state.setText(self.framework.state)
+        # self.gui_widgets.framework_current_state.setText(self.framework.state)
+        ...
 
     def _update_gui_obj(self, obj) -> None:
         obj.style().unpolish(obj)
@@ -103,3 +105,8 @@ class GUI(QMainWindow):
             "ERROR": data_types.Log_Level.ERROR,
             "CRITICAL": data_types.Log_Level.CRITICAL,
         }[self.gui_widgets.framework_log_level.currentText()]
+
+    def run_tests(self) -> None:
+        tests_list = data_types.Tests_List_Creator().create("fake")
+        self.framework.run_tests(tests_list)
+        return
