@@ -11,11 +11,13 @@ import func_tests.strategy as strategy
 class Functionalities_Tests_Framework:
     _stop_thread = False
 
-    def __init__(self, s4acs: component.Component) -> None:
+    def __init__(
+        self, s4acs: component.Component, tests_list: list[strategy.Test_Strategy]
+    ) -> None:
         self.s4acs = s4acs
+        self.tests_list = tests_list
         self.log_dir = Path("func_tests/_logs")
         self.log_level = data_types.Log_Level.INFO
-
         self.log_dir.mkdir(parents=True, exist_ok=True)
         return
 
@@ -29,6 +31,8 @@ class Functionalities_Tests_Framework:
         self.create_log_file()
         logging.info("Framework was started")
         self.s4acs.initialize()
+        for _test in self.tests_list:
+            _test.set_component(self.s4acs)
         logging.debug("Framework was initialized succesfully")
         return
 
@@ -71,10 +75,10 @@ class Functionalities_Tests_Framework:
             self.s4acs.get_status_message()
             sleep(0.2)
 
-    def run_tests(
-        self, tests_list: list[strategy.Test_Strategy]
-    ) -> list[data_types.Test_Result]:
-        return [_test.run_test() for _test in tests_list]
+    def run_tests(self) -> None:
+        logging.debug("Starting the tests...")
+        for _test in self.tests_list:
+            _test.run_test()
 
     # ================ Returns ====================
 

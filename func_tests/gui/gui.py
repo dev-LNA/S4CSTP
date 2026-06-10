@@ -27,7 +27,8 @@ class GUI(QMainWindow):
         self.gui_widgets.framework_run_tests_btn.clicked.connect(self.run_tests)
 
         s4acs = data_types.Component_Creator().create("fake")
-        self.framework = framework.Functionalities_Tests_Framework(s4acs)
+        tests_list = data_types.Tests_List_Creator().create("fake")
+        self.framework = framework.Functionalities_Tests_Framework(s4acs, tests_list)
         self._thread = Thread(target=self.framework.get_status)
 
         self.update_timer = QTimer(self)
@@ -107,6 +108,5 @@ class GUI(QMainWindow):
         }[self.gui_widgets.framework_log_level.currentText()]
 
     def run_tests(self) -> None:
-        tests_list = data_types.Tests_List_Creator().create("fake")
-        self.framework.run_tests(tests_list)
+        self.framework.run_tests()
         return

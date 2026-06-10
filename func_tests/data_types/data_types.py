@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field, field_validator
 import func_tests.comm_channel as comm_channel
 import func_tests.component as component
 import func_tests.strategy as strategy
-from func_tests import data_types
 
 
 class Camera_Configuration(BaseModel):
@@ -263,9 +262,13 @@ class Component_Creator:
             requester = comm_channel.ZeroMQ_REQ(end_point, context)
             return component.S4ACS(subscriber, requester)
 
+        else:
+            raise ValueError(f"Unknown type: {_type}")
+
 
 class Tests_List_Creator:
     def create(self, _type: str) -> list[strategy.Test_Strategy]:
-
         if _type == "fake":
-            return [strategy.Fake_Test] * 10
+            return [strategy.Fake_Test() for _ in range(10)]
+        else:
+            raise ValueError(f"Unknown type: {_type}")
