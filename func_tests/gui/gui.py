@@ -19,18 +19,17 @@ class GUI(QMainWindow):
         file_path = join("func_tests", "gui", "gui.ui")
         uic.loadUi(file_path, self)  # type: ignore
         self.setWindowTitle("S4ACS Functionalities Tests Framework")
-        # self.resize(1150, 400)
+        self.resize(400, 500)
 
         self.gui_widgets = gui.GUI_Widgets(self)
         self.gui_widgets.framework_stop_btn.clicked.connect(self.stop_application)
         self.gui_widgets.framework_start_btn.clicked.connect(self.start_application)
-        self.gui_widgets.framework_run_tests_btn.clicked.connect(self.run_tests)
+        self.gui_widgets.framework_run_tests_btn.clicked.connect(self.start_tests)
 
         s4acs = data_types.Component_Creator().create("real")
         tests_list = data_types.Tests_List_Creator().create("fake")
         self.framework = framework.Functionalities_Tests_Framework(s4acs, tests_list)
-        self._thread1 = Thread(target=self.framework.get_status)
-        self._thread2 = Thread(target=self.framework.run_tests)
+        self._thread = Thread(target=self.framework.run)
 
         self.update_timer = QTimer(self)
         self.update_timer.timeout.connect(self.update_app)
@@ -102,8 +101,7 @@ class GUI(QMainWindow):
 
     def stop_application(self) -> None:
         self.framework.stop_thread()
-        self._thread1.join()
-        self._thread2.join()
+        self._thread.join()
         self.framework.end()
         sys.exit()
 
@@ -111,7 +109,7 @@ class GUI(QMainWindow):
         log_level = self._return_log_level()
         self.framework.set_log_level(log_level)
         self.framework.initialize()
-        self._thread1.start()
+        self._thread.start()
 
     def _return_log_level(self) -> data_types.Log_Level:
         return {
@@ -122,7 +120,5 @@ class GUI(QMainWindow):
             "CRITICAL": data_types.Log_Level.CRITICAL,
         }[self.gui_widgets.framework_log_level.currentText()]
 
-    def run_tests(self) -> None:
-        self._thread2.start()
-        # self._thread2.join()
-        return
+    def start_tests(self) -> None:
+        self.framework.start_tests = True

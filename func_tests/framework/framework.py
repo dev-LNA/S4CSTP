@@ -10,6 +10,7 @@ import func_tests.strategy as strategy
 
 class Functionalities_Tests_Framework:
     _stop_thread = False
+    start_tests = False
 
     def __init__(
         self, s4acs: component.Component, tests_list: list[strategy.Test_Strategy]
@@ -70,16 +71,26 @@ class Functionalities_Tests_Framework:
         self.s4acs.end()
         logging.info("Framework was stopped")
 
-    def get_status(self) -> None:
+    def run(self) -> None:
         while not self._stop_thread:
             self.s4acs.get_status_message()
             sleep(0.2)
+            if self.start_tests is True:
+                self.clear_results()
+                self.run_tests()
+                self.start_tests = False
 
     def run_tests(self) -> None:
-        logging.debug("Starting the tests...")
+        logging.info("Starting the tests...")
         for _test in self.tests_list:
             _test.run_test()
-        logging.debug("The tests were finished")
+        logging.info("The tests were finished")
+
+    def clear_results(self) -> None:
+        for _test in self.tests_list:
+            _test.result = data_types.Test_Result(
+                success=False, test_code="", message=""
+            )
 
     # ================ Returns ====================
 
