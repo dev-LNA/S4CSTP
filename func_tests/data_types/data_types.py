@@ -140,6 +140,24 @@ class Camera_Status(BaseModel):
         )
 
 
+class Communication_Status(BaseModel):
+    s4gui: bool
+    s4ics: bool
+    tcs: bool
+    weather_st: bool
+    focuser: bool
+
+    @classmethod
+    def from_dict(cls, comm_status: dict) -> Communication_Status:
+        return Communication_Status(
+            s4gui=comm_status["S4GUI"],
+            s4ics=comm_status["S4ICS"],
+            tcs=comm_status["TCS"],
+            weather_st=comm_status["Weather Station"],
+            focuser=comm_status["Tel. focuser"],
+        )
+
+
 class Execution_Status(Enum):
     NONE = auto()
     IDLE = auto()
