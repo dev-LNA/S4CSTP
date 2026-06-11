@@ -3,6 +3,7 @@ from .data_types import (
     Camera_Configuration,
     Camera_Status,
     Command,
+    Communication_Status,
     Component_Creator,
     End_Point,
     Execution_Status,

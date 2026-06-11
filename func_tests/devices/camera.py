@@ -6,6 +6,7 @@ class Camera:
         self._cam_config: data_types.Camera_Configuration
         self._acq_config: data_types.Acquisition_Configuration
         self._cam_status: data_types.Camera_Status
+        self._comm_status: data_types.Communication_Status
 
     @property
     def cam_config(self) -> data_types.Camera_Configuration:
@@ -19,6 +20,10 @@ class Camera:
     def cam_status(self) -> data_types.Camera_Status:
         return self._cam_status
 
+    @property
+    def comm_status(self) -> data_types.Communication_Status:
+        return self._comm_status
+
     @cam_config.setter
     def cam_config(self, cam_config: dict) -> None:
         self._cam_config = data_types.Camera_Configuration.from_dict(cam_config)
@@ -30,3 +35,7 @@ class Camera:
     @cam_status.setter
     def cam_status(self, cam_status: dict) -> None:
         self._cam_status = data_types.Camera_Status.from_dict(cam_status)
+
+    @comm_status.setter
+    def comm_status(self, comm_status: dict) -> None:
+        self._comm_status = data_types.Communication_Status.from_dict(comm_status)

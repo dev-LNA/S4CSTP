@@ -1,5 +1,8 @@
+import configparser
+import getpass
 import logging
 from abc import ABC, abstractmethod
+from pathlib import Path
 from time import sleep
 
 import func_tests.component as component
@@ -13,6 +16,20 @@ class Test_Strategy(ABC):
         self._component: component.Component
         self._commands_list: list[data_types.Command]
         self.result: data_types.Test_Result | None = None
+        self._read_config_file()
+
+    def _read_config_file(self) -> None:
+        config_file_folder = Path(f"C:/Users/{getpass.getuser()}/SPARC4/ACS")
+        config_file = config_file_folder / "acs_config.cfg"
+        if not config_file.exists():
+            raise RuntimeError(f"file {config_file} not found")
+        config = configparser.ConfigParser()
+        config.read(config_file)
+        self.channel = config.get("channel configuration", "channel")
+        log_folder = config.get("channel configuration", "log file path")
+        self.log_folder = Path(log_folder.replace('"', ""))
+        imgs_folder = config.get("channel configuration", "image path")
+        self.imgs_folder = Path(imgs_folder.replace('"', ""))
 
     @abstractmethod
     def run_test(self) -> None:

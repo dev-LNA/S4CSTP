@@ -293,6 +293,6 @@ class Tests_List_Creator:
             ]
 
         if _type == "real":
-            return [strategy.I006()]
+            return [strategy.I006(), strategy.I002()]
         else:
             raise ValueError(f"Unknown type: {_type}")

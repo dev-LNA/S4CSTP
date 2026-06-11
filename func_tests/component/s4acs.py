@@ -3,7 +3,6 @@ import json
 import func_tests.comm_channel as comm_channel
 import func_tests.component as component
 import func_tests.data_types as data_types
-from func_tests.devices import Camera
 
 
 class S4ACS(component.Component):
@@ -35,6 +34,7 @@ class S4ACS(component.Component):
             "cam_config": self.camera.cam_config.model_dump(),
             "cam_status": self.camera.cam_status.model_dump(),
             "acq_config": self.camera.acq_config.model_dump(),
+            "comm_status": self.camera.comm_status.model_dump(),
         }
 
     def get_status_message(self) -> None:
@@ -44,6 +44,7 @@ class S4ACS(component.Component):
         self.camera.cam_config = json.loads(self._status["CCD configuration"])
         self.camera.acq_config = json.loads(self._status["Acquisition configuration"])
         self.camera.cam_status = json.loads(self._status["CCD status"])
+        self.camera.comm_status = json.loads(self._status["Communication status"])
         self.update_exe_status()
 
     def end(self) -> None:
