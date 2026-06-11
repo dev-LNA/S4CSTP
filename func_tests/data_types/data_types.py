@@ -273,5 +273,8 @@ class Tests_List_Creator:
             return [strategy.Fake_Positive_Test() for _ in range(17)] + [
                 strategy.Fake_Negative_Test() for _ in range(10)
             ]
+
+        if _type == "real":
+            return [strategy.I006()]
         else:
             raise ValueError(f"Unknown type: {_type}")

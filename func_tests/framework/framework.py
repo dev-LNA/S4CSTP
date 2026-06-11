@@ -27,8 +27,6 @@ class Functionalities_Tests_Framework:
         self.log_level = log_level
         return
 
-    # ================ Execution ====================
-
     def initialize(self) -> None:
         self.create_log_file()
         logging.info("Framework was started")

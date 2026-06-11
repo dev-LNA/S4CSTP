@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 import func_tests.comm_channel as comm_channel
 import func_tests.data_types as data_types
+import func_tests.devices as devices
 
 
 class Component(ABC):  # pragma: no cover
@@ -23,6 +24,7 @@ class Component(ABC):  # pragma: no cover
         self._status: dict | None = None
         self._exe_status = data_types.Execution_Status.NONE
         self._allowed_commands = []
+        self.camera = devices.Camera()
 
     @property
     def status(self) -> dict | None:

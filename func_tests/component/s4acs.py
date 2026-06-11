@@ -23,7 +23,6 @@ class S4ACS(component.Component):
             "PAUSE_ACQUISITION",
             "RESUME_ACQUISITION",
         ]
-        self.camera = Camera()
 
     def initialize(self) -> None:
         return super().initialize()
