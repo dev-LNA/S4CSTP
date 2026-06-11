@@ -38,8 +38,10 @@ class Functionalities_Tests_Framework:
         return
 
     def create_log_file(self) -> None:
-        log_file = self.log_dir / "log.log"
-        self._create_log_file_header(log_file)
+        now = datetime.now(timezone.utc)
+        datetime_str = now.strftime("%Y-%m-%d %H:%M:%S")
+        log_file = self.log_dir / f"{now.strftime('%Y%m%d')}.log"
+        self._create_log_file_header(log_file, datetime_str)
         logging.basicConfig(
             filename=log_file,
             level=self.log_level,
@@ -47,11 +49,10 @@ class Functionalities_Tests_Framework:
             datefmt="%Y-%m-%dT%H:%M:%S",
         )
 
-    def _create_log_file_header(self, log_file: Path) -> None:
+    def _create_log_file_header(self, log_file: Path, datetime_str: str) -> None:
         if log_file.exists():
             return
         with open(log_file, "a") as file:
-            now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
             file.write(
                 "\n========================================================================================\n"
                 "S4ACS Functionalities Tests Framework - Event Log\n"
@@ -60,7 +61,7 @@ class Functionalities_Tests_Framework:
                 "Version         : v0.1.0\n"
                 "Log Type        : Operational Events\n"
                 f"Log level       : {self.log_level.name}\n"
-                f"Created at (UTC): {now}\n"
+                f"Created at (UTC): {datetime_str}\n"
                 "----------------------------------------------------------------------------------------\n"
                 "Timestamp           Level          Message\n"
                 "----------------------------------------------------------------------------------------\n\n"

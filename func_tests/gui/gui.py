@@ -12,6 +12,8 @@ import func_tests.gui as gui
 
 
 class GUI(QMainWindow):
+    _START_BTN_CLICKED = False
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -26,7 +28,7 @@ class GUI(QMainWindow):
         self.gui_widgets.framework_start_btn.clicked.connect(self.start_application)
         self.gui_widgets.framework_run_tests_btn.clicked.connect(self.start_tests)
 
-        s4acs = data_types.Component_Creator().create("real")
+        s4acs = data_types.Component_Creator().create("fake")
         tests_list = data_types.Tests_List_Creator().create("fake")
         self.framework = framework.Functionalities_Tests_Framework(s4acs, tests_list)
         self._thread = Thread(target=self.framework.run)
@@ -100,12 +102,14 @@ class GUI(QMainWindow):
         self._update_gui_obj(self.gui_widgets.s4acs_led_comm)
 
     def stop_application(self) -> None:
-        self.framework.stop_thread()
-        self._thread.join()
-        self.framework.end()
+        if self._START_BTN_CLICKED:
+            self.framework.stop_thread()
+            self._thread.join()
+            self.framework.end()
         sys.exit()
 
     def start_application(self) -> None:
+        self._START_BTN_CLICKED = True
         log_level = self._return_log_level()
         self.framework.set_log_level(log_level)
         self.framework.initialize()
