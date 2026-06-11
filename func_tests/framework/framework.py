@@ -9,7 +9,7 @@ import func_tests.strategy as strategy
 
 
 class Functionalities_Tests_Framework:
-    _stop_thread = False
+    stop_thread = False
     start_tests = False
 
     def __init__(
@@ -73,7 +73,7 @@ class Functionalities_Tests_Framework:
         logging.info("Framework was stopped")
 
     def run(self) -> None:
-        while not self._stop_thread:
+        while not self.stop_thread:
             self.s4acs.get_status_message()
             sleep(0.2)
             if self.start_tests is True:
@@ -92,8 +92,3 @@ class Functionalities_Tests_Framework:
             _test.result = data_types.Test_Result(
                 success=False, test_code="", message=""
             )
-
-    # ================ Returns ====================
-
-    def stop_thread(self) -> None:
-        self._stop_thread = True

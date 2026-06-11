@@ -103,7 +103,7 @@ class GUI(QMainWindow):
 
     def stop_application(self) -> None:
         if self._START_BTN_CLICKED:
-            self.framework.stop_thread()
+            self.framework.stop_thread = True
             self._thread.join()
             self.framework.end()
         sys.exit()
