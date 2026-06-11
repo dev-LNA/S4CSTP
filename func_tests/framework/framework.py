@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from time import sleep
@@ -13,7 +14,7 @@ class Functionalities_Tests_Framework:
     start_tests = False
 
     def __init__(
-        self, s4acs: component.Component, tests_list: list[strategy.Test_Strategy]
+        self, s4acs: component.Component, tests_list: Sequence[strategy.Test_Strategy]
     ) -> None:
         self.s4acs = s4acs
         self.tests_list = tests_list
@@ -90,5 +91,5 @@ class Functionalities_Tests_Framework:
     def clear_results(self) -> None:
         for _test in self.tests_list:
             _test.result = data_types.Test_Result(
-                success=False, test_code="", message=""
+                success="off", test_code="", message=""
             )

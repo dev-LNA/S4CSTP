@@ -113,4 +113,69 @@ class GUI_Widgets:
                 window.findChild(QLineEdit, "tests_test_code14"),
                 window.findChild(QLineEdit, "tests_message14"),
             ],
+            15: [
+                window.findChild(QLabel, "tests_led15"),
+                window.findChild(QLineEdit, "tests_test_code15"),
+                window.findChild(QLineEdit, "tests_message15"),
+            ],
+            16: [
+                window.findChild(QLabel, "tests_led16"),
+                window.findChild(QLineEdit, "tests_test_code16"),
+                window.findChild(QLineEdit, "tests_message16"),
+            ],
+            17: [
+                window.findChild(QLabel, "tests_led17"),
+                window.findChild(QLineEdit, "tests_test_code17"),
+                window.findChild(QLineEdit, "tests_message17"),
+            ],
+            18: [
+                window.findChild(QLabel, "tests_led18"),
+                window.findChild(QLineEdit, "tests_test_code18"),
+                window.findChild(QLineEdit, "tests_message18"),
+            ],
+            19: [
+                window.findChild(QLabel, "tests_led19"),
+                window.findChild(QLineEdit, "tests_test_code19"),
+                window.findChild(QLineEdit, "tests_message19"),
+            ],
+            20: [
+                window.findChild(QLabel, "tests_led20"),
+                window.findChild(QLineEdit, "tests_test_code20"),
+                window.findChild(QLineEdit, "tests_message20"),
+            ],
+            21: [
+                window.findChild(QLabel, "tests_led21"),
+                window.findChild(QLineEdit, "tests_test_code21"),
+                window.findChild(QLineEdit, "tests_message21"),
+            ],
+            22: [
+                window.findChild(QLabel, "tests_led22"),
+                window.findChild(QLineEdit, "tests_test_code22"),
+                window.findChild(QLineEdit, "tests_message22"),
+            ],
+            23: [
+                window.findChild(QLabel, "tests_led23"),
+                window.findChild(QLineEdit, "tests_test_code23"),
+                window.findChild(QLineEdit, "tests_message23"),
+            ],
+            24: [
+                window.findChild(QLabel, "tests_led24"),
+                window.findChild(QLineEdit, "tests_test_code24"),
+                window.findChild(QLineEdit, "tests_message24"),
+            ],
+            25: [
+                window.findChild(QLabel, "tests_led25"),
+                window.findChild(QLineEdit, "tests_test_code25"),
+                window.findChild(QLineEdit, "tests_message25"),
+            ],
+            26: [
+                window.findChild(QLabel, "tests_led26"),
+                window.findChild(QLineEdit, "tests_test_code26"),
+                window.findChild(QLineEdit, "tests_message26"),
+            ],
+            27: [
+                window.findChild(QLabel, "tests_led27"),
+                window.findChild(QLineEdit, "tests_test_code27"),
+                window.findChild(QLineEdit, "tests_message27"),
+            ],
         }

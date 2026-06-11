@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Sequence
 from enum import Enum, IntEnum, StrEnum, auto
 from ipaddress import IPv4Address, IPv6Address
 
@@ -233,7 +234,7 @@ class Log_Level(IntEnum):
 
 
 class Test_Result(BaseModel):
-    success: bool
+    success: str
     test_code: str
     message: str
 
@@ -267,8 +268,10 @@ class Component_Creator:
 
 
 class Tests_List_Creator:
-    def create(self, _type: str) -> list[strategy.Test_Strategy]:
+    def create(self, _type: str) -> Sequence[strategy.Test_Strategy]:
         if _type == "fake":
-            return [strategy.Fake_Test() for _ in range(10)]
+            return [strategy.Fake_Positive_Test() for _ in range(17)] + [
+                strategy.Fake_Negative_Test() for _ in range(10)
+            ]
         else:
             raise ValueError(f"Unknown type: {_type}")

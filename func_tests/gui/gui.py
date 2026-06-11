@@ -82,13 +82,12 @@ class GUI(QMainWindow):
         gui_widgets.s4acs_exe_status.setText(self.framework.s4acs.exe_status)
 
     def _update_tests(self) -> None:
-        led_status = {True: "on", False: "off"}
         for idx, _test in enumerate(self.framework.tests_list):
             led, test_code, test_msg = self.gui_widgets.tests_dict[idx + 1]
             result = _test.result
             if result is None:
                 continue
-            led.setProperty("led_status", led_status[result.success])
+            led.setProperty("led_status", result.success)
             self._update_gui_obj(led)
             test_code.setText(result.test_code)
             test_msg.setText(result.message)
