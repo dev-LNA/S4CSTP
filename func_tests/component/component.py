@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 import func_tests.comm_channel as comm_channel
 import func_tests.data_types as data_types
 import func_tests.devices as devices
+import func_tests.state as state
 
 
 class Component(ABC):  # pragma: no cover
@@ -25,6 +26,7 @@ class Component(ABC):  # pragma: no cover
         self._exe_status = data_types.Execution_Status.NONE
         self._allowed_commands = []
         self.camera = devices.Camera()
+        self.state: state.State
 
     @property
     def status(self) -> dict | None:
@@ -52,6 +54,7 @@ class Component(ABC):  # pragma: no cover
     def initialize(self) -> None:
         self._subscriber.initialize_comm()
         self._requester.initialize_comm()
+        self.transition_to(state.Idle())
         self._exe_status = data_types.Execution_Status.IDLE
 
     @abstractmethod
@@ -67,6 +70,10 @@ class Component(ABC):  # pragma: no cover
         self._subscriber.close_comm()
         self._requester.close_comm()
 
+    def transition_to(self, state: state.State) -> None:
+        self.state = state
+        self.state.component = self
+
     def return_comm_status(self) -> bool:
         return self._subscriber.comm_status
 
@@ -76,9 +83,6 @@ class Component(ABC):  # pragma: no cover
     def reinitialize_requester(self) -> None:
         self._requester.close_comm()
         self._requester.initialize_comm()
-
-    def supports_command(self) -> bool:
-        return self.command._dict["field1"] in self._allowed_commands
 
 
 class Fake_Component(Component):

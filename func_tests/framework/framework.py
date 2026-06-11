@@ -83,6 +83,8 @@ class Functionalities_Tests_Framework:
     def run_tests(self) -> None:
         logging.info("Starting the tests...")
         for _test in self.tests_list:
+            logging.info(f"Running test {_test._test_code}...")
+            _test.set_result("warn", "")
             _test.run_test()
         logging.info("The tests were finished")
 
