@@ -26,14 +26,13 @@ class E003(Test_Strategy):
     _test_code = "E003"
 
     def run_test(self) -> None:
+        self._component.state.send_command("_CRITICAL_LOG_")
         self._default_cam_config["INITIAL_LINE"] = 1025
         self._component.set_cam_config(self._default_cam_config)
 
         with open(self.events_log_file) as file:
             file_content = file.read()
         for level in data_types.Log_Level:
-            if level.name == "CRITICAL":  # TODO: adicionar um commando para isso
-                continue
             if self.acs_log_level.value > level.value:
                 continue
             if level.name not in file_content:
