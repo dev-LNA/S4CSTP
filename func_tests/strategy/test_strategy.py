@@ -43,6 +43,14 @@ class Test_Strategy(ABC):
         "HBIN": 1,
         "AD_CHANNEL": 0,
     }
+    _default_acq_config = {
+        "EXPTIME": 1,
+        "#FRAMES": 1,
+        "#CYCLES": 1,
+        "suffix": "",
+        "COOLER_POWER_STATUS": 0,
+        "TEMP": 20,
+    }
 
     def __init__(self) -> None:
         logging.info(f"Running test {self._test_code}...")
@@ -121,6 +129,32 @@ class Test_Strategy(ABC):
             self._component.get_status_message()
         time_stamp_2 = self._component._subscriber.last_msg_timestamp
         return time_stamp_2 - time_stamp_1
+
+    def get_log_file_lines(self) -> list[str]:
+        with open(self.events_log_file) as file:
+            lines_list = file.read().splitlines()
+        return [line for line in lines_list if "-->" in line]
+
+    def filter_logs_by_timestamp(
+        self, lines_list: list[str], time_stamp_1: datetime
+    ) -> list[str]:
+        filtered_lines = []
+        for line in lines_list:
+            time_stamp_str = line.split(" ")[0] + " +0000"
+            time_stamp_2 = datetime.strptime(time_stamp_str, "%Y-%m-%dT%H:%M:%S.%f %z")
+            if time_stamp_2 > time_stamp_1:
+                filtered_lines.append(line)
+        return filtered_lines
+
+    def filter_logs_by_str(self, lines_list: list[str], _str: str) -> list[str]:
+        filtered_lines = []
+        for line in lines_list:
+            if _str in line:
+                filtered_lines.append(line)
+        return filtered_lines
+
+    def extract_log_msg(self, lines_list: list[str]) -> list[str]:
+        return [line.split("-->")[1] for line in lines_list]
 
 
 class Fake_Positive_Test(Test_Strategy):

@@ -9,7 +9,7 @@ class I001(Test_Strategy):
     _test_code = "I001"
 
     def run_test(self) -> None:
-        self._component.state.send_command("EXPOSE")
+        self._component.send_command("EXPOSE")
         self.wait_acquisition_finish()
         cam_status = self._component.camera.cam_status
         image_name = cam_status.last_image_name

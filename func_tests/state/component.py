@@ -17,7 +17,7 @@ class State(ABC):  # pragma: no cover
     def component(self, component: component.Component) -> None:
         self._component = component
 
-    def send_command(self, _cmmd: str) -> None:
+    def send_command(self) -> None:
         raise RuntimeError(f"You cannot send command in {type(self).__name__} state.")
 
     def receive_command_response(self) -> None:
@@ -35,10 +35,10 @@ class State(ABC):  # pragma: no cover
 
 
 class Idle(State):
-    def send_command(self, _cmmd: str) -> None:
-        self.component.command = data_types.Command(_cmmd)
-        self.component.send_request()
-        logging.debug(f"The command {_cmmd} was sent")
+    def send_command(self) -> None:
+        cmmd = self._component._command.str
+        self._component._requester.send_msg(cmmd)
+        logging.debug(f"The command {cmmd} was sent")
         self.component.transition_to(Command_Sent())
         self.component.state.receive_command_response()
 

@@ -51,8 +51,9 @@ class Component(ABC):  # pragma: no cover
         if self._subscriber.new_msg:
             self._status = json.loads(self._subscriber.received_msg)
 
-    def send_request(self) -> None:
-        self._requester.send_msg(self._command.str)
+    def send_command(self, _cmmd: str) -> None:
+        self.command = data_types.Command(_cmmd)
+        self.state.send_command()
         return
 
     def wait_command_response(self) -> None:
@@ -96,7 +97,13 @@ class Component(ABC):  # pragma: no cover
     def set_cam_config(self, cam_config: dict) -> None:
         self.camera.cam_config = cam_config
         cmmd = "WRITE_SETUP " + self.camera.return_formatted_config()
-        self.state.send_command(cmmd)
+        self.send_command(cmmd)
+
+    def set_acquisition_config(self, acq_config: dict) -> None:
+        self.camera.acq_config = acq_config
+        for key, val in self.camera.acq_config.model_dump().items():
+            cmmd = "SET " + key + " " + str(val)
+            self.send_command(cmmd)
 
 
 class Fake_Component(Component):
