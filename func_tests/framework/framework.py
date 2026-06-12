@@ -23,10 +23,6 @@ class Functionalities_Tests_Framework:
         self.log_dir.mkdir(parents=True, exist_ok=True)
         return
 
-    def set_log_level(self, log_level: data_types.Log_Level) -> None:
-        self.log_level = log_level
-        return
-
     def initialize(self) -> None:
         self.create_log_file()
         logging.info("Framework was started")
@@ -38,14 +34,16 @@ class Functionalities_Tests_Framework:
 
     def create_log_file(self) -> None:
         now = datetime.now(timezone.utc)
-        datetime_str = now.strftime("%Y-%m-%d %H:%M:%S")
         log_file = self.log_dir / f"{now.strftime('%Y%m%d')}.log"
+        datetime_str = now.strftime("%Y-%m-%d %H:%M:%S")
         self._create_log_file_header(log_file, datetime_str)
         logging.basicConfig(
             filename=log_file,
             level=self.log_level,
             format="%(asctime)s [%(levelname)-8s] --> %(message)s",
             datefmt="%Y-%m-%dT%H:%M:%S",
+            filemode="a",
+            force=True,
         )
 
     def _create_log_file_header(self, log_file: Path, datetime_str: str) -> None:
@@ -83,7 +81,6 @@ class Functionalities_Tests_Framework:
     def run_tests(self) -> None:
         logging.info("Starting the tests...")
         for _test in self.tests_list:
-            logging.info(f"Running test {_test._test_code}...")
             _test.set_result("warn", "")
             _test.run_test()
         logging.info("The tests were finished")

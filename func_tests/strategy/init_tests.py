@@ -47,7 +47,7 @@ class I001(Test_Strategy):
 
     def _validate_log_level(self, log_file_path: Path) -> None:
         with open(log_file_path, "r") as file:
-            if "DEBUG" not in file.read():
+            if self.acs_log_level not in file.read():
                 self.set_result("error", "Invalid log level")
 
 

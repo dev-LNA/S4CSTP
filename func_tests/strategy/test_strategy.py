@@ -2,7 +2,7 @@ import configparser
 import getpass
 import logging
 from abc import ABC, abstractmethod
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from time import sleep
 
@@ -22,10 +22,11 @@ class Test_Strategy(ABC):
     }
 
     def __init__(self) -> None:
+        logging.info(f"Running test {self._test_code}...")
         self._component: component.Component
         self._commands_list: list[data_types.Command]
         self.result = data_types.Test_Result(success="off", test_code="", message="")
-        self._today_str = datetime.now(timezone.utc).strftime("%Y%m%d")
+        self._create_today_str()
         self._read_config_file()
 
     def set_result(self, succes: str, msg: str) -> None:
@@ -35,21 +36,26 @@ class Test_Strategy(ABC):
             success=succes, test_code=self._test_code, message=msg
         )
 
+    def _create_today_str(self) -> None:
+        now = datetime.now(timezone.utc)
+        if now.hour < 12:
+            now -= timedelta(1)
+        self._today_str = now.strftime("%Y%m%d")
+
     def _read_config_file(self) -> None:
-        config_file_folder = Path(f"C:/Users/{getpass.getuser()}/SPARC4/ACS")
-        config_file = config_file_folder / "acs_config.cfg"
-        if not config_file.exists():
-            raise RuntimeError(f"file {config_file} not found")
+        section_name = "channel configuration"
+        cfg_file_folder = Path(f"C:/Users/{getpass.getuser()}/SPARC4/ACS")
+        cfg_file = cfg_file_folder / "acs_config.cfg"
+        if not cfg_file.exists():
+            raise RuntimeError(f"file {cfg_file} not found")
         config = configparser.ConfigParser()
-        config.read(config_file)
-        self.channel = config.get("channel configuration", "channel")
-        self.acs_mode = config.get("channel configuration", "s4acs mode") == 1
-        self.acs_log_level = self._log_levels[
-            config.get("channel configuration", "log level")
-        ]
-        log_folder = config.get("channel configuration", "log file path")
+        config.read(cfg_file)
+        self.channel = config.get(section_name, "channel")
+        self.acs_mode = config.get(section_name, "s4acs mode") == 1
+        self.acs_log_level = self._log_levels[config.get(section_name, "log level")]
+        log_folder = config.get(section_name, "log file path")
         self.log_folder = Path(log_folder.replace('"', ""))
-        imgs_folder = config.get("channel configuration", "image path")
+        imgs_folder = config.get(section_name, "image path")
         self.imgs_folder = Path(imgs_folder.replace('"', ""))
 
     @abstractmethod

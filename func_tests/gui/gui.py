@@ -110,7 +110,7 @@ class GUI(QMainWindow):
     def start_application(self) -> None:
         self._START_BTN_CLICKED = True
         log_level = self._return_log_level()
-        self.framework.set_log_level(log_level)
+        self.framework.log_level = log_level
         self.framework.initialize()
         self._thread.start()
 
