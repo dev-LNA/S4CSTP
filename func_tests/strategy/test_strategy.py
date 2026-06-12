@@ -14,11 +14,11 @@ class Test_Strategy(ABC):
     _test_code = "A000"
     _log_levels = {
         "0": "STATUS",
-        "1": "DEBUG",
-        "2": "INFO",
-        "3": "WARNING",
-        "4": "ERROR",
-        "5": "CRITICAL",
+        "1": logging.DEBUG,
+        "2": logging.INFO,
+        "3": logging.WARNING,
+        "4": logging.ERROR,
+        "5": logging.CRITICAL,
     }
     _default_cam_config = {
         "EM_MODE": 1,
@@ -30,6 +30,7 @@ class Test_Strategy(ABC):
         "ACQUISITION_MODE": 3,
         "TRIGGER_MODE": 0,
         "VERTICAL_CLOCK_VOLTAGE": 0,
+        "VERTICAL_SHIFT_SPEED": 3,
         "SHUTTER_MODE": 2,
         "SHUTTER_TTL": 0,
         "SHUTTER_OPENING_TIME": 50,
@@ -50,6 +51,7 @@ class Test_Strategy(ABC):
         self.result = data_types.Test_Result(success="off", test_code="", message="")
         self._create_today_str()
         self._read_config_file()
+        self.events_log_file = self.log_folder / (self._today_str + "_events.log")
 
     def set_result(self, succes: str, msg: str) -> None:
         if self.result.success == "error":
@@ -74,7 +76,9 @@ class Test_Strategy(ABC):
         config.read(cfg_file)
         self.channel = config.get(section_name, "channel")
         self.acs_mode = config.get(section_name, "s4acs mode") == 1
-        self.acs_log_level = self._log_levels[config.get(section_name, "log level")]
+        self.acs_log_level = data_types.Log_Level(
+            self._log_levels[config.get(section_name, "log level")]
+        )
         log_folder = config.get(section_name, "log file path")
         self.log_folder = Path(log_folder.replace('"', ""))
         imgs_folder = config.get(section_name, "image path")
@@ -90,6 +94,11 @@ class Test_Strategy(ABC):
 
     def wait_acquisition_start(self) -> None:
         while self._component.exe_status != "BUSY":
+            self._component.get_status_message()
+            sleep(0.1)
+
+    def wait_return_to_idle(self) -> None:
+        while self._component.exe_status != "IDLE":
             self._component.get_status_message()
             sleep(0.1)
 

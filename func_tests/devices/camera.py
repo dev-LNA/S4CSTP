@@ -45,4 +45,4 @@ class Camera:
     def return_formatted_config(self) -> str:
         return json.dumps({
             key.upper(): val for key, val in self.cam_config.model_dump().items()
-        })
+        }).replace(" ", "")

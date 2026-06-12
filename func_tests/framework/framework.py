@@ -47,9 +47,7 @@ class Functionalities_Tests_Framework:
         )
 
     def _create_log_file_header(self, log_file: Path, datetime_str: str) -> None:
-        if log_file.exists():
-            return
-        with open(log_file, "a") as file:
+        with open(log_file, "w") as file:
             file.write(
                 "\n========================================================================================\n"
                 "S4ACS Functionalities Tests Framework - Event Log\n"

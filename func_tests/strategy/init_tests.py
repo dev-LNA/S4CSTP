@@ -14,12 +14,11 @@ class I001(Test_Strategy):
         cam_status = self._component.camera.cam_status
         image_name = cam_status.last_image_name
         image_path = self.imgs_folder / image_name
-        log_file_path = self.log_folder / (self._today_str + "_events.log")
         self._validate_channel(image_name)
         self._validate_image_path(image_path)
         self._validate_acs_mode(cam_status.acs_mode)
-        self._validate_log_files_folder(log_file_path)
-        self._validate_log_level(log_file_path)
+        self._validate_log_files_folder()
+        self._validate_log_level()
         self.set_result("on", "Done")
         return super().run_test()
 
@@ -39,13 +38,15 @@ class I001(Test_Strategy):
         if not image_path.exists():
             self.set_result("error", "Invalid image folder")
 
-    def _validate_log_files_folder(self, log_file_path: Path) -> None:
-        if not log_file_path.exists():
+    def _validate_log_files_folder(self) -> None:
+        if not self.events_log_file.exists():
             self.set_result("error", "Invalid log files folder")
 
-    def _validate_log_level(self, log_file_path: Path) -> None:
-        with open(log_file_path, "r") as file:
-            if self.acs_log_level not in file.read():
+    def _validate_log_level(
+        self,
+    ) -> None:
+        with open(self.events_log_file, "r") as file:
+            if self.acs_log_level.name not in file.read():
                 self.set_result("error", "Invalid log level")
 
 

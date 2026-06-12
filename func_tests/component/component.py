@@ -95,7 +95,7 @@ class Component(ABC):  # pragma: no cover
 
     def set_cam_config(self, cam_config: dict) -> None:
         self.camera.cam_config = cam_config
-        cmmd = "WRITE_SETUP" + self.camera.return_formatted_config()
+        cmmd = "WRITE_SETUP " + self.camera.return_formatted_config()
         self.state.send_command(cmmd)
 
 

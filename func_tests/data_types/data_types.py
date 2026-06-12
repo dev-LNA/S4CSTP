@@ -21,6 +21,7 @@ class Camera_Configuration(BaseModel):
     acquisition_mode: int
     trigger_mode: int
     vertical_clock_voltage: int
+    vertical_shift_speed: int
     shutter_mode: int
     shutter_ttl: int
     shutter_opening_time: int
@@ -44,6 +45,7 @@ class Camera_Configuration(BaseModel):
         acquisition_mode = cam_config["ACQUISITION_MODE"]
         trigger_mode = cam_config["TRIGGER_MODE"]
         vertical_clock_voltage = cam_config["VERTICAL_CLOCK_VOLTAGE"]
+        vertical_shift_speed = cam_config["VERTICAL_SHIFT_SPEED"]
         shutter_mode = cam_config["SHUTTER_MODE"]
         shutter_ttl = cam_config["SHUTTER_TTL"]
         shutter_opening_time = cam_config["SHUTTER_OPENING_TIME"]
@@ -65,6 +67,7 @@ class Camera_Configuration(BaseModel):
             acquisition_mode=acquisition_mode,
             trigger_mode=trigger_mode,
             vertical_clock_voltage=vertical_clock_voltage,
+            vertical_shift_speed=vertical_shift_speed,
             shutter_mode=shutter_mode,
             shutter_ttl=shutter_ttl,
             shutter_opening_time=shutter_opening_time,
