@@ -66,6 +66,11 @@ class Test_Strategy(ABC):
     def set_component(self, component: component.Component) -> None:
         self._component = component
 
+    def wait_acquisition_start(self) -> None:
+        while self._component.exe_status != "BUSY":
+            self._component.get_status_message()
+            sleep(0.1)
+
     def wait_acquisition_finish(self) -> None:
         while self._component.exe_status != "BUSY":
             self._component.get_status_message()
@@ -74,6 +79,17 @@ class Test_Strategy(ABC):
             self._component.get_status_message()
             sleep(0.3)
             continue
+
+    def wait_2_pub_msgs(self) -> timedelta:
+        while not self._component._subscriber.new_msg:
+            self._component.get_status_message()
+        time_stamp_1 = self._component._subscriber.last_msg_timestamp
+        while self._component._subscriber.new_msg:
+            self._component.get_status_message()
+        while not self._component._subscriber.new_msg:
+            self._component.get_status_message()
+        time_stamp_2 = self._component._subscriber.last_msg_timestamp
+        return time_stamp_2 - time_stamp_1
 
 
 class Fake_Positive_Test(Test_Strategy):

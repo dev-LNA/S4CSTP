@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field, field_validator
 import func_tests.comm_channel as comm_channel
 import func_tests.component as component
 import func_tests.strategy as strategy
+from func_tests.strategy.exe_tests import E001
 
 
 class Camera_Configuration(BaseModel):
@@ -293,6 +294,12 @@ class Tests_List_Creator:
             ]
 
         if _type == "real":
-            return [strategy.I001(), strategy.I002(), strategy.I003(), strategy.I006()]
+            return [
+                strategy.I001(),
+                strategy.I002(),
+                strategy.I003(),
+                strategy.I006(),
+                E001(),
+            ]
         else:
             raise ValueError(f"Unknown type: {_type}")

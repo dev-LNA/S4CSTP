@@ -20,13 +20,22 @@ class Component(ABC):  # pragma: no cover
     ) -> None:
         self._subscriber = subscriber
         self._requester = requester
-        self.command: data_types.Command
+        self._command: data_types.Command
 
         self._status: dict | None = None
         self._exe_status = data_types.Execution_Status.NONE
         self._allowed_commands = []
         self.camera = devices.Camera()
         self.state: state.State
+
+    @property
+    def command(self) -> data_types.Command:
+        return self._command
+
+    @command.setter
+    def command(self, cmd: data_types.Command) -> None:
+        self._command = cmd
+        self._command.validate()
 
     @property
     def status(self) -> dict | None:
@@ -39,11 +48,11 @@ class Component(ABC):  # pragma: no cover
     @abstractmethod
     def get_status_message(self) -> None:
         self._subscriber.receive_msg()
-        if self._subscriber._new_msg:
+        if self._subscriber.new_msg:
             self._status = json.loads(self._subscriber.received_msg)
 
-    def send_request(self, request: str) -> None:
-        self._requester.send_msg(request)
+    def send_request(self) -> None:
+        self._requester.send_msg(self._command.str)
         return
 
     def wait_command_response(self) -> None:
@@ -63,7 +72,7 @@ class Component(ABC):  # pragma: no cover
 
     @abstractmethod
     def confirm_command_execution(self) -> None:
-        self.command.executed = "on"
+        self._command.executed = "on"
 
     @abstractmethod
     def end(self) -> None:

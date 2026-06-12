@@ -9,10 +9,7 @@ class I001(Test_Strategy):
     _test_code = "I001"
 
     def run_test(self) -> None:
-        cmmd = data_types.Command("EXPOSE")
-        cmmd.validate()
-        self._component.command = cmmd
-        self._component.state.send_command()
+        self._component.state.send_command("EXPOSE")
         self.wait_acquisition_finish()
         cam_status = self._component.camera.cam_status
         image_name = cam_status.last_image_name
@@ -27,8 +24,9 @@ class I001(Test_Strategy):
         return super().run_test()
 
     def _validate_channel(self, image_name: str) -> None:
-        if not image_name.split("_")[1] == f"s4c{self.channel}":
-            self.set_result("error", f"Instrument channel is not {self.channel}")
+        acs_channel = image_name.split("_")[1]
+        if not acs_channel == f"s4c{self.channel}":
+            self.set_result("error", f"Unexpected instrument channel: {acs_channel}")
 
     def _validate_acs_mode(self, acs_mode: bool) -> None:
         if acs_mode != self.acs_mode:
