@@ -1,3 +1,5 @@
+import json
+
 import func_tests.data_types as data_types
 
 
@@ -39,3 +41,8 @@ class Camera:
     @comm_status.setter
     def comm_status(self, comm_status: dict) -> None:
         self._comm_status = data_types.Communication_Status.from_dict(comm_status)
+
+    def return_formatted_config(self) -> str:
+        return json.dumps({
+            key.upper(): val for key, val in self.cam_config.model_dump().items()
+        })

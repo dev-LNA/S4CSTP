@@ -9,65 +9,73 @@ from pydantic import BaseModel, Field, field_validator
 import func_tests.comm_channel as comm_channel
 import func_tests.component as component
 import func_tests.strategy as strategy
-from func_tests.strategy.exe_tests import E001
 
 
 class Camera_Configuration(BaseModel):
-    read_rate: float
-    pre_amp: int
+    em_mode: int
+    em_gain: int
+    frame_transfer: bool
+    readout_rate: float
+    preamp: int
     read_mode: int
-    acq_mode: int
+    acquisition_mode: int
     trigger_mode: int
-    vclock_voltage: int
-    shutter: int
+    vertical_clock_voltage: int
+    shutter_mode: int
     shutter_ttl: int
-    shutter_op_time: int
-    shutter_cls_time: int
-    init_col: int
-    init_line: int
-    final_col: int
+    shutter_opening_time: int
+    shutter_closing_time: int
+    initial_column: int
+    initial_line: int
+    final_column: int
     final_line: int
     vbin: int
     hbin: int
-    ad_chnnl: int
+    ad_channel: int
 
     @classmethod
     def from_dict(cls, cam_config: dict) -> Camera_Configuration:
-        read_rate = cam_config["READOUT_RATE"]
-        pre_amp = cam_config["PREAMP"]
+        em_mode = cam_config["EM_MODE"]
+        em_gain = cam_config["EM_GAIN"]
+        frame_transfer = cam_config["FRAME_TRANSFER"]
+        readout_rate = cam_config["READOUT_RATE"]
+        preamp = cam_config["PREAMP"]
         read_mode = cam_config["READ_MODE"]
-        acq_mode = cam_config["ACQUISITION_MODE"]
+        acquisition_mode = cam_config["ACQUISITION_MODE"]
         trigger_mode = cam_config["TRIGGER_MODE"]
-        vclock_voltage = cam_config["VERTICAL_CLOCK_VOLTAGE"]
-        shutter = cam_config["SHUTTER_MODE"]
+        vertical_clock_voltage = cam_config["VERTICAL_CLOCK_VOLTAGE"]
+        shutter_mode = cam_config["SHUTTER_MODE"]
         shutter_ttl = cam_config["SHUTTER_TTL"]
-        shutter_op_time = cam_config["SHUTTER_OPENING_TIME"]
-        shutter_cls_time = cam_config["SHUTTER_CLOSING_TIME"]
-        init_col = cam_config["INITIAL_COLUMN"]
-        init_line = cam_config["INITIAL_LINE"]
-        final_col = cam_config["FINAL_COLUMN"]
+        shutter_opening_time = cam_config["SHUTTER_OPENING_TIME"]
+        shutter_closing_time = cam_config["SHUTTER_CLOSING_TIME"]
+        initial_column = cam_config["INITIAL_COLUMN"]
+        initial_line = cam_config["INITIAL_LINE"]
+        final_column = cam_config["FINAL_COLUMN"]
         final_line = cam_config["FINAL_LINE"]
         vbin = cam_config["VBIN"]
         hbin = cam_config["HBIN"]
-        ad_chnnl = cam_config["AD_CHANNEL"]
+        ad_channel = cam_config["AD_CHANNEL"]
         return Camera_Configuration(
-            read_rate=read_rate,
-            pre_amp=pre_amp,
+            em_mode=em_mode,
+            em_gain=em_gain,
+            frame_transfer=frame_transfer,
+            readout_rate=readout_rate,
+            preamp=preamp,
             read_mode=read_mode,
-            acq_mode=acq_mode,
+            acquisition_mode=acquisition_mode,
             trigger_mode=trigger_mode,
-            vclock_voltage=vclock_voltage,
-            shutter=shutter,
+            vertical_clock_voltage=vertical_clock_voltage,
+            shutter_mode=shutter_mode,
             shutter_ttl=shutter_ttl,
-            shutter_op_time=shutter_op_time,
-            shutter_cls_time=shutter_cls_time,
-            init_col=init_col,
-            init_line=init_line,
-            final_col=final_col,
+            shutter_opening_time=shutter_opening_time,
+            shutter_closing_time=shutter_closing_time,
+            initial_column=initial_column,
+            initial_line=initial_line,
+            final_column=final_column,
             final_line=final_line,
             vbin=vbin,
             hbin=hbin,
-            ad_chnnl=ad_chnnl,
+            ad_channel=ad_channel,
         )
 
 
@@ -299,7 +307,8 @@ class Tests_List_Creator:
                 strategy.I002(),
                 strategy.I003(),
                 strategy.I006(),
-                E001(),
+                strategy.E001(),
+                strategy.E003(),
             ]
         else:
             raise ValueError(f"Unknown type: {_type}")

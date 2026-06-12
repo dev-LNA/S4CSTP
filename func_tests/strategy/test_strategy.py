@@ -20,6 +20,28 @@ class Test_Strategy(ABC):
         "4": "ERROR",
         "5": "CRITICAL",
     }
+    _default_cam_config = {
+        "EM_MODE": 1,
+        "EM_GAIN": 2,
+        "FRAME_TRANSFER": False,
+        "READOUT_RATE": 0,
+        "PREAMP": 0,
+        "READ_MODE": 4,
+        "ACQUISITION_MODE": 3,
+        "TRIGGER_MODE": 0,
+        "VERTICAL_CLOCK_VOLTAGE": 0,
+        "SHUTTER_MODE": 2,
+        "SHUTTER_TTL": 0,
+        "SHUTTER_OPENING_TIME": 50,
+        "SHUTTER_CLOSING_TIME": 50,
+        "INITIAL_COLUMN": 1,
+        "INITIAL_LINE": 1,
+        "FINAL_COLUMN": 1024,
+        "FINAL_LINE": 1024,
+        "VBIN": 1,
+        "HBIN": 1,
+        "AD_CHANNEL": 0,
+    }
 
     def __init__(self) -> None:
         logging.info(f"Running test {self._test_code}...")
