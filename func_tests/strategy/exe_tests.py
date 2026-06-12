@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timedelta, timezone
+from time import sleep
 
 import func_tests.data_types as data_types
 
@@ -53,6 +54,7 @@ class E005(Test_Strategy):
         commands_list = [
             "SET EXPTIME 2",
             "WRITE_SETUP {}",
+            "STOP_APP",
             "WAIT_EXPOSE_COMMAND OFF",
         ]
         time_stamp_1 = datetime.now(timezone.utc)
@@ -66,10 +68,39 @@ class E005(Test_Strategy):
         filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
         filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
         filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
         for command in commands_list:
             command = command.split(" ")[0]
-            if f" The {command} command was ignored" not in filtered_log_lines:
-                self.set_result("error", f"Log msg related to {command} not found")
+            if f"The {command} command was ignored" not in filtered_log_lines:
+                self.set_result("error", f"Log msg related to {command} cmd not found")
+        self.set_result("on", "Done")
+
+        return super().run_test()
+
+
+class E007(Test_Strategy):
+    _test_code = "E007"
+
+    def run_test(self) -> None:
+        time_stamp_1 = datetime.now(timezone.utc)
+        self._default_cam_config["INITIAL_LINE"] = 1025
+        self._component.set_cam_config(self._default_cam_config)
+        self.wait_1_pub_msg()
+        if not self._component.camera.verify_opmode_err():
+            self.set_result("error", "The error msg was not found")
+        self._component.send_command("EXPOSE")
+        self.wait_1_pub_msg()
+
+        lines_list = self.get_log_file_lines()
+        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
+        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
+        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+        if "The EXPOSE command was ignored" != filtered_log_lines[0]:
+            self.set_result("error", "Log msg related to EXPOSE cmd not found")
+
+        self._default_cam_config["INITIAL_LINE"] = 1024
+        self._component.set_cam_config(self._default_cam_config)
         self.set_result("on", "Done")
 
         return super().run_test()

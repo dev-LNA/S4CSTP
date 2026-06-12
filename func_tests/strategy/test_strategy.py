@@ -130,6 +130,11 @@ class Test_Strategy(ABC):
         time_stamp_2 = self._component._subscriber.last_msg_timestamp
         return time_stamp_2 - time_stamp_1
 
+    def wait_1_pub_msg(self) -> None:
+        while not self._component._subscriber.new_msg:
+            self._component.get_status_message()
+        return
+
     def get_log_file_lines(self) -> list[str]:
         with open(self.events_log_file) as file:
             lines_list = file.read().splitlines()
@@ -154,7 +159,7 @@ class Test_Strategy(ABC):
         return filtered_lines
 
     def extract_log_msg(self, lines_list: list[str]) -> list[str]:
-        return [line.split("-->")[1] for line in lines_list]
+        return [line.split("--> ")[1] for line in lines_list]
 
 
 class Fake_Positive_Test(Test_Strategy):

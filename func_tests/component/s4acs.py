@@ -45,6 +45,7 @@ class S4ACS(component.Component):
         self.camera.acq_config = json.loads(self._status["Acquisition configuration"])
         self.camera.cam_status = json.loads(self._status["CCD status"])
         self.camera.comm_status = json.loads(self._status["Communication status"])
+        self.camera.opmode_err = json.loads(self._status["WRITE SETUP error"])
         self.update_exe_status()
 
     def end(self) -> None:
