@@ -85,11 +85,11 @@ class E007(Test_Strategy):
         time_stamp_1 = datetime.now(timezone.utc)
         self._default_cam_config["INITIAL_LINE"] = 1025
         self._component.set_cam_config(self._default_cam_config)
-        self.wait_1_pub_msg()
+        self.wait_2_pub_msgs()
         if not self._component.camera.verify_opmode_err():
             self.set_result("error", "The error msg was not found")
         self._component.send_command("EXPOSE")
-        self.wait_1_pub_msg()
+        self.wait_2_pub_msgs()
 
         lines_list = self.get_log_file_lines()
         filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
@@ -101,6 +101,31 @@ class E007(Test_Strategy):
 
         self._default_cam_config["INITIAL_LINE"] = 1024
         self._component.set_cam_config(self._default_cam_config)
+        self.set_result("on", "Done")
+
+        return super().run_test()
+
+
+class E009(Test_Strategy):
+    _test_code = "E009"
+
+    def run_test(self) -> None:
+        cmmd = "STOP_ACQUISITION"
+        time_stamp_1 = datetime.now(timezone.utc)
+        self._component.send_command(cmmd)
+        self.wait_2_pub_msgs()
+
+        lines_list = self.get_log_file_lines()
+        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
+        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
+        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+        if f"The {cmmd} command was ignored" != filtered_log_lines[0]:
+            self.set_result("error", f"Log msg related to {cmmd} cmd not found")
+
+        self._default_acq_config["#CYCLES"] = 3
+        self._component.set_acquisition_config(self._default_acq_config)
+
         self.set_result("on", "Done")
 
         return super().run_test()

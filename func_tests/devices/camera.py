@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 import func_tests.data_types as data_types
 
@@ -51,10 +52,15 @@ class Camera:
     def opmode_err(self, opmode_err: list[dict]) -> None:
         self._opmode_err = opmode_err
 
-    def return_formatted_config(self) -> str:
+    def return_formatted_cam_config(self) -> str:
         return json.dumps({
             key.upper(): val for key, val in self.cam_config.model_dump().items()
         }).replace(" ", "")
+
+    def return_formatted_acq_config(self) -> dict[str, Any]:
+        _dict = {key.upper(): val for key, val in self.acq_config.model_dump().items()}
+        _dict["#CYCLES"] = _dict.pop("CYCLES")
+        return _dict
 
     def verify_opmode_err(self) -> bool:
         return len(self._opmode_err) > 0

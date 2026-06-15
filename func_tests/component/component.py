@@ -1,5 +1,6 @@
 import json
 from abc import ABC, abstractmethod
+from time import sleep
 
 import func_tests.comm_channel as comm_channel
 import func_tests.data_types as data_types
@@ -12,6 +13,8 @@ class Component(ABC):  # pragma: no cover
     The Base Component provides the basic functionality of storing a mediator's
     instance inside component objects.
     """
+
+    _gui_std_delay = 0.2
 
     def __init__(
         self,
@@ -96,14 +99,15 @@ class Component(ABC):  # pragma: no cover
 
     def set_cam_config(self, cam_config: dict) -> None:
         self.camera.cam_config = cam_config
-        cmmd = "WRITE_SETUP " + self.camera.return_formatted_config()
+        cmmd = "WRITE_SETUP " + self.camera.return_formatted_cam_config()
         self.send_command(cmmd)
 
     def set_acquisition_config(self, acq_config: dict) -> None:
         self.camera.acq_config = acq_config
-        for key, val in self.camera.acq_config.model_dump().items():
-            cmmd = "SET " + key + " " + str(val)
+        for key, val in self.camera.return_formatted_acq_config().items():
+            cmmd = "SET " + key.upper() + " " + str(val)
             self.send_command(cmmd)
+            sleep(self._gui_std_delay)
 
 
 class Fake_Component(Component):

@@ -159,6 +159,8 @@ class Test_Strategy(ABC):
         return filtered_lines
 
     def extract_log_msg(self, lines_list: list[str]) -> list[str]:
+        if len(lines_list) == 0:
+            return [""]
         return [line.split("--> ")[1] for line in lines_list]
 
 
