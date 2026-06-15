@@ -89,6 +89,7 @@ class Acquisition_Configuration(BaseModel):
     suffix: str
     cooler: int
     temp: float
+    waveplate_pos: int
 
     @classmethod
     def from_dict(cls, acq_config: dict) -> Acquisition_Configuration:
@@ -98,6 +99,7 @@ class Acquisition_Configuration(BaseModel):
         suffix = acq_config["suffix"]
         cooler = acq_config["COOLER_POWER_STATUS"]
         temp = acq_config["TEMP"]
+        waveplate_pos = acq_config["WAVEPLATE_POS"]
         return Acquisition_Configuration(
             exptime=exptime,
             frames=frames,
@@ -105,6 +107,7 @@ class Acquisition_Configuration(BaseModel):
             suffix=suffix,
             cooler=cooler,
             temp=temp,
+            waveplate_pos=waveplate_pos,
         )
 
 
@@ -316,8 +319,11 @@ class Tests_List_Creator:
                 strategy.E007(),
                 strategy.E009(),
                 strategy.E010(),
+                strategy.E011(),
+                strategy.E012(),
+                strategy.E013(),
             ]
         if _type == "one test":
-            return [strategy.E010()]
+            return [strategy.E013()]
         else:
             raise ValueError(f"Unknown type: {_type}")

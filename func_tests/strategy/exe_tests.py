@@ -167,3 +167,73 @@ class E010(Test_Strategy):
         self._component.send_command("RESUME_ACQUISITION")
 
         return super().run_test()
+
+
+class E011(Test_Strategy):
+    _test_code = "E011"
+
+    def run_test(self) -> None:
+        cmmd = "RESUME_ACQUISITION"
+        time_stamp_1 = datetime.now(timezone.utc)
+        self._component.send_command(cmmd)
+        self.wait_2_pub_msgs()
+
+        lines_list = self.get_log_file_lines()
+        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
+        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
+        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+        if f"The {cmmd} command was ignored" != filtered_log_lines[0]:
+            self.set_result("error", f"Log msg related to {cmmd} cmd not found")
+        return super().run_test()
+
+
+class E012(Test_Strategy):
+    _test_code = "E012"
+
+    def run_test(self) -> None:
+        cmmd = "ABORT_ACQUISITION"
+        time_stamp_1 = datetime.now(timezone.utc)
+        self._component.send_command(cmmd)
+        self.wait_2_pub_msgs()
+
+        lines_list = self.get_log_file_lines()
+        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
+        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
+        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+        if f"The {cmmd} command was ignored" != filtered_log_lines[0]:
+            self.set_result("error", f"Log msg related to {cmmd} cmd not found")
+
+        self._default_acq_config["EXPTIME"] = 5
+        self._component.set_acquisition_config(self._default_acq_config)
+        self.wait_2_pub_msgs()
+        if not self._component.validate_acq_config():
+            self.set_result("error", "Unexpected acquisition configuration.")
+        self._component.send_command("EXPOSE")
+        self.wait_acquisition_start()
+        self._component.send_command(cmmd)
+        self.wait_2_pub_msgs()
+        if self._component.camera.cam_status.status != "ACQUISITION_ABORTED":
+            self.set_result("error", f"{cmmd} command failed")
+
+        return super().run_test()
+
+
+class E013(Test_Strategy):  # TODO: este teste precisa ser mudado
+    _test_code = "E013"
+
+    def run_test(self) -> None:
+        self._default_acq_config["WAVEPLATE_POS"] = 11
+        self._component.set_acquisition_config(self._default_acq_config)
+        self.wait_2_pub_msgs()
+
+        if not self._component.validate_acq_config():
+            self.set_result("error", "Unexpected acquisition configuration.")
+        self._component.send_command("EXPOSE")
+        self.wait_acquisition_finish()
+        self.wait_2_pub_msgs()
+        # if self._component.camera.cam_status.status != "ACQUISITION_ABORTED":
+        #     self.set_result("error", f"{cmmd} command failed")
+
+        return super().run_test()

@@ -22,20 +22,20 @@ These tests should be run before releasing a new S4ACS version
 - [ ] **E007** An `EXPOSE` command should be accepted only if there is no error in the provided operation mode or if S4ACS is in the `STOP_ACQUISITION` or `WAIT_EXPOSE_COMMAND` states. Otherwise, a warning should be logged.
 - [ ] **E008** In receiving an `EXPOSE` command, S4ACS should validate the current condition of the retarder waveplate, in case of polarimetric acquisitions. When verifying the waveplate condition, S4ACS should log a warning if, after 1.5 s of the exposure request, the waveplate stills not ready.
 - [ ] **E009** The `STOP_ACQUISITION` command should be accepted only before the end of an image series. Otherwise, a warning should be logged. In stopping the acquisition, S4ACS should finish the current sequence/cycle and change to the IDLE state.
-- [ ] **E009** The `PAUSE_ACQUISITION` command should be accepted only before the end of the acquisition of a photometric image series. Otherwise, a warning should be logged. If the acquisition is paused, S4ACS should wait for the resume command request.
-- [ ] **E010** A `RESUME_ACQUISITION` command should be accepted only if the current acquisition is paused. Otherwise, a warning should be logged.
-- [ ] **E011** An `ABORT_ACQUISITION` command should be accepted only during an ongoing exposure or before the end of an image series. In aborting an acquisition, the current acquisition should be aborted and S4ACS should be set to the IDLE state. In case no condition is met, a warning should be logged.
+- [ ] **E010** The `PAUSE_ACQUISITION` command should be accepted only before the end of the acquisition of a photometric image series. Otherwise, a warning should be logged. If the acquisition is paused, S4ACS should wait for the resume command request.
+- [ ] **E011** A `RESUME_ACQUISITION` command should be accepted only if the current acquisition is paused. Otherwise, a warning should be logged.
+- [ ] **E012** An `ABORT_ACQUISITION` command should be accepted only during an ongoing exposure or before the end of an image series. In aborting an acquisition, the current acquisition should be aborted and S4ACS should be set to the ACQUISITION_ABORTED state. In case no condition is met, a warning should be logged.
 
 ----------------------------------------------------------------------------------------
 
-- [ ] **E012** - When receiving a request for a new operation mode, the provided parameters should be validated as a function of the allowed intervals and predefined values, when applicable. Moreover, there are some parameters that present an interdependence, which are sutther and sub-image. These parameters should be tested for valid and invalid values. In case of invalid values, a respective warning should be logged in the events log file. In addition, the camera operation mode should be set only if no error is detected in the operation mode.
-- [ ] **E013** - When receiveing a request for configuring an acquisition parameter, the provided value should be validated as a function of the allowed intervals or predefined values, when applicable. Besides, an error should be logged in the case of any inconsistency. In addition, The request for configuring a new acquisition parameter should be accepted only if the provided value is valid.
-- [ ] **E014** - The number of sequences and waveplate positions should be validated as a function of the provided `WAVEPLATE_POS` parameter.
-- [ ] **E015** - The image readout times, electronic gain, and read noise values should be validated as a function of the operation mode.
-- [ ] **E016** - S4ACS should freeze the information to be written in the image header immediately before the start of an exposure.
-- [ ] **E017** - If the effective exposure time was smaller than `0.95 x texp`, a warning message should be logged and an error flag should be written in the image header.
-- [ ] **E018** - A message should be logged after then end of the acquisition of an image series and after the end of writting the images to disk.
-- [ ] **E019** - If S4ACS is run in the video mode, no image should be created after an exposure.
+- [ ] **E013** - When receiving a request for a new operation mode, the provided parameters should be validated as a function of the allowed intervals and predefined values, when applicable. Moreover, there are some parameters that present an interdependence, which are sutther and sub-image. These parameters should be tested for valid and invalid values. In case of invalid values, a respective warning should be logged in the events log file. In addition, the camera operation mode should be set only if no error is detected in the operation mode.
+- [ ] **E014** - When receiveing a request for configuring an acquisition parameter, the provided value should be validated as a function of the allowed intervals or predefined values, when applicable. Besides, an error should be logged in the case of any inconsistency. In addition, The request for configuring a new acquisition parameter should be accepted only if the provided value is valid.
+- [ ] **E015** - The number of sequences and waveplate positions should be validated as a function of the provided `WAVEPLATE_POS` parameter.
+- [ ] **E016** - The image readout times, electronic gain, and read noise values should be validated as a function of the operation mode.
+- [ ] **E017** - S4ACS should freeze the information to be written in the image header immediately before the start of an exposure.
+- [ ] **E018** - If the effective exposure time was smaller than `0.95 x texp`, a warning message should be logged and an error flag should be written in the image header.
+- [ ] **E019** - A message should be logged after then end of the acquisition of an image series and after the end of writting the images to disk.
+- [ ] **E020** - If S4ACS is run in the video mode, no image should be created after an exposure.
 
 ----------------------------------------------------------------------------------------
 

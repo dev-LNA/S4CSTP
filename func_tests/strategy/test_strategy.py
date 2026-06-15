@@ -50,6 +50,7 @@ class Test_Strategy(ABC):
         "suffix": "",
         "COOLER_POWER_STATUS": 1,
         "TEMP": 20,
+        "WAVEPLATE_POS": 1,
     }
 
     def __init__(self) -> None:

@@ -77,7 +77,7 @@ class Component:  # pragma: no cover
     def update_exe_status(self) -> None:
         cam_status = self.camera.cam_status
         acq_config = self.camera.received_acq_config
-        if cam_status.status == "IDLE":
+        if cam_status.status in ["IDLE", "ACQUISITION_ABORTED"]:
             self._exe_status = data_types.Execution_Status.IDLE
             return
         if (
