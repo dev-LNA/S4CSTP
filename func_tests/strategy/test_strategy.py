@@ -8,6 +8,7 @@ from time import sleep
 
 import func_tests.component as component
 import func_tests.data_types as data_types
+import func_tests.utils as utils
 
 
 class Test_Strategy(ABC):
@@ -20,38 +21,6 @@ class Test_Strategy(ABC):
         "4": logging.ERROR,
         "5": logging.CRITICAL,
     }
-    _default_cam_config = {
-        "EM_MODE": 1,
-        "EM_GAIN": 2,
-        "FRAME_TRANSFER": False,
-        "READOUT_RATE": 0,
-        "PREAMP": 0,
-        "READ_MODE": 4,
-        "ACQUISITION_MODE": 3,
-        "TRIGGER_MODE": 0,
-        "VERTICAL_CLOCK_VOLTAGE": 0,
-        "VERTICAL_SHIFT_SPEED": 3,
-        "SHUTTER_MODE": 2,
-        "SHUTTER_TTL": 0,
-        "SHUTTER_OPENING_TIME": 50,
-        "SHUTTER_CLOSING_TIME": 50,
-        "INITIAL_COLUMN": 1,
-        "INITIAL_LINE": 1,
-        "FINAL_COLUMN": 1024,
-        "FINAL_LINE": 1024,
-        "VBIN": 1,
-        "HBIN": 1,
-        "AD_CHANNEL": 0,
-    }
-    _default_acq_config = {
-        "EXPTIME": 2,
-        "#FRAMES": 1,
-        "#CYCLES": 1,
-        "suffix": "",
-        "COOLER_POWER_STATUS": 1,
-        "TEMP": 20,
-        "WAVEPLATE_POS": 1,
-    }
 
     def __init__(self) -> None:
         logging.info(f"Running test {self._test_code}...")
@@ -61,6 +30,8 @@ class Test_Strategy(ABC):
         self._create_today_str()
         self._read_config_file()
         self.events_log_file = self.log_folder / (self._today_str + "_events.log")
+        self._default_cam_config = utils.default_cam_config.copy()
+        self._default_acq_config = utils.default_acq_config.copy()
 
     def set_result(self, succes: str, msg: str) -> None:
         if self.result.success == "error":
@@ -114,10 +85,10 @@ class Test_Strategy(ABC):
     def wait_acquisition_finish(self) -> None:
         while self._component.exe_status != "BUSY":
             self._component.get_status_message()
-            sleep(0.3)
+            sleep(0.1)
         while self._component.exe_status == "BUSY":
             self._component.get_status_message()
-            sleep(0.3)
+            sleep(0.1)
             continue
 
     def wait_2_pub_msgs(self) -> timedelta:

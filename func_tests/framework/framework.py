@@ -7,6 +7,7 @@ from time import sleep
 import func_tests.component as component
 import func_tests.data_types as data_types
 import func_tests.strategy as strategy
+import func_tests.utils as utils
 
 
 class Functionalities_Tests_Framework:
@@ -27,6 +28,9 @@ class Functionalities_Tests_Framework:
         self.create_log_file()
         logging.info("Framework was started")
         self.s4acs.initialize()
+        logging.debug("Setting default configuration...")
+        self.s4acs.set_acquisition_config(utils.default_acq_config.copy())
+        self.s4acs.set_cam_config(utils.default_cam_config.copy())
         for _test in self.tests_list:
             _test.set_component(self.s4acs)
         logging.debug("Framework was initialized succesfully")

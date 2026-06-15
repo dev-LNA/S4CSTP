@@ -134,17 +134,27 @@ class Component:  # pragma: no cover
 
 
 class Fake_Component(Component):
+    @property
+    def status(self) -> dict | None:
+        return None
+
     def initialize(self) -> None:
-        return super().initialize()
+        pass
 
     def get_status_message(self) -> None:
-        return super().get_status_message()
+        return
 
     def update_exe_status(self) -> None:
-        return super().update_exe_status()
+        self._exe_status = data_types.Execution_Status.IDLE
 
     def end(self) -> None:
         return super().end()
 
     def confirm_command_execution(self) -> None:
         return super().confirm_command_execution()
+
+    def return_comm_status(self) -> bool:
+        return True
+
+    def send_command(self, _cmmd: str) -> None:
+        return

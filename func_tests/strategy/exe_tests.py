@@ -166,6 +166,9 @@ class E010(Test_Strategy):
             self.set_result("error", f"{cmmd} command failed")
         self._component.send_command("RESUME_ACQUISITION")
 
+        self._default_acq_config["#CYCLES"] = 1
+        self._component.set_acquisition_config(self._default_acq_config)
+
         return super().run_test()
 
 
@@ -217,6 +220,8 @@ class E012(Test_Strategy):
         if self._component.camera.cam_status.status != "ACQUISITION_ABORTED":
             self.set_result("error", f"{cmmd} command failed")
 
+        self._default_acq_config["EXPTIME"] = 2
+        self._component.set_acquisition_config(self._default_acq_config)
         return super().run_test()
 
 
@@ -235,5 +240,49 @@ class E013(Test_Strategy):  # TODO: este teste precisa ser mudado
         self.wait_2_pub_msgs()
         # if self._component.camera.cam_status.status != "ACQUISITION_ABORTED":
         #     self.set_result("error", f"{cmmd} command failed")
+        self._default_acq_config["WAVEPLATE_POS"] = 1
+        self._component.set_acquisition_config(self._default_acq_config)
+
+        return super().run_test()
+
+
+class E019(Test_Strategy):
+    _test_code = "E019"
+
+    def run_test(self) -> None:
+        time_stamp_1 = datetime.now(timezone.utc)
+        self._component.send_command("EXPOSE")
+        self.wait_acquisition_finish()
+
+        lines_list = self.get_log_file_lines()
+        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
+        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "DEBUG")
+        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+        expected_strings = [
+            "The acquisition of the image series has been finished",
+            "The image series has been saved",
+        ]
+        for _str in expected_strings:
+            if _str not in filtered_log_lines:
+                self.set_result("error", "Expected log msg was not found")
+        return super().run_test()
+
+
+class E020(Test_Strategy):
+    _test_code = "E020"
+
+    def run_test(self) -> None:
+        self._default_acq_config["COOLER_POWER_STATUS"] = 1
+        self._component.set_acquisition_config(self._default_acq_config)
+        self.wait_2_pub_msgs()
+        if not self._component.validate_acq_config():
+            self.set_result("error", "Unexpected acquisition configuration.")
+        self._component.send_command("STOP_APP")
+        self.wait_2_pub_msgs()
+        self._default_acq_config["COOLER_POWER_STATUS"] = 0
+        self._component.camera.requested_acq_config = self._default_acq_config
+        if not self._component.validate_acq_config():
+            self.set_result("error", "Unexpected acquisition configuration")
 
         return super().run_test()
