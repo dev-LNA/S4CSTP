@@ -44,11 +44,11 @@ class Test_Strategy(ABC):
         "AD_CHANNEL": 0,
     }
     _default_acq_config = {
-        "EXPTIME": 1,
+        "EXPTIME": 2,
         "#FRAMES": 1,
         "#CYCLES": 1,
         "suffix": "",
-        "COOLER_POWER_STATUS": 0,
+        "COOLER_POWER_STATUS": 1,
         "TEMP": 20,
     }
 

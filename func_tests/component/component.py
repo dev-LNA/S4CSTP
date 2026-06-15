@@ -1,5 +1,4 @@
 import json
-from abc import ABC, abstractmethod
 from time import sleep
 
 import func_tests.comm_channel as comm_channel
@@ -8,7 +7,7 @@ import func_tests.devices as devices
 import func_tests.state as state
 
 
-class Component(ABC):  # pragma: no cover
+class Component:  # pragma: no cover
     """
     The Base Component provides the basic functionality of storing a mediator's
     instance inside component objects.
@@ -27,7 +26,6 @@ class Component(ABC):  # pragma: no cover
 
         self._status: dict | None = None
         self._exe_status = data_types.Execution_Status.NONE
-        self._allowed_commands = []
         self.camera = devices.Camera()
         self.state: state.State
 
@@ -42,17 +40,63 @@ class Component(ABC):  # pragma: no cover
 
     @property
     def status(self) -> dict | None:
-        return self._status
+        if self._status is None:
+            return
+        return {
+            "cam_config": self.camera.received_cam_config.model_dump(),
+            "cam_status": self.camera.cam_status.model_dump(),
+            "acq_config": self.camera.received_acq_config.model_dump(),
+            "comm_status": self.camera.comm_status.model_dump(),
+        }
 
     @property
     def exe_status(self) -> str:
         return self._exe_status.name
 
-    @abstractmethod
     def get_status_message(self) -> None:
         self._subscriber.receive_msg()
         if self._subscriber.new_msg:
             self._status = json.loads(self._subscriber.received_msg)
+        if self._status is None:
+            return
+        self.camera.received_cam_config = json.loads(self._status["CCD configuration"])
+        self.camera.received_acq_config = json.loads(
+            self._status["Acquisition configuration"]
+        )
+        self.camera.cam_status = json.loads(self._status["CCD status"])
+        self.camera.comm_status = json.loads(self._status["Communication status"])
+        self.camera.opmode_err = json.loads(self._status["WRITE SETUP error"])
+        self.update_exe_status()
+
+    def initialize(self) -> None:
+        self._subscriber.initialize_comm()
+        self._requester.initialize_comm()
+        self.transition_to(state.Idle())
+        self._exe_status = data_types.Execution_Status.IDLE
+
+    def update_exe_status(self) -> None:
+        cam_status = self.camera.cam_status
+        acq_config = self.camera.received_acq_config
+        if cam_status.status == "IDLE":
+            self._exe_status = data_types.Execution_Status.IDLE
+            return
+        if (
+            cam_status.cycles_done < acq_config.cycles
+            and cam_status.last_image_name != ""
+        ):
+            self._exe_status = data_types.Execution_Status.BUSY
+            return
+
+    def confirm_command_execution(self) -> None:
+        self._command.executed = "on"
+
+    def end(self) -> None:
+        self._subscriber.close_comm()
+        self._requester.close_comm()
+
+    def transition_to(self, state: state.State) -> None:
+        self.state = state
+        self.state.component = self
 
     def send_command(self, _cmmd: str) -> None:
         self.command = data_types.Command(_cmmd)
@@ -62,30 +106,6 @@ class Component(ABC):  # pragma: no cover
     def wait_command_response(self) -> None:
         self._requester.receive_msg()
         return
-
-    @abstractmethod
-    def initialize(self) -> None:
-        self._subscriber.initialize_comm()
-        self._requester.initialize_comm()
-        self.transition_to(state.Idle())
-        self._exe_status = data_types.Execution_Status.IDLE
-
-    @abstractmethod
-    def update_exe_status(self) -> None:
-        self._exe_status = data_types.Execution_Status.IDLE
-
-    @abstractmethod
-    def confirm_command_execution(self) -> None:
-        self._command.executed = "on"
-
-    @abstractmethod
-    def end(self) -> None:
-        self._subscriber.close_comm()
-        self._requester.close_comm()
-
-    def transition_to(self, state: state.State) -> None:
-        self.state = state
-        self.state.component = self
 
     def return_comm_status(self) -> bool:
         return self._subscriber.comm_status
@@ -108,6 +128,9 @@ class Component(ABC):  # pragma: no cover
             cmmd = "SET " + key.upper() + " " + str(val)
             self.send_command(cmmd)
             sleep(self._gui_std_delay)
+
+    def validate_acq_config(self) -> bool:
+        return self.camera.requested_acq_config == self.camera.received_acq_config
 
 
 class Fake_Component(Component):

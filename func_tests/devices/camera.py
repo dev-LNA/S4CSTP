@@ -92,10 +92,8 @@ class Camera:
         }
         _dict["#CYCLES"] = _dict.pop("CYCLES")
         _dict["#FRAMES"] = _dict.pop("FRAMES")
+        _dict["COOLER_POWER_STATUS"] = _dict.pop("COOLER")
         return _dict
 
     def verify_opmode_err(self) -> bool:
         return len(self._opmode_err) > 0
-
-    def validate_set_acq_config(self) -> bool:
-        return self.requested_acq_config == self.received_acq_config

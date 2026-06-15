@@ -12,16 +12,6 @@ class S4ACS(component.Component):
         requester: comm_channel.Communication_Channel,
     ) -> None:
         super().__init__(subscriber, requester)
-        self._allowed_commands = [
-            "EXPOSE",
-            "SET",
-            "STOP_APP",
-            "WRITE_SETUP",
-            "WAIT_EXPOSE_COMMAND",
-            "ABORT_ACQUISITION",
-            "PAUSE_ACQUISITION",
-            "RESUME_ACQUISITION",
-        ]
 
     def initialize(self) -> None:
         return super().initialize()

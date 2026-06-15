@@ -83,28 +83,28 @@ class Camera_Configuration(BaseModel):
 
 
 class Acquisition_Configuration(BaseModel):
-    exp_time: float
+    exptime: float
     frames: int
     cycles: int
     suffix: str
     cooler: int
-    temperature: float
+    temp: float
 
     @classmethod
     def from_dict(cls, acq_config: dict) -> Acquisition_Configuration:
-        exp_time = acq_config["EXPTIME"]
+        exptime = acq_config["EXPTIME"]
         frames = acq_config["#FRAMES"]
         cycles = acq_config["#CYCLES"]
         suffix = acq_config["suffix"]
         cooler = acq_config["COOLER_POWER_STATUS"]
-        temperature = acq_config["TEMP"]
+        temp = acq_config["TEMP"]
         return Acquisition_Configuration(
-            exp_time=exp_time,
+            exptime=exptime,
             frames=frames,
             cycles=cycles,
             suffix=suffix,
             cooler=cooler,
-            temperature=temperature,
+            temp=temp,
         )
 
 
@@ -291,7 +291,7 @@ class Component_Creator:
             subscriber = comm_channel.ZeroMQ_SUB(end_point, context)
             end_point = End_Point(ip="200.131.64.25", port=5556)
             requester = comm_channel.ZeroMQ_REQ(end_point, context)
-            return component.S4ACS(subscriber, requester)
+            return component.Component(subscriber, requester)
 
         else:
             raise ValueError(f"Unknown type: {_type}")

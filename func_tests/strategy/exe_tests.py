@@ -125,7 +125,16 @@ class E009(Test_Strategy):
 
         self._default_acq_config["#CYCLES"] = 3
         self._component.set_acquisition_config(self._default_acq_config)
-
+        self.wait_2_pub_msgs()
+        if not self._component.validate_acq_config():
+            self.set_result("error", "Unexpected acquisition configuration.")
+        self._component.send_command("EXPOSE")
+        self.wait_acquisition_start()
+        self._component.send_command(cmmd)
+        self.wait_return_to_idle()
+        self.wait_2_pub_msgs()
+        if self._component.camera.cam_status.cycles_done != 1:
+            self.set_result("error", f"{cmmd} command failed")
         self.set_result("on", "Done")
 
         return super().run_test()
