@@ -31,9 +31,9 @@ class S4ACS(component.Component):
         if self._status is None:
             return
         return {
-            "cam_config": self.camera.cam_config.model_dump(),
+            "cam_config": self.camera.received_cam_config.model_dump(),
             "cam_status": self.camera.cam_status.model_dump(),
-            "acq_config": self.camera.acq_config.model_dump(),
+            "acq_config": self.camera.received_acq_config.model_dump(),
             "comm_status": self.camera.comm_status.model_dump(),
         }
 
@@ -41,8 +41,10 @@ class S4ACS(component.Component):
         super().get_status_message()
         if self._status is None:
             return
-        self.camera.cam_config = json.loads(self._status["CCD configuration"])
-        self.camera.acq_config = json.loads(self._status["Acquisition configuration"])
+        self.camera.received_cam_config = json.loads(self._status["CCD configuration"])
+        self.camera.received_acq_config = json.loads(
+            self._status["Acquisition configuration"]
+        )
         self.camera.cam_status = json.loads(self._status["CCD status"])
         self.camera.comm_status = json.loads(self._status["Communication status"])
         self.camera.opmode_err = json.loads(self._status["WRITE SETUP error"])
@@ -53,7 +55,7 @@ class S4ACS(component.Component):
 
     def update_exe_status(self) -> None:
         cam_status = self.camera.cam_status
-        acq_config = self.camera.acq_config
+        acq_config = self.camera.received_acq_config
         if (
             cam_status.cycles_done < acq_config.cycles
             and cam_status.last_image_name != ""

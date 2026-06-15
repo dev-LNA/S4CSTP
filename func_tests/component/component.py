@@ -98,13 +98,13 @@ class Component(ABC):  # pragma: no cover
         self._requester.initialize_comm()
 
     def set_cam_config(self, cam_config: dict) -> None:
-        self.camera.cam_config = cam_config
-        cmmd = "WRITE_SETUP " + self.camera.return_formatted_cam_config()
+        self.camera.requested_cam_config = cam_config
+        cmmd = "WRITE_SETUP " + self.camera.format_cam_config()
         self.send_command(cmmd)
 
     def set_acquisition_config(self, acq_config: dict) -> None:
-        self.camera.acq_config = acq_config
-        for key, val in self.camera.return_formatted_acq_config().items():
+        self.camera.requested_acq_config = acq_config
+        for key, val in self.camera.format_acq_config().items():
             cmmd = "SET " + key.upper() + " " + str(val)
             self.send_command(cmmd)
             sleep(self._gui_std_delay)
