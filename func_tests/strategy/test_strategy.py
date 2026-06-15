@@ -94,8 +94,8 @@ class Test_Strategy(ABC):
 
     @abstractmethod
     def run_test(self) -> None:
-        if self.result is not None:
-            logging.debug(f"Result: {self.result.model_dump()}")
+        self.set_result("on", "Done")
+        logging.debug(f"Result: {self.result.model_dump()}")
 
     def set_component(self, component: component.Component) -> None:
         self._component = component

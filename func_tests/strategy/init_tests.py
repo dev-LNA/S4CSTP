@@ -19,7 +19,6 @@ class I001(Test_Strategy):
         self._validate_acs_mode(cam_status.acs_mode)
         self._validate_log_files_folder()
         self._validate_log_level()
-        self.set_result("on", "Done")
         return super().run_test()
 
     def _validate_channel(self, image_name: str) -> None:
@@ -61,8 +60,6 @@ class I002(Test_Strategy):
                     "error", f"There is no communication with {key.upper()}"
                 )
                 break
-            else:
-                self.set_result("on", "Done")
         return super().run_test()
 
 
@@ -76,7 +73,6 @@ class I003(Test_Strategy):
             if not log_file_path.exists():
                 self.set_result("error", f"File {file_name} does not found")
                 break
-            self.set_result("on", "Done")
         return super().run_test()
 
 
@@ -85,8 +81,7 @@ class I006(Test_Strategy):
 
     def run_test(self) -> None:
         cam_status = self._component.camera.cam_status
-        if cam_status.power:
-            self.set_result("on", "Done")
-        else:
+        if not cam_status.power:
             self.set_result("error", "CCD camera is off")
+
         return super().run_test()
