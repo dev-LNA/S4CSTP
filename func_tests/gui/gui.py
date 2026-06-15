@@ -28,8 +28,8 @@ class GUI(QMainWindow):
         self.gui_widgets.framework_start_btn.clicked.connect(self.start_application)
         self.gui_widgets.framework_run_tests_btn.clicked.connect(self.start_tests)
 
-        s4acs = data_types.Component_Creator().create("fake")
-        tests_list = data_types.Tests_List_Creator().create("fake")
+        s4acs = data_types.Component_Creator().create("real")
+        tests_list = data_types.Tests_List_Creator().create("real")
         self.framework = framework.Functionalities_Tests_Framework(s4acs, tests_list)
         self._thread = Thread(target=self.framework.run)
 

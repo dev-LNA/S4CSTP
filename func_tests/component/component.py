@@ -13,7 +13,7 @@ class Component:  # pragma: no cover
     instance inside component objects.
     """
 
-    _gui_std_delay = 0.2
+    _delay_time = 0.1
 
     def __init__(
         self,
@@ -80,6 +80,9 @@ class Component:  # pragma: no cover
         if cam_status.status in ["IDLE", "ACQUISITION_ABORTED"]:
             self._exe_status = data_types.Execution_Status.IDLE
             return
+        if cam_status.status == "ACTIVE":
+            self._exe_status = data_types.Execution_Status.BUSY
+            return
         if (
             cam_status.cycles_done < acq_config.cycles
             and cam_status.last_image_name != ""
@@ -127,7 +130,7 @@ class Component:  # pragma: no cover
         for key, val in self.camera.format_acq_config().items():
             cmmd = "SET " + key.upper() + " " + str(val)
             self.send_command(cmmd)
-            sleep(self._gui_std_delay)
+            sleep(self._delay_time)
 
     def validate_acq_config(self) -> bool:
         return self.camera.requested_acq_config == self.camera.received_acq_config

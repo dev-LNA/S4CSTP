@@ -21,6 +21,7 @@ class Test_Strategy(ABC):
         "4": logging.ERROR,
         "5": logging.CRITICAL,
     }
+    _delay_time = 0.05
 
     def __init__(self) -> None:
         logging.info(f"Running test {self._test_code}...")
@@ -75,30 +76,33 @@ class Test_Strategy(ABC):
     def wait_acquisition_start(self) -> None:
         while self._component.exe_status != "BUSY":
             self._component.get_status_message()
-            sleep(0.1)
+            sleep(self._delay_time)
 
     def wait_return_to_idle(self) -> None:
         while self._component.exe_status != "IDLE":
             self._component.get_status_message()
-            sleep(0.1)
+            sleep(self._delay_time)
 
     def wait_acquisition_finish(self) -> None:
         while self._component.exe_status != "BUSY":
             self._component.get_status_message()
-            sleep(0.1)
+            sleep(self._delay_time)
         while self._component.exe_status == "BUSY":
             self._component.get_status_message()
-            sleep(0.1)
+            sleep(self._delay_time)
             continue
 
     def wait_2_pub_msgs(self) -> timedelta:
         while not self._component._subscriber.new_msg:
             self._component.get_status_message()
+            sleep(self._delay_time)
         time_stamp_1 = self._component._subscriber.last_msg_timestamp
         while self._component._subscriber.new_msg:
             self._component.get_status_message()
+            sleep(self._delay_time)
         while not self._component._subscriber.new_msg:
             self._component.get_status_message()
+            sleep(self._delay_time)
         time_stamp_2 = self._component._subscriber.last_msg_timestamp
         return time_stamp_2 - time_stamp_1
 
