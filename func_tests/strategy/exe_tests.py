@@ -79,22 +79,13 @@ class E007(Test_Strategy):
     _test_code = "E007"
 
     def run_test(self) -> None:
-        time_stamp_1 = datetime.now(timezone.utc)
         self._default_cam_config["INITIAL_LINE"] = 1025
         self._component.set_cam_config(self._default_cam_config)
         self.wait_2_pub_msgs()
         if not self._component.camera.verify_opmode_err():
             self.set_result("error", "The error msg was not found")
-        self._component.send_command("EXPOSE")
-        self.wait_2_pub_msgs()
-
-        lines_list = self.get_log_file_lines()
-        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
-        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
-        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-
-        if "The EXPOSE command was ignored" != filtered_log_lines[0]:
-            self.set_result("error", "Log msg related to EXPOSE cmd not found")
+        cmd = "EXPOSE"
+        self.send_unexpected_command(cmd)
 
         self._default_cam_config["INITIAL_LINE"] = 1024
         self._component.set_cam_config(self._default_cam_config)
@@ -106,31 +97,19 @@ class E009(Test_Strategy):
     _test_code = "E009"
 
     def run_test(self) -> None:
-        cmmd = "STOP_ACQUISITION"
-        time_stamp_1 = datetime.now(timezone.utc)
-        self._component.send_command(cmmd)
-        self.wait_2_pub_msgs()
-
-        lines_list = self.get_log_file_lines()
-        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
-        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
-        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-
-        if f"The {cmmd} command was ignored" != filtered_log_lines[0]:
-            self.set_result("error", f"Log msg related to {cmmd} cmd not found")
+        cmd = "STOP_ACQUISITION"
+        self.send_unexpected_command("STOP_ACQUISITION")
 
         self._default_acq_config["#CYCLES"] = 3
         self._component.set_acquisition_config(self._default_acq_config)
-        self.wait_2_pub_msgs()
-        if not self._component.validate_acq_config():
-            self.set_result("error", "Unexpected acquisition configuration.")
+        self.validate_acq_config()
         self._component.send_command("EXPOSE")
         self.wait_acquisition_start()
-        self._component.send_command(cmmd)
+        self._component.send_command(cmd)
         self.wait_return_to_idle()
         self.wait_2_pub_msgs()
         if self._component.camera.cam_status.cycles_done != 1:
-            self.set_result("error", f"{cmmd} command failed")
+            self.set_result("error", f"{cmd} command failed")
 
         return super().run_test()
 
@@ -139,31 +118,20 @@ class E010(Test_Strategy):
     _test_code = "E010"
 
     def run_test(self) -> None:
-        cmmd = "PAUSE_ACQUISITION"
-        time_stamp_1 = datetime.now(timezone.utc)
-        self._component.send_command(cmmd)
-        self.wait_2_pub_msgs()
-
-        lines_list = self.get_log_file_lines()
-        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
-        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
-        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-
-        if f"The {cmmd} command was ignored" != filtered_log_lines[0]:
-            self.set_result("error", f"Log msg related to {cmmd} cmd not found")
+        cmd = "PAUSE_ACQUISITION"
+        self.send_unexpected_command("PAUSE_ACQUISITION")
 
         self._default_acq_config["#CYCLES"] = 3
         self._component.set_acquisition_config(self._default_acq_config)
-        self.wait_2_pub_msgs()
-        if not self._component.validate_acq_config():
-            self.set_result("error", "Unexpected acquisition configuration.")
+        self.validate_acq_config()
+
         self._component.send_command("EXPOSE")
         self.wait_acquisition_start()
-        self._component.send_command(cmmd)
-        # self.wait_return_to_idle()
+        self._component.send_command(cmd)
+        self.wait_end_of_cycle(1)
         self.wait_2_pub_msgs()
         if self._component.camera.cam_status.status != "ACQUISITION_PAUSED":
-            self.set_result("error", f"{cmmd} command failed")
+            self.set_result("error", f"{cmd} command failed")
         self._component.send_command("RESUME_ACQUISITION")
 
         self._default_acq_config["#CYCLES"] = 1
@@ -176,18 +144,7 @@ class E011(Test_Strategy):
     _test_code = "E011"
 
     def run_test(self) -> None:
-        cmmd = "RESUME_ACQUISITION"
-        time_stamp_1 = datetime.now(timezone.utc)
-        self._component.send_command(cmmd)
-        self.wait_2_pub_msgs()
-
-        lines_list = self.get_log_file_lines()
-        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
-        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
-        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-
-        if f"The {cmmd} command was ignored" != filtered_log_lines[0]:
-            self.set_result("error", f"Log msg related to {cmmd} cmd not found")
+        self.send_unexpected_command("RESUME_ACQUISITION")
         return super().run_test()
 
 
@@ -195,30 +152,18 @@ class E012(Test_Strategy):
     _test_code = "E012"
 
     def run_test(self) -> None:
-        cmmd = "ABORT_ACQUISITION"
-        time_stamp_1 = datetime.now(timezone.utc)
-        self._component.send_command(cmmd)
-        self.wait_2_pub_msgs()
-
-        lines_list = self.get_log_file_lines()
-        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
-        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
-        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-
-        if f"The {cmmd} command was ignored" != filtered_log_lines[0]:
-            self.set_result("error", f"Log msg related to {cmmd} cmd not found")
+        cmd = "ABORT_ACQUISITION"
+        self.send_unexpected_command("ABORT_ACQUISITION")
 
         self._default_acq_config["EXPTIME"] = 5
         self._component.set_acquisition_config(self._default_acq_config)
-        self.wait_2_pub_msgs()
-        if not self._component.validate_acq_config():
-            self.set_result("error", "Unexpected acquisition configuration.")
+        self.validate_acq_config()
         self._component.send_command("EXPOSE")
         self.wait_acquisition_start()
-        self._component.send_command(cmmd)
+        self._component.send_command(cmd)
         self.wait_2_pub_msgs()
         if self._component.camera.cam_status.status != "ACQUISITION_ABORTED":
-            self.set_result("error", f"{cmmd} command failed")
+            self.set_result("error", f"{cmd} command failed")
 
         self._default_acq_config["EXPTIME"] = 2
         self._component.set_acquisition_config(self._default_acq_config)
@@ -231,10 +176,7 @@ class E013(Test_Strategy):  # TODO: este teste precisa ser mudado
     def run_test(self) -> None:
         self._default_acq_config["WAVEPLATE_POS"] = 11
         self._component.set_acquisition_config(self._default_acq_config)
-        self.wait_2_pub_msgs()
-
-        if not self._component.validate_acq_config():
-            self.set_result("error", "Unexpected acquisition configuration.")
+        self.validate_acq_config()
         self._component.send_command("EXPOSE")
         self.wait_acquisition_finish()
         self.wait_2_pub_msgs()
@@ -275,9 +217,7 @@ class E020(Test_Strategy):
     def run_test(self) -> None:
         self._default_acq_config["COOLER_POWER_STATUS"] = 1
         self._component.set_acquisition_config(self._default_acq_config)
-        self.wait_2_pub_msgs()
-        if not self._component.validate_acq_config():
-            self.set_result("error", "Unexpected acquisition configuration.")
+        self.validate_acq_config()
         self._component.send_command("STOP_APP")
         self.wait_2_pub_msgs()
         self._default_acq_config["COOLER_POWER_STATUS"] = 0

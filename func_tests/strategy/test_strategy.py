@@ -76,33 +76,30 @@ class Test_Strategy(ABC):
     def wait_acquisition_start(self) -> None:
         while self._component.exe_status != "BUSY":
             self._component.get_status_message()
-            sleep(self._delay_time)
 
     def wait_return_to_idle(self) -> None:
         while self._component.exe_status != "IDLE":
             self._component.get_status_message()
-            sleep(self._delay_time)
 
     def wait_acquisition_finish(self) -> None:
         while self._component.exe_status != "BUSY":
             self._component.get_status_message()
-            sleep(self._delay_time)
         while self._component.exe_status == "BUSY":
             self._component.get_status_message()
-            sleep(self._delay_time)
             continue
+
+    def wait_end_of_cycle(self, cycle: int) -> None:
+        while self._component.camera.cam_status.cycles_done != cycle:
+            self._component.get_status_message()
 
     def wait_2_pub_msgs(self) -> timedelta:
         while not self._component._subscriber.new_msg:
             self._component.get_status_message()
-            sleep(self._delay_time)
         time_stamp_1 = self._component._subscriber.last_msg_timestamp
         while self._component._subscriber.new_msg:
             self._component.get_status_message()
-            sleep(self._delay_time)
         while not self._component._subscriber.new_msg:
             self._component.get_status_message()
-            sleep(self._delay_time)
         time_stamp_2 = self._component._subscriber.last_msg_timestamp
         return time_stamp_2 - time_stamp_1
 
@@ -138,6 +135,26 @@ class Test_Strategy(ABC):
         if len(lines_list) == 0:
             return [""]
         return [line.split("--> ")[1] for line in lines_list]
+
+    def send_unexpected_command(self, cmd: str) -> None:
+        time_stamp_1 = datetime.now(timezone.utc)
+        self._component.send_command(cmd)
+        self.wait_2_pub_msgs()
+
+        lines_list = self.get_log_file_lines()
+        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
+        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
+        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+        if f"The {cmd} command was ignored" != filtered_log_lines[0]:
+            self.set_result("error", f"Log msg related to {cmd} cmd not found")
+        return
+
+    def validate_acq_config(self) -> None:
+        self.wait_2_pub_msgs()
+        if not self._component.validate_acq_config():
+            self.set_result("error", "Unexpected acquisition configuration.")
+        return
 
 
 class Fake_Positive_Test(Test_Strategy):

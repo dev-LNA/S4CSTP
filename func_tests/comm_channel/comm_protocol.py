@@ -7,7 +7,7 @@ import func_tests.data_types as data_types
 
 
 class Communication_Channel(ABC):
-    TIME_OUT = 200  # ms
+    TIME_OUT = 50  # ms
     INTERVAL_BTW_MSGS = 5  # s
 
     def __init__(self, end_point: data_types.End_Point) -> None:

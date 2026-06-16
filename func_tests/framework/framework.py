@@ -74,7 +74,7 @@ class Functionalities_Tests_Framework:
     def run(self) -> None:
         while not self.stop_thread:
             self.s4acs.get_status_message()
-            sleep(0.2)
+            sleep(0.05)
             if self.start_tests is True:
                 self.clear_results()
                 self.run_tests()
@@ -83,6 +83,9 @@ class Functionalities_Tests_Framework:
     def run_tests(self) -> None:
         logging.info("Starting the tests...")
         for _test in self.tests_list:
+            _test._component.send_command(
+                f"====== This is the test {_test._test_code} ======"
+            )
             _test.set_result("warn", "")
             _test.run_test()
         logging.info("The tests were finished")
