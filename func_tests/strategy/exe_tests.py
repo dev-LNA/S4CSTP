@@ -160,7 +160,7 @@ class E010(Test_Strategy):
         self._component.send_command("EXPOSE")
         self.wait_acquisition_start()
         self._component.send_command(cmmd)
-        self.wait_return_to_idle()
+        # self.wait_return_to_idle()
         self.wait_2_pub_msgs()
         if self._component.camera.cam_status.status != "ACQUISITION_PAUSED":
             self.set_result("error", f"{cmmd} command failed")
