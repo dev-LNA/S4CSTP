@@ -1118,7 +1118,7 @@ color: rgb(255,255,255);</string>
          <item row="1" column="0">
           <widget class="QLabel" name="label_55">
            <property name="text">
-            <string>Current test</string>
+            <string>Status</string>
            </property>
            <property name="text_label" stdset="0">
             <bool>true</bool>
@@ -1126,11 +1126,34 @@ color: rgb(255,255,255);</string>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="framework_current_state">
+          <widget class="QLineEdit" name="framework_current_status">
            <property name="enabled">
             <bool>false</bool>
            </property>
            <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QPushButton" name="framework_stop_1st_err">
+           <property name="text">
+            <string>Ok</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_67">
+           <property name="text">
+            <string>Stop 1st err</string>
+           </property>
+           <property name="text_label" stdset="0">
             <bool>true</bool>
            </property>
           </widget>

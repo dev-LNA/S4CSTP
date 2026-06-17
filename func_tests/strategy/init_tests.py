@@ -1,4 +1,5 @@
 from pathlib import Path
+from time import sleep
 
 import func_tests.data_types as data_types
 
@@ -10,8 +11,9 @@ class I001(Test_Strategy):
 
     def run_test(self) -> None:
         self._component.send_command("EXPOSE")
+        self.wait_acquisition_start()
         self.wait_acquisition_finish()
-        self.wait_2_pub_msgs()
+        sleep(2)
         cam_status = self._component.camera.cam_status
         image_name = cam_status.last_image_name
         image_path = self.imgs_folder / image_name

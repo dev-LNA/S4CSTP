@@ -21,7 +21,9 @@ class Test_Strategy(ABC):
         "4": logging.ERROR,
         "5": logging.CRITICAL,
     }
-    _delay_time = 0.05
+    _timeout_time = 1000  # ms
+    _min_iteration_time = 50  # ms
+    _iterations = _timeout_time // _min_iteration_time
 
     def __init__(self) -> None:
         logging.info(f"Running test {self._test_code}...")
@@ -74,39 +76,49 @@ class Test_Strategy(ABC):
         self._component = component
 
     def wait_acquisition_start(self) -> None:
-        while self._component.exe_status != "BUSY":
-            self._component.get_status_message()
+        for _ in range(self._iterations):
+            sleep(self._min_iteration_time / 1000)
+            if self._component.camera.cam_status.status == "ACTIVE":
+                logging.debug("The acquisition has started")
+                return
+        self.set_result("error", "Acquisition did not start")
 
     def wait_return_to_idle(self) -> None:
-        while self._component.exe_status != "IDLE":
-            self._component.get_status_message()
+        for _ in range(self._iterations):
+            sleep(self._min_iteration_time / 1000)
+            if self._component.exe_status == "IDLE":
+                logging.debug("S4ACS is in IDLE state")
+                return
+        self.set_result("error", "ACS did not reach IDLE state")
 
     def wait_acquisition_finish(self) -> None:
-        while self._component.exe_status != "BUSY":
-            self._component.get_status_message()
-        while self._component.exe_status == "BUSY":
-            self._component.get_status_message()
-            continue
+        while (
+            self._component.camera.cam_status.cycles_done
+            != self._component.camera.requested_acq_config.cycles
+        ):
+            sleep(self._min_iteration_time / 1000)
+        logging.debug("Acquisition has been finished")
 
     def wait_end_of_cycle(self, cycle: int) -> None:
-        while self._component.camera.cam_status.cycles_done != cycle:
-            self._component.get_status_message()
+        for _ in range(self._iterations):
+            sleep(self._min_iteration_time / 1000)
+            if self._component.camera.cam_status.cycles_done == cycle:
+                logging.debug(f"This is the end of cycle {cycle}")
+                return
+        self.set_result("error", f"End of cycle {cycle} was not reached")
 
     def wait_2_pub_msgs(self) -> timedelta:
         while not self._component._subscriber.new_msg:
-            self._component.get_status_message()
-        time_stamp_1 = self._component._subscriber.last_msg_timestamp
+            pass
+        time_stamp_1 = datetime.now()
         while self._component._subscriber.new_msg:
-            self._component.get_status_message()
+            pass
         while not self._component._subscriber.new_msg:
-            self._component.get_status_message()
-        time_stamp_2 = self._component._subscriber.last_msg_timestamp
-        return time_stamp_2 - time_stamp_1
-
-    def wait_1_pub_msg(self) -> None:
-        while not self._component._subscriber.new_msg:
-            self._component.get_status_message()
-        return
+            pass
+        time_stamp_2 = datetime.now()
+        delay = time_stamp_2 - time_stamp_1
+        logging.debug(f"The interval between two pubs is {delay}")
+        return delay
 
     def get_log_file_lines(self) -> list[str]:
         with open(self.events_log_file) as file:

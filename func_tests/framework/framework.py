@@ -15,10 +15,14 @@ class Functionalities_Tests_Framework:
     start_tests = False
 
     def __init__(
-        self, s4acs: component.Component, tests_list: Sequence[strategy.Test_Strategy]
+        self,
+        s4acs: component.Component,
+        tests_list: Sequence[strategy.Test_Strategy],
+        stop_1st_err: bool,
     ) -> None:
         self.s4acs = s4acs
         self.tests_list = tests_list
+        self.stop_1st_err = stop_1st_err
         self.log_dir = Path("func_tests/_logs")
         self.log_level = data_types.Log_Level.INFO
         self.log_dir.mkdir(parents=True, exist_ok=True)
@@ -71,10 +75,13 @@ class Functionalities_Tests_Framework:
         self.s4acs.end()
         logging.info("Framework was stopped")
 
-    def run(self) -> None:
+    def get_status(self) -> None:
         while not self.stop_thread:
             self.s4acs.get_status_message()
-            sleep(0.05)
+
+    def run(self) -> None:
+        while not self.stop_thread:
+            sleep(0.025)
             if self.start_tests is True:
                 self.clear_results()
                 self.run_tests()
@@ -88,6 +95,10 @@ class Functionalities_Tests_Framework:
             )
             _test.set_result("warn", "")
             _test.run_test()
+
+            if self.stop_1st_err and (_test.result.success == "error"):
+                logging.info("An error was found. Stopping the tests...")
+                break
         logging.info("The tests were finished")
 
     def clear_results(self) -> None:

@@ -41,6 +41,7 @@ class E003(Test_Strategy):
 
         self._default_cam_config["INITIAL_LINE"] = 1024
         self._component.set_cam_config(self._default_cam_config)
+        sleep(2)
 
         return super().run_test()
 
@@ -60,7 +61,7 @@ class E005(Test_Strategy):
         self.wait_acquisition_start()
         for command in commands_list:
             self._component.send_command(command)
-        self.wait_return_to_idle()
+        self.wait_acquisition_finish()
 
         lines_list = self.get_log_file_lines()
         filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
@@ -81,7 +82,7 @@ class E007(Test_Strategy):
     def run_test(self) -> None:
         self._default_cam_config["INITIAL_LINE"] = 1025
         self._component.set_cam_config(self._default_cam_config)
-        self.wait_2_pub_msgs()
+        sleep(2)
         if not self._component.camera.verify_opmode_err():
             self.set_result("error", "The error msg was not found")
         cmd = "EXPOSE"
@@ -89,6 +90,7 @@ class E007(Test_Strategy):
 
         self._default_cam_config["INITIAL_LINE"] = 1024
         self._component.set_cam_config(self._default_cam_config)
+        sleep(2)
 
         return super().run_test()
 
@@ -107,7 +109,7 @@ class E009(Test_Strategy):
         self.wait_acquisition_start()
         self._component.send_command(cmd)
         self.wait_return_to_idle()
-        self.wait_2_pub_msgs()
+        sleep(2)
         if self._component.camera.cam_status.cycles_done != 1:
             self.set_result("error", f"{cmd} command failed")
 
@@ -129,10 +131,11 @@ class E010(Test_Strategy):
         self.wait_acquisition_start()
         self._component.send_command(cmd)
         self.wait_end_of_cycle(1)
-        self.wait_2_pub_msgs()
+        sleep(2)
         if self._component.camera.cam_status.status != "ACQUISITION_PAUSED":
             self.set_result("error", f"{cmd} command failed")
         self._component.send_command("RESUME_ACQUISITION")
+        self.wait_acquisition_finish()
 
         self._default_acq_config["#CYCLES"] = 1
         self._component.set_acquisition_config(self._default_acq_config)
@@ -161,7 +164,7 @@ class E012(Test_Strategy):
         self._component.send_command("EXPOSE")
         self.wait_acquisition_start()
         self._component.send_command(cmd)
-        self.wait_2_pub_msgs()
+        sleep(2)
         if self._component.camera.cam_status.status != "ACQUISITION_ABORTED":
             self.set_result("error", f"{cmd} command failed")
 
@@ -179,7 +182,7 @@ class E013(Test_Strategy):  # TODO: este teste precisa ser mudado
         self.validate_acq_config()
         self._component.send_command("EXPOSE")
         self.wait_acquisition_finish()
-        self.wait_2_pub_msgs()
+        sleep(2)
         # if self._component.camera.cam_status.status != "ACQUISITION_ABORTED":
         #     self.set_result("error", f"{cmmd} command failed")
         self._default_acq_config["WAVEPLATE_POS"] = 1
@@ -194,6 +197,7 @@ class E019(Test_Strategy):
     def run_test(self) -> None:
         time_stamp_1 = datetime.now(timezone.utc)
         self._component.send_command("EXPOSE")
+        self.wait_acquisition_start()
         self.wait_acquisition_finish()
 
         lines_list = self.get_log_file_lines()
@@ -219,7 +223,7 @@ class E020(Test_Strategy):
         self._component.set_acquisition_config(self._default_acq_config)
         self.validate_acq_config()
         self._component.send_command("STOP_APP")
-        self.wait_2_pub_msgs()
+        sleep(2)
         self._default_acq_config["COOLER_POWER_STATUS"] = 0
         self._component.camera.requested_acq_config = self._default_acq_config
         if not self._component.validate_acq_config():

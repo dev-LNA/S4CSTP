@@ -16,10 +16,13 @@ class GUI_Widgets:
     def __init__(self, window: gui.GUI) -> None:
 
         # ================ Master ================
-        self.framework_current_state = window.findChild(
-            QLineEdit, "framework_current_state"
+        self.framework_current_status = window.findChild(
+            QLineEdit, "framework_current_status"
         )
         self.framework_log_level = window.findChild(QComboBox, "framework_log_level")
+        self.framework_stop_1st_err = window.findChild(
+            QPushButton, "framework_stop_1st_err"
+        )
         self.framework_stop_btn = window.findChild(QPushButton, "framework_stop_btn")
         self.framework_start_btn = window.findChild(QPushButton, "framework_start_btn")
         self.framework_run_tests_btn = window.findChild(
