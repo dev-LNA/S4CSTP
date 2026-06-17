@@ -323,7 +323,7 @@ class Tests_List_Creator:
                 strategy.E012(),
                 strategy.E013(),
                 strategy.E019(),
-                strategy.E020(),
+                strategy.S001(),
             ]
         if _type == "one test":
             return [strategy.E001()]

@@ -217,20 +217,3 @@ class E019(Test_Strategy):
             if _str not in filtered_log_lines:
                 self.set_result("error", "Expected log msg was not found")
         return super().run_test()
-
-
-class E020(Test_Strategy):
-    _test_code = "E020"
-
-    def run_test(self) -> None:
-        self._default_acq_config["COOLER_POWER_STATUS"] = 1
-        self._component.set_acquisition_config(self._default_acq_config)
-        self.validate_acq_config()
-        self._component.send_command("STOP_APP")
-        sleep(2)
-        self._default_acq_config["COOLER_POWER_STATUS"] = 0
-        self._component.camera.requested_acq_config = self._default_acq_config
-        if not self._component.validate_acq_config():
-            self.set_result("error", "Unexpected acquisition configuration")
-
-        return super().run_test()
