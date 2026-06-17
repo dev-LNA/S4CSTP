@@ -1,5 +1,4 @@
-import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from time import sleep
 
 import func_tests.data_types as data_types
@@ -11,15 +10,20 @@ class E001(Test_Strategy):
     _test_code = "E001"
 
     def run_test(self) -> None:
-        delay = self.wait_2_pub_msgs()
-        if delay.seconds < 1:
+        for _ in range(10):
+            delay = self.calculate_pub_delay()
+            if delay.total_seconds() > 1:
+                break
+        else:
             self.set_result("error", "Interval between pub msgs smaller than 1 s")
         self._component.send_command("EXPOSE")
         self.wait_acquisition_start()
-        delay = self.wait_2_pub_msgs()
-        self.wait_return_to_idle()
-        if delay.seconds > 0.2:
-            self.set_result("error", "Interval between pub msgs larger than 0.2 s")
+        for _ in range(10):
+            delay = self.calculate_pub_delay()
+            if delay.microseconds > 0.2:
+                break
+        else:
+            self.set_result("error", "Interval between pub msgs smaller than 0.2 s")
         return super().run_test()
 
 

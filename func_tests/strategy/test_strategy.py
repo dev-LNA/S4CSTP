@@ -22,6 +22,7 @@ class Test_Strategy(ABC):
         "5": logging.CRITICAL,
     }
     _min_iteration_time = 0.05  # s
+    _timeout_time = 1
 
     def __init__(self) -> None:
         logging.info(f"Running test {self._test_code}...")
@@ -73,6 +74,8 @@ class Test_Strategy(ABC):
     def set_component(self, component: component.Component) -> None:
         self._component = component
 
+    # ========================== WAIT FUNCTIONS ==========================
+
     def wait_acquisition_start(self) -> None:
         while self._component.camera.cam_status.status != "ACTIVE":
             sleep(self._min_iteration_time)
@@ -99,18 +102,18 @@ class Test_Strategy(ABC):
         logging.debug(f"This is the end of cycle {cycle}")
         return
 
-    def wait_2_pub_msgs(self) -> timedelta:
+    # ====================================================================
+
+    def calculate_pub_delay(self) -> timedelta:
         while not self._component._subscriber.new_msg:
-            pass
+            sleep(self._min_iteration_time)
         time_stamp_1 = datetime.now()
         while self._component._subscriber.new_msg:
-            pass
+            sleep(self._min_iteration_time)
         while not self._component._subscriber.new_msg:
-            pass
+            sleep(self._min_iteration_time)
         time_stamp_2 = datetime.now()
-        delay = time_stamp_2 - time_stamp_1
-        logging.debug(f"The interval between two pubs is {delay}")
-        return delay
+        return time_stamp_2 - time_stamp_1
 
     def get_log_file_lines(self) -> list[str]:
         with open(self.events_log_file) as file:
@@ -143,7 +146,7 @@ class Test_Strategy(ABC):
     def send_unexpected_command(self, cmd: str) -> None:
         time_stamp_1 = datetime.now(timezone.utc)
         self._component.send_command(cmd)
-        sleep(1)
+        sleep(self._timeout_time)
 
         lines_list = self.get_log_file_lines()
         filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
@@ -155,7 +158,7 @@ class Test_Strategy(ABC):
         return
 
     def validate_acq_config(self) -> None:
-        self.wait_2_pub_msgs()
+        sleep(self._timeout_time)
         if not self._component.validate_acq_config():
             self.set_result("error", "Unexpected acquisition configuration.")
         return

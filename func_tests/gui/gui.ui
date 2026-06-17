@@ -442,7 +442,6 @@ QComboBox {
 	color: rgb(0, 0, 0);
 }
 
-
 QLabel[led=true]{
 background-color: rgb(0, 50, 0);
 border-style: solid;
@@ -454,6 +453,8 @@ max-height: 20px;
 min-width: 20px;
 max-width: 20px;
 }
+
+/* ===================================  */
 
 QLabel[led_status=off]{
 background-color: rgb(0, 50, 0);
@@ -475,7 +476,37 @@ QLabel[text_label=true]{
 font: 12pt &quot;Arial&quot;;
 color: rgb(255, 255, 255);
 }
-</string>
+
+/* ===================================  */
+
+QPushButton {    
+	background-color: rgb(0, 170, 255);
+    color: white;   
+    border-radius: 4px;
+	min-height: 25px;
+	font: 75 8pt &quot;MS Shell Dlg 2&quot;;
+}
+
+QPushButton:pressed {
+    background-color: #1e5ea8;
+    padding-left: 2px;
+    padding-top: 2px;
+}
+
+QPushButton:disabled {
+background-color: rgb(143, 143, 143);
+}
+
+QPushButton:hover {   
+	border: 1px solid #0b4d0f;
+}
+
+QPushButton:checked {
+    padding-left: 2px;
+    padding-top: 2px;	
+	background-color: rgb(0, 97, 145);
+	
+}</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="palette">
@@ -985,9 +1016,14 @@ color: rgb(255, 255, 255);
          <item>
           <widget class="QPushButton" name="framework_start_btn">
            <property name="styleSheet">
-            <string notr="true">font: 75 8pt &quot;MS Shell Dlg 2&quot;;
-background-color: rgb(0, 170, 0);
-color: rgb(255,255,255);</string>
+            <string notr="true">QPushButton:disabled {
+background-color: rgb(143, 143, 143);
+}
+
+QPushButton {
+	background-color: rgb(38, 170, 47);
+}
+</string>
            </property>
            <property name="text">
             <string>Start</string>
@@ -997,9 +1033,14 @@ color: rgb(255,255,255);</string>
          <item>
           <widget class="QPushButton" name="framework_stop_btn">
            <property name="styleSheet">
-            <string notr="true">background-color: rgb(255, 95, 84);
-font: 75 8pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(255,255,255);</string>
+            <string notr="true">QPushButton:disabled {
+background-color: rgb(143, 143, 143);
+}
+
+QPushButton {
+background-color: rgb(241, 85, 85);
+}
+</string>
            </property>
            <property name="text">
             <string>Stop</string>
@@ -1059,7 +1100,7 @@ color: rgb(255,255,255);</string>
          <item row="0" column="0">
           <widget class="QLabel" name="emcs_log_level_2">
            <property name="text">
-            <string>log level</string>
+            <string>Log level</string>
            </property>
            <property name="text_label" stdset="0">
             <bool>true</bool>
@@ -1135,25 +1176,28 @@ color: rgb(255,255,255);</string>
            </property>
           </widget>
          </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_67">
+           <property name="text">
+            <string>Stop if error</string>
+           </property>
+           <property name="text_label" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
          <item row="2" column="1">
           <widget class="QPushButton" name="framework_stop_1st_err">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
            <property name="text">
-            <string>Ok</string>
+            <string>OK</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
            </property>
            <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_67">
-           <property name="text">
-            <string>Stop 1st err</string>
-           </property>
-           <property name="text_label" stdset="0">
             <bool>true</bool>
            </property>
           </widget>
@@ -1615,12 +1659,23 @@ color: rgb(255,255,255);</string>
            <item>
             <widget class="QPushButton" name="framework_run_tests_btn">
              <property name="styleSheet">
-              <string notr="true">font: 75 8pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(255,255,255);
-background-color: rgb(0, 170, 255);</string>
+              <string notr="true"/>
              </property>
              <property name="text">
               <string>Run</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="framework_stop_tests_btn">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>Stop</string>
              </property>
             </widget>
            </item>
@@ -1629,9 +1684,12 @@ background-color: rgb(0, 170, 255);</string>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>40</width>
+               <width>164</width>
                <height>20</height>
               </size>
              </property>

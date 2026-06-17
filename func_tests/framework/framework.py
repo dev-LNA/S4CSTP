@@ -6,6 +6,7 @@ from time import sleep
 
 import func_tests.component as component
 import func_tests.data_types as data_types
+import func_tests.gui as gui
 import func_tests.strategy as strategy
 import func_tests.utils as utils
 
@@ -13,16 +14,18 @@ import func_tests.utils as utils
 class Functionalities_Tests_Framework:
     stop_thread = False
     start_tests = False
+    stop_tests = False
+    stop_1st_err: bool
 
     def __init__(
         self,
         s4acs: component.Component,
         tests_list: Sequence[strategy.Test_Strategy],
-        stop_1st_err: bool,
+        _gui: gui.GUI,
     ) -> None:
         self.s4acs = s4acs
         self.tests_list = tests_list
-        self.stop_1st_err = stop_1st_err
+        self._gui = _gui
         self.log_dir = Path("func_tests/_logs")
         self.log_level = data_types.Log_Level.INFO
         self.log_dir.mkdir(parents=True, exist_ok=True)
@@ -85,6 +88,9 @@ class Functionalities_Tests_Framework:
             if self.start_tests is True:
                 self.clear_results()
                 self.run_tests()
+                logging.info("The tests were finished")
+                self._gui.gui_widgets.framework_run_tests_btn.setEnabled(True)
+                self._gui.gui_widgets.framework_stop_tests_btn.setDisabled(True)
                 self.start_tests = False
 
     def run_tests(self) -> None:
@@ -98,8 +104,11 @@ class Functionalities_Tests_Framework:
 
             if self.stop_1st_err and (_test.result.success == "error"):
                 logging.info("An error was found. Stopping the tests...")
-                break
-        logging.info("The tests were finished")
+                return
+            if self.stop_tests:
+                logging.info("The tests were stopped")
+                self.stop_tests = False
+                return
 
     def clear_results(self) -> None:
         for _test in self.tests_list:

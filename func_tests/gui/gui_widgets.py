@@ -28,6 +28,9 @@ class GUI_Widgets:
         self.framework_run_tests_btn = window.findChild(
             QPushButton, "framework_run_tests_btn"
         )
+        self.framework_stop_tests_btn = window.findChild(
+            QPushButton, "framework_stop_tests_btn"
+        )
 
         # ================ S4ACS ================
         self.s4acs_led_comm = window.findChild(QLabel, "s4acs_led_comm")

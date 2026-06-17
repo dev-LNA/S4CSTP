@@ -1,8 +1,6 @@
 from pathlib import Path
 from time import sleep
 
-import func_tests.data_types as data_types
-
 from .test_strategy import Test_Strategy
 
 

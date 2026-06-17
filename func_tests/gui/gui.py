@@ -21,18 +21,24 @@ class GUI(QMainWindow):
         file_path = join("func_tests", "gui", "gui.ui")
         uic.loadUi(file_path, self)  # type: ignore
         self.setWindowTitle("S4ACS Functionalities Tests Framework")
-        self.resize(400, 500)
+        self.resize(700, 500)
 
         self.gui_widgets = gui.GUI_Widgets(self)
         self.gui_widgets.framework_stop_btn.clicked.connect(self.stop_application)
         self.gui_widgets.framework_start_btn.clicked.connect(self.start_application)
         self.gui_widgets.framework_run_tests_btn.clicked.connect(self.start_tests)
-        stop_1st_err = self.gui_widgets.framework_stop_1st_err.isChecked()
+        self.gui_widgets.framework_stop_tests_btn.clicked.connect(self.stop_tests)
+        self.gui_widgets.framework_stop_1st_err.clicked.connect(
+            self.toggle_stop_1st_error
+        )
 
-        s4acs = data_types.Component_Creator().create("real")
-        tests_list = data_types.Tests_List_Creator().create("real")
+        s4acs = data_types.Component_Creator().create("fake")
+        tests_list = data_types.Tests_List_Creator().create("fake")
         self.framework = framework.Functionalities_Tests_Framework(
-            s4acs, tests_list, stop_1st_err
+            s4acs, tests_list, self
+        )
+        self.framework.stop_1st_err = (
+            self.gui_widgets.framework_stop_1st_err.isChecked()
         )
         self._thread1 = Thread(target=self.framework.run)
         self._thread2 = Thread(target=self.framework.get_status)
@@ -133,3 +139,14 @@ class GUI(QMainWindow):
 
     def start_tests(self) -> None:
         self.framework.start_tests = True
+        self.gui_widgets.framework_run_tests_btn.setDisabled(True)
+        self.gui_widgets.framework_stop_tests_btn.setDisabled(False)
+
+    def stop_tests(self) -> None:
+        self.framework.stop_tests = True
+        self.framework.start_tests = False
+
+    def toggle_stop_1st_error(self) -> None:
+        self.framework.stop_1st_err = (
+            self.gui_widgets.framework_stop_1st_err.isChecked()
+        )
