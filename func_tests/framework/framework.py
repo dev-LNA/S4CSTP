@@ -36,8 +36,8 @@ class Functionalities_Tests_Framework:
         logging.info("Framework was started")
         self.s4acs.initialize()
         logging.debug("Setting default configuration...")
-        self.s4acs.set_acquisition_config(utils.default_acq_config.copy())
         self.s4acs.set_cam_config(utils.default_cam_config.copy())
+        self.s4acs.set_acquisition_config(utils.default_acq_config.copy())
         for _test in self.tests_list:
             _test.set_component(self.s4acs)
         logging.debug("Framework was initialized succesfully")

@@ -124,6 +124,7 @@ class Component:  # pragma: no cover
         self.camera.requested_cam_config = cam_config
         cmmd = "WRITE_SETUP " + self.camera.format_cam_config()
         self.send_command(cmmd)
+        sleep(self._delay_time)
 
     def set_acquisition_config(self, acq_config: dict) -> None:
         self.camera.requested_acq_config = acq_config
