@@ -108,7 +108,7 @@ class E009(Test_Strategy):
         self._component.send_command("EXPOSE")
         self.wait_acquisition_start()
         self._component.send_command(cmd)
-        self.wait_return_to_idle()
+        self.wait_end_of_cycle(1)
         sleep(2)
         if self._component.camera.cam_status.cycles_done != 1:
             self.set_result("error", f"{cmd} command failed")

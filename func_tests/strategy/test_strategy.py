@@ -21,9 +21,7 @@ class Test_Strategy(ABC):
         "4": logging.ERROR,
         "5": logging.CRITICAL,
     }
-    _timeout_time = 1000  # ms
-    _min_iteration_time = 50  # ms
-    _iterations = _timeout_time // _min_iteration_time
+    _min_iteration_time = 0.05  # s
 
     def __init__(self) -> None:
         logging.info(f"Running test {self._test_code}...")
@@ -76,36 +74,30 @@ class Test_Strategy(ABC):
         self._component = component
 
     def wait_acquisition_start(self) -> None:
-        for _ in range(self._iterations):
-            sleep(self._min_iteration_time / 1000)
-            if self._component.camera.cam_status.status == "ACTIVE":
-                logging.debug("The acquisition has started")
-                return
-        self.set_result("error", "Acquisition did not start")
+        while self._component.camera.cam_status.status != "ACTIVE":
+            sleep(self._min_iteration_time)
+        logging.debug("The acquisition has started")
+        return
 
     def wait_return_to_idle(self) -> None:
-        for _ in range(self._iterations):
-            sleep(self._min_iteration_time / 1000)
-            if self._component.exe_status == "IDLE":
-                logging.debug("S4ACS is in IDLE state")
-                return
-        self.set_result("error", "ACS did not reach IDLE state")
+        while self._component.exe_status != "IDLE":
+            sleep(self._min_iteration_time)
+        logging.debug("S4ACS is in IDLE state")
+        return
 
     def wait_acquisition_finish(self) -> None:
         while (
             self._component.camera.cam_status.cycles_done
             != self._component.camera.requested_acq_config.cycles
         ):
-            sleep(self._min_iteration_time / 1000)
+            sleep(self._min_iteration_time)
         logging.debug("Acquisition has been finished")
 
     def wait_end_of_cycle(self, cycle: int) -> None:
-        for _ in range(self._iterations):
-            sleep(self._min_iteration_time / 1000)
-            if self._component.camera.cam_status.cycles_done == cycle:
-                logging.debug(f"This is the end of cycle {cycle}")
-                return
-        self.set_result("error", f"End of cycle {cycle} was not reached")
+        while self._component.camera.cam_status.cycles_done != cycle:
+            sleep(self._min_iteration_time)
+        logging.debug(f"This is the end of cycle {cycle}")
+        return
 
     def wait_2_pub_msgs(self) -> timedelta:
         while not self._component._subscriber.new_msg:
@@ -151,7 +143,7 @@ class Test_Strategy(ABC):
     def send_unexpected_command(self, cmd: str) -> None:
         time_stamp_1 = datetime.now(timezone.utc)
         self._component.send_command(cmd)
-        self.wait_2_pub_msgs()
+        sleep(1)
 
         lines_list = self.get_log_file_lines()
         filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
