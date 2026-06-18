@@ -1097,17 +1097,7 @@ background-color: rgb(241, 85, 85);
          <string>Framework controls</string>
         </property>
         <layout class="QFormLayout" name="formLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="emcs_log_level_2">
-           <property name="text">
-            <string>Log level</string>
-           </property>
-           <property name="text_label" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
+         <item row="1" column="1">
           <widget class="QComboBox" name="framework_log_level">
            <property name="enabled">
             <bool>true</bool>
@@ -1156,7 +1146,7 @@ background-color: rgb(241, 85, 85);
            </item>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="label_55">
            <property name="text">
             <string>Status</string>
@@ -1166,7 +1156,7 @@ background-color: rgb(241, 85, 85);
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
+         <item row="2" column="1">
           <widget class="QLineEdit" name="framework_current_status">
            <property name="enabled">
             <bool>false</bool>
@@ -1176,7 +1166,7 @@ background-color: rgb(241, 85, 85);
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="label_67">
            <property name="text">
             <string>Stop if error</string>
@@ -1186,7 +1176,7 @@ background-color: rgb(241, 85, 85);
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="3" column="1">
           <widget class="QPushButton" name="framework_stop_1st_err">
            <property name="styleSheet">
             <string notr="true"/>
@@ -1199,6 +1189,39 @@ background-color: rgb(241, 85, 85);
            </property>
            <property name="checked">
             <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="emcs_log_level_2">
+           <property name="text">
+            <string>Log level</string>
+           </property>
+           <property name="text_label" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="emcs_log_level_3">
+           <property name="text">
+            <string>On/Off</string>
+           </property>
+           <property name="text_label" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="framework_on_off_led">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="led" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="led_status" stdset="0">
+            <string>off</string>
            </property>
           </widget>
          </item>

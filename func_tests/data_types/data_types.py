@@ -312,6 +312,7 @@ class Tests_List_Creator:
                 strategy.I001(),
                 strategy.I002(),
                 strategy.I003(),
+                strategy.I005(),
                 strategy.I006(),
                 strategy.E001(),
                 strategy.E003(),
@@ -326,6 +327,6 @@ class Tests_List_Creator:
                 strategy.S001(),
             ]
         if _type == "one test":
-            return [strategy.E001()]
+            return [strategy.I005()]
         else:
             raise ValueError(f"Unknown type: {_type}")

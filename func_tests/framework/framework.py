@@ -1,6 +1,5 @@
 import logging
 import os
-import shutil
 from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,18 +33,13 @@ class Functionalities_Tests_Framework:
         self.log_dir = Path("func_tests/_logs")
         self.log_level = data_types.Log_Level.INFO
         self.log_dir.mkdir(parents=True, exist_ok=True)
+        self._prepare_imgs_folder()
         return
 
     def initialize(self) -> None:
         self.create_log_file()
         logging.info("Framework was started")
-        self.s4acs.initialize()
-        logging.debug("Setting default configuration...")
-        self.s4acs.set_cam_config(utils.default_cam_config.copy())
-        self.s4acs.set_acquisition_config(utils.default_acq_config.copy())
-        for _test in self.tests_list:
-            _test.set_s4acs(self.s4acs)
-        self._prepare_imgs_folder()
+        self._initialize_s4acs()
         logging.debug("Framework was initialized succesfully")
         return
 
@@ -89,10 +83,18 @@ class Functionalities_Tests_Framework:
         destination_folder.mkdir(exist_ok=True)
         imgs_list = os.listdir(imgs_folder)
         for img in imgs_list:
-            shutil.move(imgs_folder / img, destination_folder)
+            Path(imgs_folder / img).replace(destination_folder / img)
         new_image = np.zeros((1024, 1024))
         new_image_name = imgs_folder / f"00000000_s4c{channel}_000010.fits"
         fits.writeto(new_image_name, new_image, overwrite=True)
+
+    def _initialize_s4acs(self) -> None:
+        self.s4acs.initialize()
+        logging.debug("Setting default configuration...")
+        self.s4acs.set_cam_config(utils.default_cam_config.copy())
+        self.s4acs.set_acquisition_config(utils.default_acq_config.copy())
+        for _test in self.tests_list:
+            _test.set_s4acs(self.s4acs)
 
     # =============================================
 
