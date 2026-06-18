@@ -1,7 +1,6 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QComboBox,
-    QDateTimeEdit,
     QDoubleSpinBox,
     QLabel,
     QLineEdit,
@@ -31,6 +30,7 @@ class GUI_Widgets:
         self.framework_stop_tests_btn = window.findChild(
             QPushButton, "framework_stop_tests_btn"
         )
+        self.framework_on_off_led = window.findChild(QLabel, "framework_on_off_led")
 
         # ================ S4ACS ================
         self.s4acs_led_comm = window.findChild(QLabel, "s4acs_led_comm")

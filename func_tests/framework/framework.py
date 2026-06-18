@@ -1,9 +1,12 @@
 import logging
 import os
+import subprocess
 from collections.abc import Sequence
 from datetime import datetime, timezone
+from getpass import getuser
 from pathlib import Path
 from time import sleep
+from typing import Any
 
 import astropy.io.fits as fits
 import numpy as np
@@ -39,6 +42,7 @@ class Functionalities_Tests_Framework:
     def initialize(self) -> None:
         self.create_log_file()
         logging.info("Framework was started")
+        self._run_s4acs_exe()
         self._initialize_s4acs()
         logging.debug("Framework was initialized succesfully")
         return
@@ -96,9 +100,35 @@ class Functionalities_Tests_Framework:
         for _test in self.tests_list:
             _test.set_s4acs(self.s4acs)
 
+    def _run_s4acs_exe(self) -> None:
+        import pyautogui
+
+        logging.info("Starting S4ACS executable...")
+        window = self.is_window_open("S4ACS.vi")
+        if window is None:
+            exe = Path(f"C:/Users/{getuser()}/Desktop/S4ACSv1.56.2/S4ACS.exe")
+            subprocess.Popen([str(exe)])
+
+        else:
+            window.set_focus()
+        sleep(2)
+        pyautogui.hotkey("ctrl", "r")
+
+    @staticmethod
+    def is_window_open(title: str) -> Any | None:
+        from pywinauto import Desktop
+
+        for window in Desktop(backend="uia").windows():
+            if title in window.window_text():
+                return window
+        return None
+
     # =============================================
 
     def end(self) -> None:
+        if self.s4acs.return_comm_status():
+            self.s4acs.send_command("STOP_APP")
+            sleep(0.5)
         self.s4acs.end()
         logging.info("Framework was stopped")
 

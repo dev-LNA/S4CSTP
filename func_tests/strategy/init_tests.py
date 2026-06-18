@@ -85,7 +85,6 @@ class I005(Test_Strategy):
         self.wait_acquisition_finish()
         img_name = self._s4acs.camera.cam_status.last_image_name
         img_idx = img_name.split(".fits")[0].split("_")[2]
-        print(img_idx)
         if img_idx != "000011":
             self.set_result("error", f"Unexpected image index: {img_idx}")
         return super().run_test()

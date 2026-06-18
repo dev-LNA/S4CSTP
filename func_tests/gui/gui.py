@@ -121,7 +121,10 @@ class GUI(QMainWindow):
 
     def start_application(self) -> None:
         self._START_BTN_CLICKED = True
+        self.gui_widgets.framework_on_off_led.setProperty("led_status", "on")
+        self._update_gui_obj(self.gui_widgets.framework_on_off_led)
         self.gui_widgets.framework_start_btn.setDisabled(True)
+
         log_level = self._return_log_level()
         self.framework.log_level = log_level
         self.framework.initialize()

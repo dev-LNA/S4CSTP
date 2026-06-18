@@ -1205,7 +1205,7 @@ background-color: rgb(241, 85, 85);
          <item row="0" column="0">
           <widget class="QLabel" name="emcs_log_level_3">
            <property name="text">
-            <string>On/Off</string>
+            <string>App On/Off</string>
            </property>
            <property name="text_label" stdset="0">
             <bool>true</bool>
