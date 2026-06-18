@@ -7,12 +7,7 @@ import func_tests.devices as devices
 import func_tests.state as state
 
 
-class Component:  # pragma: no cover
-    """
-    The Base Component provides the basic functionality of storing a mediator's
-    instance inside component objects.
-    """
-
+class S4ACS:
     _delay_time = 0.1
 
     def __init__(
@@ -137,7 +132,7 @@ class Component:  # pragma: no cover
         return self.camera.requested_acq_config == self.camera.received_acq_config
 
 
-class Fake_Component(Component):
+class Fake_Component(S4ACS):
     @property
     def status(self) -> dict | None:
         return None

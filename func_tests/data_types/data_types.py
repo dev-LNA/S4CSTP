@@ -273,7 +273,7 @@ class Test_Result(BaseModel):
 
 
 class Component_Creator:
-    def create(self, _type: str) -> component.Component:
+    def create(self, _type: str) -> component.S4ACS:
         """create a Component
 
         Args:
@@ -294,7 +294,7 @@ class Component_Creator:
             subscriber = comm_channel.ZeroMQ_SUB(end_point, context)
             end_point = End_Point(ip="200.131.64.25", port=5556)
             requester = comm_channel.ZeroMQ_REQ(end_point, context)
-            return component.Component(subscriber, requester)
+            return component.S4ACS(subscriber, requester)
 
         else:
             raise ValueError(f"Unknown type: {_type}")

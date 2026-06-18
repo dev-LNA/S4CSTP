@@ -19,7 +19,7 @@ class Functionalities_Tests_Framework:
 
     def __init__(
         self,
-        s4acs: component.Component,
+        s4acs: component.S4ACS,
         tests_list: Sequence[strategy.Test_Strategy],
         _gui: gui.GUI,
     ) -> None:
@@ -39,7 +39,7 @@ class Functionalities_Tests_Framework:
         self.s4acs.set_cam_config(utils.default_cam_config.copy())
         self.s4acs.set_acquisition_config(utils.default_acq_config.copy())
         for _test in self.tests_list:
-            _test.set_component(self.s4acs)
+            _test.set_s4acs(self.s4acs)
         logging.debug("Framework was initialized succesfully")
         return
 
@@ -96,7 +96,7 @@ class Functionalities_Tests_Framework:
     def run_tests(self) -> None:
         logging.info("Starting the tests...")
         for _test in self.tests_list:
-            _test._component.send_command(
+            _test._s4acs.send_command(
                 f"====== This is the test {_test._test_code} ======"
             )
             _test.set_result("warn", "")
