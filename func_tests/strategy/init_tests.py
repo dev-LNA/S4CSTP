@@ -8,11 +8,11 @@ class I001(Test_Strategy):
     _test_code = "I001"
 
     def run_test(self) -> None:
-        self._component.send_command("EXPOSE")
+        self._s4acs.send_command("EXPOSE")
         self.wait_acquisition_start()
         self.wait_acquisition_finish()
         sleep(2)
-        cam_status = self._component.camera.cam_status
+        cam_status = self._s4acs.camera.cam_status
         image_name = cam_status.last_image_name
         image_path = self.imgs_folder / image_name
         self._validate_channel(image_name)
@@ -54,7 +54,7 @@ class I002(Test_Strategy):
     _test_code = "I002"
 
     def run_test(self) -> None:
-        comm_status = self._component.camera.comm_status
+        comm_status = self._s4acs.camera.comm_status
         for key, val in comm_status.model_dump().items():
             if not val:
                 self.set_result(
@@ -81,7 +81,7 @@ class I006(Test_Strategy):
     _test_code = "I006"
 
     def run_test(self) -> None:
-        cam_status = self._component.camera.cam_status
+        cam_status = self._s4acs.camera.cam_status
         if not cam_status.power:
             self.set_result("error", "CCD camera is off")
 

@@ -13,14 +13,7 @@ import func_tests.utils as utils
 
 class Test_Strategy(ABC):
     _test_code = "A000"
-    _log_levels = {
-        "0": "STATUS",
-        "1": logging.DEBUG,
-        "2": logging.INFO,
-        "3": logging.WARNING,
-        "4": logging.ERROR,
-        "5": logging.CRITICAL,
-    }
+
     _min_iteration_time = 0.05  # s
     _timeout_time = 1
 
@@ -30,8 +23,15 @@ class Test_Strategy(ABC):
         self._commands_list: list[data_types.Command]
         self.result = data_types.Test_Result(success="off", test_code="", message="")
         self._create_today_str()
-        self._read_config_file()
-        self.events_log_file = self.log_folder / (self._today_str + "_events.log")
+        cfg_file_content = utils.read_config_file()
+        self.events_log_file = cfg_file_content["log_folder"] / (
+            self._today_str + "_events.log"
+        )
+        self.imgs_folder = cfg_file_content["imgs_folder"]
+        self.channel = cfg_file_content["channel"]
+        self.acs_mode = cfg_file_content["acs_mode"]
+        self.acs_log_level = cfg_file_content["log_level"]
+        self.log_folder = cfg_file_content["log_folder"]
         self._default_cam_config = utils.default_cam_config.copy()
         self._default_acq_config = utils.default_acq_config.copy()
 
@@ -47,24 +47,6 @@ class Test_Strategy(ABC):
         if now.hour < 12:
             now -= timedelta(1)
         self._today_str = now.strftime("%Y%m%d")
-
-    def _read_config_file(self) -> None:
-        section_name = "channel configuration"
-        cfg_file_folder = Path(f"C:/Users/{getpass.getuser()}/SPARC4/ACS")
-        cfg_file = cfg_file_folder / "acs_config.cfg"
-        if not cfg_file.exists():
-            raise RuntimeError(f"file {cfg_file} not found")
-        config = configparser.ConfigParser()
-        config.read(cfg_file)
-        self.channel = config.get(section_name, "channel")
-        self.acs_mode = config.get(section_name, "s4acs mode") == 1
-        self.acs_log_level = data_types.Log_Level(
-            self._log_levels[config.get(section_name, "log level")]
-        )
-        log_folder = config.get(section_name, "log file path")
-        self.log_folder = Path(log_folder.replace('"', ""))
-        imgs_folder = config.get(section_name, "image path")
-        self.imgs_folder = Path(imgs_folder.replace('"', ""))
 
     @abstractmethod
     def run_test(self) -> None:
