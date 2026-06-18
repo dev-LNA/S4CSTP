@@ -11,13 +11,13 @@ class S001(Test_Strategy):
 
     def run_test(self) -> None:
         self._default_acq_config["COOLER_POWER_STATUS"] = 1
-        self._component.set_acquisition_config(self._default_acq_config)
+        self._s4acs.set_acquisition_config(self._default_acq_config)
         self.validate_acq_config()
-        self._component.send_command("STOP_APP")
+        self._s4acs.send_command("STOP_APP")
         sleep(2)
         self._default_acq_config["COOLER_POWER_STATUS"] = 0
-        self._component.camera.requested_acq_config = self._default_acq_config
-        if not self._component.validate_acq_config():
+        self._s4acs.camera.requested_acq_config = self._default_acq_config
+        if not self._s4acs.validate_acq_config():
             self.set_result("error", "Unexpected acquisition configuration")
 
         return super().run_test()

@@ -301,32 +301,38 @@ class Component_Creator:
 
 
 class Tests_List_Creator:
-    def create(self, _type: str) -> Sequence[strategy.Test_Strategy]:
+    tests_list = [
+        strategy.I001,
+        strategy.I002,
+        strategy.I003,
+        strategy.I005,
+        strategy.I006,
+        strategy.E001,
+        strategy.E003,
+        strategy.E005,
+        strategy.E007,
+        strategy.E009,
+        strategy.E010,
+        strategy.E011,
+        strategy.E012,
+        strategy.E013,
+        strategy.E019,
+        strategy.S001,
+    ]
+
+    def create(
+        self, _type: str, test_name: str = ""
+    ) -> Sequence[strategy.Test_Strategy]:
         if _type == "fake":
             return [strategy.Fake_Positive_Test() for _ in range(17)] + [
                 strategy.Fake_Negative_Test() for _ in range(10)
             ]
 
-        if _type == "real":
-            return [
-                strategy.I001(),
-                strategy.I002(),
-                strategy.I003(),
-                strategy.I005(),
-                strategy.I006(),
-                strategy.E001(),
-                strategy.E003(),
-                strategy.E005(),
-                strategy.E007(),
-                strategy.E009(),
-                strategy.E010(),
-                strategy.E011(),
-                strategy.E012(),
-                strategy.E013(),
-                strategy.E019(),
-                strategy.S001(),
-            ]
+        if _type == "all tests":
+            return [_test() for _test in self.tests_list]
         if _type == "one test":
-            return [strategy.I005()]
-        else:
-            raise ValueError(f"Unknown type: {_type}")
+            for _test in self.tests_list:
+                if _test.__name__ == test_name:
+                    return [_test()]
+            raise ValueError(f"Test does no found: {test_name}")
+        raise ValueError(f"Unknown type: {_type}")

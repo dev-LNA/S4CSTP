@@ -1,4 +1,5 @@
 import sys
+import warnings
 from os.path import join
 from threading import Thread
 
@@ -9,6 +10,8 @@ from PyQt6.QtWidgets import QMainWindow
 import func_tests.data_types as data_types
 import func_tests.framework as framework
 import func_tests.gui as gui
+
+warnings.filterwarnings("ignore", message="Revert to STA COM threading mode")
 
 
 class GUI(QMainWindow):
@@ -33,7 +36,7 @@ class GUI(QMainWindow):
         )
 
         s4acs = data_types.Component_Creator().create("real")
-        tests_list = data_types.Tests_List_Creator().create("one test")
+        tests_list = data_types.Tests_List_Creator().create("one test", "I001")
         self.framework = framework.Functionalities_Tests_Framework(
             s4acs, tests_list, self
         )

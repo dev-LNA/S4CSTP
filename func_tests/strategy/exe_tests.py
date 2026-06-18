@@ -10,7 +10,7 @@ class E001(Test_Strategy):
     _test_code = "E001"
 
     def run_test(self) -> None:
-        for _ in range(10):
+        for _ in range(20):
             delay = self.calculate_pub_delay()
             if delay.total_seconds() > 1:
                 break
@@ -18,7 +18,7 @@ class E001(Test_Strategy):
             self.set_result("error", "Interval between pub msgs smaller than 1 s")
         self._s4acs.send_command("EXPOSE")
         self.wait_acquisition_start()
-        for _ in range(10):
+        for _ in range(20):
             delay = self.calculate_pub_delay()
             if delay.microseconds > 0.2:
                 break

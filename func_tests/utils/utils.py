@@ -1,7 +1,8 @@
 import configparser
-import getpass
 import logging
+import subprocess
 from pathlib import Path
+from time import sleep
 from typing import Any
 
 import func_tests.data_types as data_types
@@ -51,7 +52,7 @@ _log_levels = {
 
 def read_config_file() -> dict[str, Any]:
     section_name = "channel configuration"
-    cfg_file_folder = Path(f"C:/Users/{getpass.getuser()}/SPARC4/ACS")
+    cfg_file_folder = Path.home() / "SPARC4" / "ACS"
     cfg_file = cfg_file_folder / "acs_config.cfg"
     cfg_file_content = {}
     if not cfg_file.exists():
@@ -68,3 +69,26 @@ def read_config_file() -> dict[str, Any]:
     imgs_folder = config.get(section_name, "image path")
     cfg_file_content["imgs_folder"] = Path(imgs_folder.replace('"', ""))
     return cfg_file_content
+
+
+def run_s4acs_exe() -> None:
+    import pyautogui
+
+    logging.info("Starting S4ACS executable...")
+    window = _is_window_open("S4ACS.vi")
+    if window is None:
+        exe = Path.home() / "Desktop" / "S4ACSv1.56.2" / "S4ACS.exe"
+        subprocess.Popen([str(exe)])
+    else:
+        window.set_focus()
+    sleep(2)
+    pyautogui.hotkey("ctrl", "r")
+
+
+def _is_window_open(title: str) -> Any | None:
+    from pywinauto import Desktop
+
+    for window in Desktop(backend="uia").windows():
+        if title in window.window_text():
+            return window
+    return None
