@@ -1,8 +1,13 @@
 import logging
+import os
+import shutil
 from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from time import sleep
+
+import astropy.io.fits as fits
+import numpy as np
 
 import func_tests.component as component
 import func_tests.data_types as data_types
@@ -40,6 +45,7 @@ class Functionalities_Tests_Framework:
         self.s4acs.set_acquisition_config(utils.default_acq_config.copy())
         for _test in self.tests_list:
             _test.set_s4acs(self.s4acs)
+        self._prepare_imgs_folder()
         logging.debug("Framework was initialized succesfully")
         return
 
@@ -73,6 +79,22 @@ class Functionalities_Tests_Framework:
                 "----------------------------------------------------------------------------------------\n\n"
             )
         return
+
+    def _prepare_imgs_folder(self) -> None:
+        logging.debug("Preparing images folder")
+        cfg_file_content = utils.read_config_file()
+        channel = cfg_file_content["channel"]
+        imgs_folder = cfg_file_content["imgs_folder"]
+        destination_folder = imgs_folder / Path("../_temp")
+        destination_folder.mkdir(exist_ok=True)
+        imgs_list = os.listdir(imgs_folder)
+        for img in imgs_list:
+            shutil.move(imgs_folder / img, destination_folder)
+        new_image = np.zeros((1024, 1024))
+        new_image_name = imgs_folder / f"00000000_s4c{channel}_000010.fits"
+        fits.writeto(new_image_name, new_image, overwrite=True)
+
+    # =============================================
 
     def end(self) -> None:
         self.s4acs.end()
