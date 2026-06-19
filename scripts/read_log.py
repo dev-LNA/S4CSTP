@@ -39,17 +39,17 @@ logging.info(f"The python interpreter used in this run is {sys.executable}")
 
 
 # --------- Read CFG file ---------------
-username = cwd.split("\\")[2]
-config_file = Path(f"C:/Users/{username}/SPARC4/ACS") / "acs_config.cfg"
+section_name = "channel configuration"
+config_file = Path.home() / "SPARC4" / "ACS" / "acs_config.cfg"
 if not config_file.exists():
     logging.error(f"file {config_file} not found")
     sys.exit()
 config = configparser.ConfigParser()
 config.read(config_file)
 logging.info(f"The file {config_file} has been read.")
-channel = config.get("channel configuration", "channel")
+channel = config.get(section_name, "channel")
 logging.info(f"This machine correspons to ACS{channel}.")
-log_folder = config.get("channel configuration", "log file path").replace('"', "")
+log_folder = config.get(section_name, "log file path")
 log_folder = Path(log_folder)
 logging.info(f"The path in which the log files are saved is {log_folder}.")
 
