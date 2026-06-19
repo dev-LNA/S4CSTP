@@ -50,7 +50,7 @@ _log_levels = {
 }
 
 
-def read_config_file() -> dict[str, Any]:
+def read_config_file() -> data_types.S4ACS_Cfg_File:
     section_name = "channel configuration"
     cfg_file_folder = Path.home() / "SPARC4" / "ACS"
     cfg_file = cfg_file_folder / "acs_config.cfg"
@@ -59,15 +59,16 @@ def read_config_file() -> dict[str, Any]:
         raise RuntimeError(f"file {cfg_file} not found")
     config = configparser.ConfigParser()
     config.read(cfg_file)
-    cfg_file_content["channel"] = config.get(section_name, "channel")
-    cfg_file_content["acs_mode"] = config.get(section_name, "s4acs mode") == 1
-    cfg_file_content["log_level"] = data_types.Log_Level(
-        _log_levels[config.get(section_name, "log level")]
+
+    cfg_file_content = data_types.S4ACS_Cfg_File(
+        channel=int(config.get(section_name, "channel")),
+        s4acs_mode=config.get(section_name, "s4acs mode") == 1,
+        image_path=Path(config.get(section_name, "image path").replace('"', "")),
+        log_file_path=Path(config.get(section_name, "log file path").replace('"', "")),
+        log_level=data_types.Log_Level(
+            _log_levels[config.get(section_name, "log level")]
+        ),
     )
-    log_folder = config.get(section_name, "log file path")
-    cfg_file_content["log_folder"] = Path(log_folder.replace('"', ""))
-    imgs_folder = config.get(section_name, "image path")
-    cfg_file_content["imgs_folder"] = Path(imgs_folder.replace('"', ""))
     return cfg_file_content
 
 

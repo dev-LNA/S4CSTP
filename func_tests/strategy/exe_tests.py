@@ -39,7 +39,7 @@ class E003(Test_Strategy):
         with open(self.events_log_file) as file:
             file_content = file.read()
         for level in data_types.Log_Level:
-            if self.acs_log_level.value > level.value:
+            if self.cfg_file_content.log_level.value > level.value:
                 continue
             if level.name not in file_content:
                 self.set_result("error", f"Log level {level.name} not found")

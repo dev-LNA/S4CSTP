@@ -1,12 +1,9 @@
 import logging
 import os
-import subprocess
 from collections.abc import Sequence
 from datetime import datetime, timezone
-from getpass import getuser
 from pathlib import Path
 from time import sleep
-from typing import Any
 
 import astropy.io.fits as fits
 import numpy as np
@@ -81,8 +78,8 @@ class Functionalities_Tests_Framework:
     def _prepare_imgs_folder(self) -> None:
         logging.debug("Preparing images folder")
         cfg_file_content = utils.read_config_file()
-        channel = cfg_file_content["channel"]
-        imgs_folder = cfg_file_content["imgs_folder"]
+        channel = cfg_file_content.channel
+        imgs_folder = cfg_file_content.image_path
         destination_folder = imgs_folder / Path("../_temp")
         destination_folder.mkdir(exist_ok=True)
         imgs_list = os.listdir(imgs_folder)

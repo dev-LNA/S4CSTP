@@ -7,7 +7,7 @@ These tests should be run before releasing a new S4ACS version
 - [x] **I003** - Three log files should be created: the events log file, errors log file, and keywords log file.
 - [ ] **I004** - S4ACS should validate the provided path for the images folder.
 - [ ] **I005** - The index of the last acquired image inside the folder should be determined.
-- [x] **I006** - The camera should be initialized succesfully.
+- [x] **I006** - S4ACS must not run if it was set to the real mode and the iXon cameras was not recognized. Otherwise, the camera should be initialized succesfully.
 
 # When S4ACS is executed
 

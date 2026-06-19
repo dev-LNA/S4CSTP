@@ -2,6 +2,7 @@ import logging
 from collections.abc import Sequence
 from enum import Enum, IntEnum, StrEnum, auto
 from ipaddress import IPv4Address, IPv6Address
+from pathlib import Path
 
 import zmq
 from pydantic import BaseModel, Field, field_validator
@@ -241,6 +242,14 @@ class Command:
         self._valid = self.command_len <= 3
         for idx, word in enumerate(splitted_command):
             self.__dict[f"field{idx + 1}"] = word
+
+
+class S4ACS_Cfg_File(BaseModel):
+    channel: int
+    s4acs_mode: int
+    image_path: Path
+    log_file_path: Path
+    log_level: Log_Level
 
 
 class End_Point(BaseModel):

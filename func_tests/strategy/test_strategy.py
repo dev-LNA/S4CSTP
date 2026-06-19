@@ -20,15 +20,11 @@ class Test_Strategy(ABC):
         self._commands_list: list[data_types.Command]
         self.result = data_types.Test_Result(success="off", test_code="", message="")
         self._create_today_str()
-        cfg_file_content = utils.read_config_file()
-        self.events_log_file = cfg_file_content["log_folder"] / (
+        self.cfg_file_content = utils.read_config_file()
+        self.events_log_file = self.cfg_file_content.log_file_path / (
             self._today_str + "_events.log"
         )
-        self.imgs_folder = cfg_file_content["imgs_folder"]
-        self.channel = cfg_file_content["channel"]
-        self.acs_mode = cfg_file_content["acs_mode"]
-        self.acs_log_level = cfg_file_content["log_level"]
-        self.log_folder = cfg_file_content["log_folder"]
+
         self._default_cam_config = utils.default_cam_config.copy()
         self._default_acq_config = utils.default_acq_config.copy()
 
@@ -52,6 +48,37 @@ class Test_Strategy(ABC):
 
     def set_s4acs(self, component: component.S4ACS) -> None:
         self._s4acs = component
+
+    def send_unexpected_command(self, cmd: str) -> None:
+        time_stamp_1 = datetime.now(timezone.utc)
+        self._s4acs.send_command(cmd)
+        sleep(self._timeout_time)
+
+        lines_list = self.get_log_file_lines()
+        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
+        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
+        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+        if f"The {cmd} command was ignored" != filtered_log_lines[0]:
+            self.set_result("error", f"Log msg related to {cmd} cmd not found")
+        return
+
+    def validate_acq_config(self) -> None:
+        sleep(self._timeout_time)
+        if not self._s4acs.validate_acq_config():
+            self.set_result("error", "Unexpected acquisition configuration.")
+        return
+
+    def calculate_pub_delay(self) -> timedelta:
+        while not self._s4acs._subscriber.new_msg:
+            sleep(self._min_iteration_time)
+        time_stamp_1 = datetime.now()
+        while self._s4acs._subscriber.new_msg:
+            sleep(self._min_iteration_time)
+        while not self._s4acs._subscriber.new_msg:
+            sleep(self._min_iteration_time)
+        time_stamp_2 = datetime.now()
+        return time_stamp_2 - time_stamp_1
 
     # ========================== WAIT FUNCTIONS ==========================
 
@@ -81,18 +108,7 @@ class Test_Strategy(ABC):
         logging.debug(f"This is the end of cycle {cycle}")
         return
 
-    # ====================================================================
-
-    def calculate_pub_delay(self) -> timedelta:
-        while not self._s4acs._subscriber.new_msg:
-            sleep(self._min_iteration_time)
-        time_stamp_1 = datetime.now()
-        while self._s4acs._subscriber.new_msg:
-            sleep(self._min_iteration_time)
-        while not self._s4acs._subscriber.new_msg:
-            sleep(self._min_iteration_time)
-        time_stamp_2 = datetime.now()
-        return time_stamp_2 - time_stamp_1
+    # ========================== LOG FILE =============================
 
     def get_log_file_lines(self) -> list[str]:
         with open(self.events_log_file) as file:
@@ -122,25 +138,7 @@ class Test_Strategy(ABC):
             return [""]
         return [line.split("--> ")[1] for line in lines_list]
 
-    def send_unexpected_command(self, cmd: str) -> None:
-        time_stamp_1 = datetime.now(timezone.utc)
-        self._s4acs.send_command(cmd)
-        sleep(self._timeout_time)
-
-        lines_list = self.get_log_file_lines()
-        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
-        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
-        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-
-        if f"The {cmd} command was ignored" != filtered_log_lines[0]:
-            self.set_result("error", f"Log msg related to {cmd} cmd not found")
-        return
-
-    def validate_acq_config(self) -> None:
-        sleep(self._timeout_time)
-        if not self._s4acs.validate_acq_config():
-            self.set_result("error", "Unexpected acquisition configuration.")
-        return
+    # ========================== CFG FILE =============================
 
 
 class Fake_Positive_Test(Test_Strategy):
