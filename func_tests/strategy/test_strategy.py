@@ -108,6 +108,20 @@ class Test_Strategy(ABC):
         logging.debug(f"This is the end of cycle {cycle}")
         return
 
+    def wait_comm(self, condition: bool) -> bool:
+        for _ in range(80):
+            if self._s4acs.return_comm_status() is condition:
+                logging.debug("Communication condition was reached")
+                return True
+            sleep(self._min_iteration_time)
+        return False
+
+    def wait_cam_on(self) -> None:
+        while not self._s4acs.camera.cam_status.power:
+            sleep(self._min_iteration_time)
+        logging.debug("The cameras was initialized")
+        return
+
     # ========================== LOG FILE =============================
 
     def get_log_file_lines(self) -> list[str]:

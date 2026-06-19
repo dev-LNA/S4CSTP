@@ -30,10 +30,10 @@ class I001(Test_Strategy):
             self.set_result("error", f"Unexpected instrument channel: {acs_channel}")
 
     def _validate_acs_mode(self, acs_mode: bool) -> None:
-        if acs_mode != self.cfg_file_content.s4acs_mode:
+        if acs_mode != self.cfg_file_content.acs_mode:
             self.set_result(
                 "error",
-                f"S4ACS is not in {'real' if self.cfg_file_content.s4acs_mode else 'simulated'} mode.",
+                f"S4ACS is not in {'real' if self.cfg_file_content.acs_mode else 'simulated'} mode.",
             )
 
     def _validate_image_path(self, image_path: Path) -> None:
@@ -96,9 +96,24 @@ class I006(Test_Strategy):
     _test_code = "I006"
 
     def run_test(self) -> None:
+        self._s4acs.send_command("STOP_APP")
+        sleep(1)
+
         cfg_file_name = "_acs_config.cfg"
         cfg_file_content = utils.read_config_file()
-        # cfg_file_content.image_path = cfg_file_content.image_path.parent / "wrong_path"
         utils.write_cfg_file(cfg_file_content, cfg_file_name)
+        cfg_file_content.acs_mode = 1
+        utils.write_cfg_file(cfg_file_content)
+        utils.run_s4acs_exe()
+        if not self.wait_comm(True):
+            self.set_result("error", "S4ACS did not initialize")
+
+        if not self.wait_comm(False):
+            self.set_result("error", "S4ACS initialized without a camera")
+
+        cfg_file_name = "_acs_config.cfg"
+        cfg_file_content = utils.read_config_file(cfg_file_name)
+        utils.write_cfg_file(cfg_file_content)
+        utils.run_s4acs_exe()
 
         return super().run_test()

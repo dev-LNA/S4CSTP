@@ -50,10 +50,10 @@ _log_levels = {
 }
 
 
-def read_config_file() -> data_types.S4ACS_Cfg_File:
+def read_config_file(file_name: str = "acs_config.cfg") -> data_types.S4ACS_Cfg_File:
     section_name = "channel configuration"
     cfg_file_folder = Path.home() / "SPARC4" / "ACS"
-    cfg_file = cfg_file_folder / "acs_config.cfg"
+    cfg_file = cfg_file_folder / file_name
     cfg_file_content = {}
     if not cfg_file.exists():
         raise RuntimeError(f"file {cfg_file} not found")
@@ -62,9 +62,9 @@ def read_config_file() -> data_types.S4ACS_Cfg_File:
 
     cfg_file_content = data_types.S4ACS_Cfg_File(
         channel=int(config.get(section_name, "channel")),
-        s4acs_mode=config.get(section_name, "s4acs mode") == 1,
-        image_path=Path(config.get(section_name, "image path").replace('"', "")),
-        log_file_path=Path(config.get(section_name, "log file path").replace('"', "")),
+        acs_mode=config.get(section_name, "ACS mode") == 1,
+        image_path=Path(config.get(section_name, "image path")),
+        log_file_path=Path(config.get(section_name, "log file path")),
         log_level=data_types.Log_Level(
             _log_levels[config.get(section_name, "log level")]
         ),

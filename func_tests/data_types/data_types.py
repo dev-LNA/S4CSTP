@@ -3,6 +3,7 @@ from collections.abc import Sequence
 from enum import Enum, IntEnum, StrEnum, auto
 from ipaddress import IPv4Address, IPv6Address
 from pathlib import Path
+from typing import Any
 
 import zmq
 from pydantic import BaseModel, Field, field_validator
@@ -246,13 +247,17 @@ class Command:
 
 class S4ACS_Cfg_File(BaseModel):
     channel: int
-    s4acs_mode: int
+    acs_mode: int
     image_path: Path
     log_file_path: Path
     log_level: Log_Level
 
-    def to_sparc4_format(self) -> dict:
-        return self.model_dump()
+    def to_sparc4_format(self) -> dict[str, Any]:
+        new_dict = {
+            key.replace("_", " "): val for key, val in self.model_dump().items()
+        }
+        new_dict["log level"] //= 10
+        return new_dict
 
 
 class End_Point(BaseModel):
