@@ -72,6 +72,19 @@ def read_config_file() -> data_types.S4ACS_Cfg_File:
     return cfg_file_content
 
 
+def write_cfg_file(
+    new_cfg: data_types.S4ACS_Cfg_File, file_name: str = "acs_config.cfg"
+) -> None:
+    cfg_file_folder = Path.home() / "SPARC4" / "ACS"
+    cfg_file = cfg_file_folder / file_name
+    config = configparser.ConfigParser()
+    config["channel configuration"] = new_cfg.to_sparc4_format()
+    with open(cfg_file, "w") as file:
+        config.write(file)
+
+    return
+
+
 def run_s4acs_exe() -> None:
     import pyautogui
 

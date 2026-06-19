@@ -251,6 +251,9 @@ class S4ACS_Cfg_File(BaseModel):
     log_file_path: Path
     log_level: Log_Level
 
+    def to_sparc4_format(self) -> dict:
+        return self.model_dump()
+
 
 class End_Point(BaseModel):
     ip: str

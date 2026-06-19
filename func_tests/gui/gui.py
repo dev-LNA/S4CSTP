@@ -36,8 +36,8 @@ class GUI(QMainWindow):
         )
 
         s4acs = data_types.Component_Creator().create("real")
-        # tests_list = data_types.Tests_List_Creator().create("one test", "I006")
-        tests_list = data_types.Tests_List_Creator().create("all tests")
+        tests_list = data_types.Tests_List_Creator().create("one test", "I006")
+        # tests_list = data_types.Tests_List_Creator().create("all tests")
         self.framework = framework.Functionalities_Tests_Framework(
             s4acs, tests_list, self
         )

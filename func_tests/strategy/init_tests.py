@@ -1,6 +1,8 @@
 from pathlib import Path
 from time import sleep
 
+import func_tests.utils as utils
+
 from .test_strategy import Test_Strategy
 
 
@@ -94,8 +96,9 @@ class I006(Test_Strategy):
     _test_code = "I006"
 
     def run_test(self) -> None:
-        cam_status = self._s4acs.camera.cam_status
-        if not cam_status.power:
-            self.set_result("error", "CCD camera is off")
+        cfg_file_name = "_acs_config.cfg"
+        cfg_file_content = utils.read_config_file()
+        # cfg_file_content.image_path = cfg_file_content.image_path.parent / "wrong_path"
+        utils.write_cfg_file(cfg_file_content, cfg_file_name)
 
         return super().run_test()
