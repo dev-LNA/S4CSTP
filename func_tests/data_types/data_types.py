@@ -322,6 +322,7 @@ class Tests_List_Creator:
         strategy.I001,
         strategy.I002,
         strategy.I003,
+        strategy.I004,
         strategy.I005,
         strategy.I006,
         strategy.E001,
@@ -335,6 +336,11 @@ class Tests_List_Creator:
         strategy.E013,
         strategy.E019,
         strategy.S001,
+    ]
+
+    complex_tests = [
+        strategy.I004,
+        strategy.I006,
     ]
 
     def create(

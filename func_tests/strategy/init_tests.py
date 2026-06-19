@@ -79,6 +79,35 @@ class I003(Test_Strategy):
         return super().run_test()
 
 
+class I004(Test_Strategy):
+    _test_code = "I004"
+
+    def run_test(self) -> None:
+        self._s4acs.send_command("STOP_APP")
+        sleep(1)
+
+        cfg_file_name = "_acs_config.cfg"
+        cfg_file_content = utils.read_config_file()
+        utils.write_cfg_file(cfg_file_content, cfg_file_name)
+        cfg_file_content.image_path = cfg_file_content.image_path.parent / "wrong_path"
+        utils.write_cfg_file(cfg_file_content)
+        utils.run_s4acs_exe()
+        if not self.wait_comm(True):
+            self.set_result("error", "S4ACS did not initialize")
+
+        if not self.wait_comm(False):
+            self.set_result("error", "S4ACS initialized using a wrong path")
+
+        cfg_file_name = "_acs_config.cfg"
+        cfg_file_content = utils.read_config_file(cfg_file_name)
+        utils.write_cfg_file(cfg_file_content)
+        utils.run_s4acs_exe()
+
+        self.wait_cam_on()
+
+        return super().run_test()
+
+
 class I005(Test_Strategy):
     _test_code = "I005"
 
@@ -115,5 +144,7 @@ class I006(Test_Strategy):
         cfg_file_content = utils.read_config_file(cfg_file_name)
         utils.write_cfg_file(cfg_file_content)
         utils.run_s4acs_exe()
+
+        self.wait_cam_on()
 
         return super().run_test()
