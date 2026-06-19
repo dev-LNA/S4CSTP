@@ -1,4 +1,4 @@
-<diagram program="umletino" version="15.1"><zoom_level>5</zoom_level><help_text></help_text><element><id>UMLClass</id><coordinates><x>185</x><y>502</y><w>120</w><h>90</h></coordinates><panel_attributes>&lt;Interface&gt;
+<diagram program="umletino" version="15.1"><zoom_level>12</zoom_level><help_text></help_text><element><id>UMLClass</id><coordinates><x>348</x><y>1032</y><w>288</w><h>216</h></coordinates><panel_attributes>&lt;Interface&gt;
 /Communication_Channel/
 --
 - received_msg: str
@@ -11,25 +11,25 @@
 /+ receive_message(): void/
 /+ close_communication(): void/
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>435</x><y>502</y><w>115</w><h>65</h></coordinates><panel_attributes>S4ACS
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>948</x><y>1032</y><w>276</w><h>156</h></coordinates><panel_attributes>S4ACS
 --
 - camera: Camera
 --
 + start_acquisition(): void
 + set_op_mode(op_mode: dict): void
 + stop_acquisition(): void
-+ abort_acquisition(): void</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>562</y><w>15</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>435</x><y>592</y><w>120</w><h>40</h></coordinates><panel_attributes>Camera
++ abort_acquisition(): void</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1080</x><y>1176</y><w>36</w><h>96</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>948</x><y>1248</y><w>288</w><h>96</h></coordinates><panel_attributes>Camera
 --
 - cam_config: Camera_Configuration
 - acq_config: Acquisition_Configuration
-- cam_status: Camera_Status</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>335</x><y>707</y><w>75</w><h>50</h></coordinates><panel_attributes>Camera_Configuration
+- cam_status: Camera_Status</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>708</x><y>1524</y><w>180</w><h>120</h></coordinates><panel_attributes>Camera_Configuration
 --
 - readout_rate: int
 - vshift_speed: int
 - sub_image: tuple
 - binning: int
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>365</x><y>627</y><w>140</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>260;10;260;110;10;110;10;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>690</x><y>427</y><w>130</w><h>65</h></coordinates><panel_attributes>Command
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>780</x><y>1332</y><w>336</w><h>216</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>260;10;260;110;10;110;10;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1560</x><y>852</y><w>312</w><h>156</h></coordinates><panel_attributes>Command
 --
 + field1: str
 + field2: str
@@ -38,8 +38,7 @@
 - valid_command: bool
 --
 + validate_command(command: str): bool
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>410</x><y>337</y><w>130</w><h>110</h></coordinates><panel_attributes>&lt;Interface&gt;
-Component
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>888</x><y>636</y><w>312</w><h>264</h></coordinates><panel_attributes>S4ACS
 --
 - requester: Communication_Protocol
 - subscriber: Communication_Protocol
@@ -50,8 +49,8 @@ Component
 /+ initialize(): void/
 /+ get_status(): void/
 /+ end(): void/
-+ transition_to(state: State): void</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>240</x><y>442</y><w>205</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>390;10;390;80;10;80;10;120</additional_attributes></element><element><id>UMLClass</id><coordinates><x>100</x><y>642</y><w>50</w><h>15</h></coordinates><panel_attributes>0MQ_Sub</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>470</x><y>222</y><w>200</w><h>125</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-</panel_attributes><additional_attributes>380;10;380;90;10;90;10;230</additional_attributes></element><element><id>UMLClass</id><coordinates><x>785</x><y>332</y><w>105</w><h>55</h></coordinates><panel_attributes>&lt;Interface&gt;
++ transition_to(state: State): void</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>480</x><y>888</y><w>492</w><h>168</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>390;10;390;80;10;80;10;120</additional_attributes></element><element><id>UMLClass</id><coordinates><x>144</x><y>1368</y><w>120</w><h>36</h></coordinates><panel_attributes>0MQ_Sub</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1032</x><y>360</y><w>480</w><h>300</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+</panel_attributes><additional_attributes>380;10;380;90;10;90;10;230</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1788</x><y>624</y><w>252</w><h>132</h></coordinates><panel_attributes>&lt;Interface&gt;
 Test_Strategy
 --
 - commands_list: list[Command]
@@ -59,14 +58,14 @@ Test_Strategy
 - result: Result
 --
 /+ run_test(): Result/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>165</x><y>642</y><w>50</w><h>15</h></coordinates><panel_attributes>0MQ_Req</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>185</x><y>587</y><w>50</w><h>65</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>80;10;80;70;10;70;10;110</additional_attributes></element><element><id>Relation</id><coordinates><x>125</x><y>587</y><w>110</w><h>65</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>200;10;200;70;10;70;10;110</additional_attributes></element><element><id>Relation</id><coordinates><x>485</x><y>442</y><w>145</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;80;270;80;270;120</additional_attributes></element><element><id>Relation</id><coordinates><x>485</x><y>442</y><w>15</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;120</additional_attributes></element><element><id>UMLClass</id><coordinates><x>450</x><y>707</y><w>95</w><h>65</h></coordinates><panel_attributes>Acquisition_Configuration
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>300</x><y>1368</y><w>120</w><h>36</h></coordinates><panel_attributes>0MQ_Req</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>348</x><y>1236</y><w>120</w><h>156</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>80;10;80;70;10;70;10;110</additional_attributes></element><element><id>Relation</id><coordinates><x>204</x><y>1236</y><w>264</w><h>156</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>200;10;200;70;10;70;10;110</additional_attributes></element><element><id>Relation</id><coordinates><x>1068</x><y>888</y><w>348</w><h>168</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;80;270;80;270;120</additional_attributes></element><element><id>Relation</id><coordinates><x>1068</x><y>888</y><w>36</w><h>168</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;120</additional_attributes></element><element><id>UMLClass</id><coordinates><x>984</x><y>1524</y><w>228</w><h>156</h></coordinates><panel_attributes>Acquisition_Configuration
 --
 - exp_time: float
 - frames: int
 - cycles: int
 - suffix: str
 - cooler: int
-- temperature: float</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>627</y><w>15</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>575</x><y>707</y><w>95</w><h>110</h></coordinates><panel_attributes>Camera_Status
+- temperature: float</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1080</x><y>1332</y><w>36</w><h>216</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1284</x><y>1524</y><w>228</w><h>264</h></coordinates><panel_attributes>Camera_Status
 --
 -cycles_done: int
 - frames_done: int
@@ -79,14 +78,15 @@ Test_Strategy
 - temp_status: str
 - serial_number: int
 - power: bool
-- acs_mode: bool</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>627</y><w>140</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;110;260;110;260;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>455</x><y>862</y><w>85</w><h>15</h></coordinates><panel_attributes>/pydantic.BaseModel/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>767</y><w>15</w><h>105</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;190;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>370</x><y>752</y><w>135</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>250;220;250;170;10;170;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>812</y><w>140</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;100;10;50;260;50;260;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>250</x><y>632</y><w>65</w><h>35</h></coordinates><panel_attributes>End_Point
+- acs_mode: bool</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1080</x><y>1332</y><w>336</w><h>216</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;110;260;110;260;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>996</x><y>1896</y><w>204</w><h>36</h></coordinates><panel_attributes>/pydantic.BaseModel/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1080</x><y>1668</y><w>36</w><h>252</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;190;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>792</x><y>1632</y><w>324</w><h>288</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>250;220;250;170;10;170;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1080</x><y>1776</y><w>336</w><h>144</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;100;10;50;260;50;260;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>504</x><y>1344</y><w>156</w><h>84</h></coordinates><panel_attributes>End_Point
 --
 ip: str
-port: int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>280</x><y>587</y><w>15</w><h>55</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>595</x><y>157</y><w>125</w><h>70</h></coordinates><panel_attributes>Framework
+port: int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>576</x><y>1236</y><w>36</w><h>132</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1332</x><y>204</y><w>300</w><h>168</h></coordinates><panel_attributes>Framework
 --
 - tests_list: list[Test_Strategy]
 - component: Component
+- external_apps: dict[External_Apps]
 --
 + initialize(): void
 + end(): void
@@ -95,18 +95,18 @@ port: int</panel_attributes><additional_attributes></additional_attributes></ele
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>595</x><y>72</y><w>130</w><h>60</h></coordinates><panel_attributes>GUI
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1332</x><y>0</y><w>312</w><h>144</h></coordinates><panel_attributes>GUI
 --
 - framework: Framework
 - thread: threading.Thread
 --
 + update_app(): void
 + stop_app(): void
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>655</x><y>127</y><w>15</w><h>40</h></coordinates><panel_attributes>lt=-</panel_attributes><additional_attributes>10;60;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>655</x><y>222</y><w>205</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-m2=1...*</panel_attributes><additional_attributes>10;10;10;90;370;90;370;220</additional_attributes></element><element><id>UMLClass</id><coordinates><x>565</x><y>502</y><w>115</w><h>65</h></coordinates><panel_attributes>Fake_Component
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1476</x><y>132</y><w>36</w><h>96</h></coordinates><panel_attributes>lt=-</panel_attributes><additional_attributes>10;60;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1476</x><y>360</y><w>492</w><h>288</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1...*</panel_attributes><additional_attributes>10;10;10;90;370;90;370;220</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1260</x><y>1032</y><w>276</w><h>156</h></coordinates><panel_attributes>Fake_Component
 --
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>635</x><y>357</y><w>65</w><h>95</h></coordinates><panel_attributes>lt=-
-m1=0...*</panel_attributes><additional_attributes>110;160;10;160;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>335</x><y>502</y><w>70</w><h>70</h></coordinates><panel_attributes>&lt;Enum&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1428</x><y>684</y><w>156</w><h>228</h></coordinates><panel_attributes>lt=-
+m1=0...*</panel_attributes><additional_attributes>110;160;10;160;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>708</x><y>1032</y><w>168</w><h>168</h></coordinates><panel_attributes>&lt;Enum&gt;
 Execution_Status
 --
 - NONE
@@ -114,13 +114,20 @@ Execution_Status
 - BUSY
 - COMPLETED
 - ERROR
-- TIMEOUT</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>365</x><y>442</y><w>80</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>140;10;140;80;10;80;10;120</additional_attributes></element><element><id>Relation</id><coordinates><x>535</x><y>352</y><w>260</w><h>20</h></coordinates><panel_attributes>lt=-
-</panel_attributes><additional_attributes>10;20;500;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>835</x><y>427</y><w>80</w><h>40</h></coordinates><panel_attributes>Test_Result
+- TIMEOUT</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>780</x><y>888</y><w>192</w><h>168</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>140;10;140;80;10;80;10;120</additional_attributes></element><element><id>Relation</id><coordinates><x>1188</x><y>672</y><w>624</w><h>48</h></coordinates><panel_attributes>lt=-
+</panel_attributes><additional_attributes>10;20;500;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1908</x><y>852</y><w>192</w><h>96</h></coordinates><panel_attributes>Test_Result
 --
 - success: bool
 - test_code: integer
-- message: str</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>875</x><y>382</y><w>15</w><h>55</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>385</x><y>72</y><w>130</w><h>60</h></coordinates><panel_attributes>Component_Creator
+- message: str</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2004</x><y>744</y><w>36</w><h>132</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>828</x><y>0</y><w>312</w><h>144</h></coordinates><panel_attributes>Component_Creator
 --
-+ create(type: str): Component</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>510</x><y>97</y><w>95</w><h>15</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>170;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>800</x><y>72</y><w>130</w><h>60</h></coordinates><panel_attributes>Tests_List_Creator
++ create(type: str): Component</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1128</x><y>60</y><w>228</w><h>36</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>170;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1824</x><y>0</y><w>312</w><h>144</h></coordinates><panel_attributes>Tests_List_Creator
 --
-+ create(type: str): list[Test_Strategy]</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>720</x><y>97</y><w>90</w><h>15</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;10;90;10;160;10</additional_attributes></element><element><id>Relation</id><coordinates><x>870</x><y>127</y><w>15</w><h>215</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;410;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>425</x><y>127</y><w>15</w><h>220</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;420;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>980</x><y>292</y><w>50</w><h>15</h></coordinates><panel_attributes>Test1</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>885</x><y>292</y><w>105</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;140;130;140;130;10;190;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>980</x><y>317</y><w>50</w><h>15</h></coordinates><panel_attributes>Test2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>980</x><y>342</y><w>50</w><h>15</h></coordinates><panel_attributes>Test3</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>980</x><y>367</y><w>50</w><h>15</h></coordinates><panel_attributes>Test4</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>980</x><y>392</y><w>50</w><h>15</h></coordinates><panel_attributes>Test5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>980</x><y>417</y><w>50</w><h>15</h></coordinates><panel_attributes>Test6</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>885</x><y>317</y><w>105</w><h>55</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;90;130;90;130;10;190;10</additional_attributes></element><element><id>Relation</id><coordinates><x>885</x><y>342</y><w>105</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;40;130;40;130;10;190;10</additional_attributes></element><element><id>Relation</id><coordinates><x>885</x><y>357</y><w>105</w><h>25</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;130;10;130;30;190;30</additional_attributes></element><element><id>Relation</id><coordinates><x>885</x><y>357</y><w>105</w><h>50</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;130;10;130;80;190;80</additional_attributes></element><element><id>Relation</id><coordinates><x>885</x><y>357</y><w>105</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;130;10;130;140;190;140</additional_attributes></element></diagram>
++ create(type: str): list[Test_Strategy]</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1632</x><y>60</y><w>216</w><h>36</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;10;90;10;160;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1992</x><y>132</y><w>36</w><h>516</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;410;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>924</x><y>132</y><w>36</w><h>528</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;420;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2256</x><y>528</y><w>120</w><h>36</h></coordinates><panel_attributes>Test1</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2028</x><y>528</y><w>252</w><h>192</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;140;130;140;130;10;190;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2256</x><y>588</y><w>120</w><h>36</h></coordinates><panel_attributes>Test2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2256</x><y>648</y><w>120</w><h>36</h></coordinates><panel_attributes>Test3</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2256</x><y>708</y><w>120</w><h>36</h></coordinates><panel_attributes>Test4</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2256</x><y>768</y><w>120</w><h>36</h></coordinates><panel_attributes>Test5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2256</x><y>828</y><w>120</w><h>36</h></coordinates><panel_attributes>Test6</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2028</x><y>588</y><w>252</w><h>132</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;90;130;90;130;10;190;10</additional_attributes></element><element><id>Relation</id><coordinates><x>2028</x><y>648</y><w>252</w><h>72</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;40;130;40;130;10;190;10</additional_attributes></element><element><id>Relation</id><coordinates><x>2028</x><y>684</y><w>252</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;130;10;130;30;190;30</additional_attributes></element><element><id>Relation</id><coordinates><x>2028</x><y>684</y><w>252</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;130;10;130;80;190;80</additional_attributes></element><element><id>Relation</id><coordinates><x>2028</x><y>684</y><w>252</w><h>192</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;130;10;130;140;190;140</additional_attributes></element><element><id>UMLClass</id><coordinates><x>288</x><y>228</y><w>288</w><h>144</h></coordinates><panel_attributes>&lt;Interface&gt;
+/External_App/
+--
++ status: dict
++ publisher: Communication_Channel
+--
++ publish_status():void
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>420</x><y>360</y><w>36</w><h>696</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;560</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>1368</y><w>120</w><h>36</h></coordinates><panel_attributes>0MQ_Pub</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>48</x><y>1236</y><w>420</w><h>156</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>330;10;330;70;10;70;10;110</additional_attributes></element><element><id>Relation</id><coordinates><x>564</x><y>276</y><w>792</w><h>36</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>640;10;10;10</additional_attributes></element></diagram>

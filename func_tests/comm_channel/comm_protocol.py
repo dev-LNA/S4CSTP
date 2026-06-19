@@ -73,6 +73,26 @@ class ZeroMQ_SUB(Communication_Channel):
         self._verify_comm_status()
 
 
+class ZeroMQ_PUB(Communication_Channel):
+    def __init__(
+        self,
+        end_point: data_types.End_Point,
+        context: zmq.Context,
+    ) -> None:
+        super().__init__(end_point)
+        self.context = context
+
+    def initialize_comm(self) -> None:
+        self.socket = self.context.socket(zmq.PUB)
+        self.socket.bind(self._end_point.to_str())
+
+    def send_msg(self, msg: str) -> None:
+        self.socket.send_string(msg)
+
+    def close_comm(self) -> None:
+        self.socket.close()
+
+
 class ZeroMQ_REQ(Communication_Channel):
     def __init__(self, end_point: data_types.End_Point, context: zmq.Context) -> None:
         super().__init__(end_point)
