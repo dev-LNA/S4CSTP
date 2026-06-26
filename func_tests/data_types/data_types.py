@@ -292,6 +292,35 @@ class Test_Result(BaseModel):
 
 
 class Framework_setup:
+    tests_list = [
+        strategy.I001,
+        strategy.I002,
+        strategy.I003,
+        strategy.I004,
+        strategy.I005,
+        strategy.I006,
+        strategy.I007,
+        strategy.E001,
+        strategy.E002,
+        strategy.E003,
+        strategy.E005,
+        strategy.E007,
+        strategy.E009,
+        strategy.E010,
+        strategy.E011,
+        strategy.E012,
+        strategy.E013,
+        strategy.E019,
+        strategy.S001,
+    ]
+
+    complex_tests = [
+        strategy.I004,
+        strategy.I006,
+        strategy.I007,
+        strategy.E002,
+    ]
+
     def create_component(self, _type: str) -> component.S4ACS:
         """create a Component
 
@@ -353,42 +382,12 @@ class Framework_setup:
         return {
             "s4gui": s4gui,
             "s4ics": s4ics,
-            "wstation": weather,
+            "weather_st": weather,
             "tcs": tcs,
             "focuser": focuser,
         }
 
-
-class Tests_List_Creator:
-    tests_list = [
-        strategy.I001,
-        strategy.I002,
-        strategy.I003,
-        strategy.I004,
-        strategy.I005,
-        strategy.I006,
-        strategy.I007,
-        strategy.E001,
-        strategy.E002,
-        strategy.E003,
-        strategy.E005,
-        strategy.E007,
-        strategy.E009,
-        strategy.E010,
-        strategy.E011,
-        strategy.E012,
-        strategy.E013,
-        strategy.E019,
-        strategy.S001,
-    ]
-
-    complex_tests = [
-        strategy.I004,
-        strategy.I006,
-        strategy.I007,
-    ]
-
-    def create(
+    def create_tests_list(
         self, _type: str, test_code: str = ""
     ) -> Sequence[strategy.Test_Strategy]:
         if _type == "fake":

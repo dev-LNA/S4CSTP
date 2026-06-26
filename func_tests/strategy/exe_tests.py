@@ -32,17 +32,37 @@ class E002(Test_Strategy):
     _test_code = "E002"
 
     def run_test(self) -> None:
-        external_app = "s4gui"
-        self.framework._do_not_pub = [external_app]
-        if not self.wait_comm_ext_app(external_app, False):
-            self.set_result(
-                "error", f"The condition {False} was not met: {external_app}"
-            )
-        self.framework._do_not_pub = []
-        if not self.wait_comm_ext_app(external_app, True):
-            self.set_result(
-                "error", f"The condition {True} was not met: {external_app}"
-            )
+        for external_app in ["s4gui", "s4ics", "tcs", "focuser", "weather_st"]:
+            self.framework._do_not_pub = [external_app]
+            if not self.wait_comm_ext_app(external_app, False):
+                self.set_result(
+                    "error", f"The condition {False} was not met: {external_app}"
+                )
+            self.framework._do_not_pub = []
+            if not self.wait_comm_ext_app(external_app, True):
+                self.set_result(
+                    "error", f"The condition {True} was not met: {external_app}"
+                )
+
+        sleep(1)
+        time_stamp = datetime.now(timezone.utc)
+        lines_list = self.get_log_file_lines()
+        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
+        filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
+        filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+        for external_app in ["GUI", "ICS", "TCS", "FOCUSER", "WSTATION"]:
+            if (
+                f"The communication with {external_app} was lost"
+                not in filtered_log_lines
+            ):
+                self.set_result("error", f"Log msg related to {external_app} not found")
+
+            if (
+                f"The communication with {external_app} was reestablished"
+                not in filtered_log_lines
+            ):
+                self.set_result("error", f"Log msg related to {external_app} not found")
 
         return super().run_test()
 

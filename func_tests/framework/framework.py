@@ -35,7 +35,9 @@ class Functionalities_Tests_Framework:
         return
 
     def set_tests_list(self, test_type: str, test_code: str = "") -> None:
-        self.tests_list = data_types.Tests_List_Creator().create(test_type, test_code)
+        self.tests_list = data_types.Framework_setup().create_tests_list(
+            test_type, test_code
+        )
 
         return
 
