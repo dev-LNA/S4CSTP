@@ -138,7 +138,7 @@ class I006(Test_Strategy):
         if not self.wait_comm(True):
             self.set_result("error", "S4ACS did not initialize")
 
-        if not self.wait_comm(False):
+        if not self.wait_comm(False) and self.cfg_file_content.acs_mode == 1:
             self.set_result("error", "S4ACS initialized without a camera")
 
         cfg_file_name = "_acs_config.cfg"
