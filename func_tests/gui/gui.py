@@ -36,11 +36,9 @@ class GUI(QMainWindow):
         )
 
         s4acs = data_types.Framework_setup().create_component("real")
-        # tests_list = data_types.Tests_List_Creator().create("one test", "I007")
-        tests_list = data_types.Tests_List_Creator().create("all tests")
-        self.framework = framework.Functionalities_Tests_Framework(
-            s4acs, tests_list, self
-        )
+        self.framework = framework.Functionalities_Tests_Framework(s4acs, self)
+        # self.framework.set_tests_list("all tests")
+        self.framework.set_tests_list("one test", "I007")
         self.framework.stop_1st_err = (
             self.gui_widgets.framework_stop_1st_err.isChecked()
         )

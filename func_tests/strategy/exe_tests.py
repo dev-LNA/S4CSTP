@@ -28,6 +28,14 @@ class E001(Test_Strategy):
         return super().run_test()
 
 
+class E002(Test_Strategy):
+    _test_code = "E002"
+
+    def run_test(self) -> None:
+
+        return super().run_test()
+
+
 class E003(Test_Strategy):
     _test_code = "E003"
 

@@ -24,17 +24,20 @@ class Functionalities_Tests_Framework:
     def __init__(
         self,
         s4acs: component.S4ACS,
-        tests_list: Sequence[strategy.Test_Strategy],
         _gui: gui.GUI,
     ) -> None:
         self.s4acs = s4acs
-        self.tests_list = tests_list
         self._external_apps = data_types.Framework_setup().create_external_apps()
+        self._do_not_pub: list[str] = []
         self._gui = _gui
         self.log_dir = Path("func_tests/_logs")
         self.log_level = data_types.Log_Level.INFO
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self._prepare_imgs_folder()
+        return
+
+    def set_tests_list(self, test_type: str, test_code: str = "") -> None:
+        self.tests_list = data_types.Tests_List_Creator().create(test_type, test_code)
         return
 
     def initialize(self) -> None:
@@ -119,7 +122,9 @@ class Functionalities_Tests_Framework:
     def update_status(self) -> None:
         while not self.stop_thread:
             self.s4acs.get_status_message()
-            for app in self._external_apps.values():
+            for key, app in self._external_apps.items():
+                if key in self._do_not_pub:
+                    continue
                 app.publish_status()
 
     def run(self) -> None:

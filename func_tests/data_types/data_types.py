@@ -388,7 +388,7 @@ class Tests_List_Creator:
     ]
 
     def create(
-        self, _type: str, test_name: str = ""
+        self, _type: str, test_code: str = ""
     ) -> Sequence[strategy.Test_Strategy]:
         if _type == "fake":
             return [strategy.Fake_Positive_Test() for _ in range(17)] + [
@@ -399,7 +399,7 @@ class Tests_List_Creator:
             return [_test() for _test in self.tests_list]
         if _type == "one test":
             for _test in self.tests_list:
-                if _test.__name__ == test_name:
+                if _test.__name__ == test_code:
                     return [_test()]
-            raise ValueError(f"Test does no found: {test_name}")
+            raise ValueError(f"Test does no found: {test_code}")
         raise ValueError(f"Unknown type: {_type}")
