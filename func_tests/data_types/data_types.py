@@ -330,7 +330,33 @@ class Framework_setup:
         publisher = comm_channel.ZeroMQ_PUB(end_point, context)
         s4gui = external_app.External_Application(publisher)
         s4gui.status = utils.S4GUI_JSON.copy()
-        return {"s4gui": s4gui}
+
+        end_point = End_Point(ip="200.131.64.25", port=5565)
+        publisher = comm_channel.ZeroMQ_PUB(end_point, context)
+        s4ics = external_app.External_Application(publisher)
+        s4ics.status = utils.S4ICS_JSON
+
+        end_point = End_Point(ip="200.131.64.25", port=5575)
+        publisher = comm_channel.ZeroMQ_PUB(end_point, context)
+        tcs = external_app.External_Application(publisher)
+        tcs.status = utils.TCS_JSON.copy()
+
+        end_point = End_Point(ip="200.131.64.25", port=5576)
+        publisher = comm_channel.ZeroMQ_PUB(end_point, context)
+        weather = external_app.External_Application(publisher)
+        weather.status = utils.WEATHER_JSON.copy()
+
+        end_point = End_Point(ip="200.131.64.25", port=5577)
+        publisher = comm_channel.ZeroMQ_PUB(end_point, context)
+        focuser = external_app.External_Application(publisher)
+        focuser.status = utils.FOCUSER_JSON.copy()
+        return {
+            "s4gui": s4gui,
+            "s4ics": s4ics,
+            "wstation": weather,
+            "tcs": tcs,
+            "focuser": focuser,
+        }
 
 
 class Tests_List_Creator:
