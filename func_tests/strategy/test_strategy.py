@@ -5,6 +5,7 @@ from time import sleep
 
 import func_tests.component as component
 import func_tests.data_types as data_types
+import func_tests.framework as framework
 import func_tests.utils as utils
 
 
@@ -16,7 +17,8 @@ class Test_Strategy(ABC):
 
     def __init__(self) -> None:
         logging.info(f"Running test {self._test_code}...")
-        self._s4acs: component.S4ACS
+        self.s4acs: component.S4ACS
+        self.framework: framework.Functionalities_Tests_Framework
         self._commands_list: list[data_types.Command]
         self.result = data_types.Test_Result(success="off", test_code="", message="")
         self._create_today_str()
@@ -46,12 +48,9 @@ class Test_Strategy(ABC):
         self.set_result("on", "Done")
         logging.debug(f"Result: {self.result.model_dump()}")
 
-    def set_s4acs(self, component: component.S4ACS) -> None:
-        self._s4acs = component
-
     def send_unexpected_command(self, cmd: str) -> None:
         time_stamp_1 = datetime.now(timezone.utc)
-        self._s4acs.send_command(cmd)
+        self.s4acs.send_command(cmd)
         sleep(self._timeout_time)
 
         lines_list = self.get_log_file_lines()
@@ -65,17 +64,17 @@ class Test_Strategy(ABC):
 
     def validate_acq_config(self) -> None:
         sleep(self._timeout_time)
-        if not self._s4acs.validate_acq_config():
+        if not self.s4acs.validate_acq_config():
             self.set_result("error", "Unexpected acquisition configuration.")
         return
 
     def calculate_pub_delay(self) -> timedelta:
-        while not self._s4acs._subscriber.new_msg:
+        while not self.s4acs._subscriber.new_msg:
             sleep(self._min_iteration_time)
         time_stamp_1 = datetime.now()
-        while self._s4acs._subscriber.new_msg:
+        while self.s4acs._subscriber.new_msg:
             sleep(self._min_iteration_time)
-        while not self._s4acs._subscriber.new_msg:
+        while not self.s4acs._subscriber.new_msg:
             sleep(self._min_iteration_time)
         time_stamp_2 = datetime.now()
         return time_stamp_2 - time_stamp_1
@@ -83,41 +82,63 @@ class Test_Strategy(ABC):
     # ========================== WAIT FUNCTIONS ==========================
 
     def wait_acquisition_start(self) -> None:
-        while self._s4acs.camera.cam_status.status != "ACTIVE":
+        while self.s4acs.camera.cam_status.status != "ACTIVE":
             sleep(self._min_iteration_time)
         logging.debug("The acquisition has started")
         return
 
     def wait_return_to_idle(self) -> None:
-        while self._s4acs.exe_status != "IDLE":
+        while self.s4acs.exe_status != "IDLE":
             sleep(self._min_iteration_time)
         logging.debug("S4ACS is in IDLE state")
         return
 
     def wait_acquisition_finish(self) -> None:
         while (
-            self._s4acs.camera.cam_status.cycles_done
-            != self._s4acs.camera.requested_acq_config.cycles
+            self.s4acs.camera.cam_status.cycles_done
+            != self.s4acs.camera.requested_acq_config.cycles
         ):
             sleep(self._min_iteration_time)
         logging.debug("Acquisition has been finished")
 
     def wait_end_of_cycle(self, cycle: int) -> None:
-        while self._s4acs.camera.cam_status.cycles_done != cycle:
+        while self.s4acs.camera.cam_status.cycles_done != cycle:
             sleep(self._min_iteration_time)
         logging.debug(f"This is the end of cycle {cycle}")
         return
 
     def wait_comm(self, condition: bool) -> bool:
         for _ in range(80):
-            if self._s4acs.return_comm_status() is condition:
+            if self.s4acs.return_comm_status() is condition:
+                logging.debug("Communication condition was reached")
+                return True
+            sleep(self._min_iteration_time)
+        return False
+
+    def wait_comm_ext_app(self, app: str, condition: bool) -> bool:
+        """ "Wait external app communication meet condition
+
+        Args:
+            app (str): s4gui, s4ics, tcs, weather_st, focuser
+            condition (bool): communication condition
+
+        Returns:
+            bool: communication condition was met
+        """
+        if app not in ["s4gui", "s4ics", "tcs", "weather_st", "focuser"]:
+            raise ValueError(f"Unknown external application {app}")
+        for _ in range(100):
+            status = self.s4acs.status
+            if status is None:
+                raise ValueError("None status")
+            if status["comm_status"][app] is condition:
                 logging.debug("Communication condition was reached")
                 return True
             sleep(self._min_iteration_time)
         return False
 
     def wait_cam_on(self) -> None:
-        while not self._s4acs.camera.cam_status.power:
+        while not self.s4acs.camera.cam_status.power:
             sleep(self._min_iteration_time)
         logging.debug("The cameras was initialized")
         return

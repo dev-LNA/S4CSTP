@@ -36,6 +36,7 @@ class Functionalities_Tests_Framework:
 
     def set_tests_list(self, test_type: str, test_code: str = "") -> None:
         self.tests_list = data_types.Tests_List_Creator().create(test_type, test_code)
+
         return
 
     def initialize(self) -> None:
@@ -44,6 +45,9 @@ class Functionalities_Tests_Framework:
         utils.run_s4acs_exe()
         self._initialize_s4acs()
         self._initialize_external_apps()
+        for _test in self.tests_list:
+            _test.s4acs = self.s4acs
+            _test.framework = self
         logging.debug("Framework was initialized succesfully")
         return
 
@@ -102,8 +106,6 @@ class Functionalities_Tests_Framework:
         logging.debug("Setting default configuration...")
         self.s4acs.set_cam_config(utils.default_cam_config.copy())
         self.s4acs.set_acquisition_config(utils.default_acq_config.copy())
-        for _test in self.tests_list:
-            _test.set_s4acs(self.s4acs)
 
     # =============================================
 
@@ -139,7 +141,7 @@ class Functionalities_Tests_Framework:
     def run_tests(self) -> None:
         logging.info("Starting the tests...")
         for _test in self.tests_list:
-            _test._s4acs.send_command(
+            _test.s4acs.send_command(
                 f"====== This is the test {_test._test_code} ======"
             )
             _test.set_result("warn", "")

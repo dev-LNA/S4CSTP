@@ -369,6 +369,7 @@ class Tests_List_Creator:
         strategy.I006,
         strategy.I007,
         strategy.E001,
+        strategy.E002,
         strategy.E003,
         strategy.E005,
         strategy.E007,
