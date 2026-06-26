@@ -1,6 +1,5 @@
 import logging
 import os
-from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from time import sleep
@@ -11,7 +10,6 @@ import numpy as np
 import func_tests.component as component
 import func_tests.data_types as data_types
 import func_tests.gui as gui
-import func_tests.strategy as strategy
 import func_tests.utils as utils
 
 
