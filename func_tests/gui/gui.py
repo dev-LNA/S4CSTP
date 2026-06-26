@@ -35,7 +35,7 @@ class GUI(QMainWindow):
             self.toggle_stop_1st_error
         )
 
-        s4acs = data_types.Component_Creator().create("real")
+        s4acs = data_types.Framework_setup().create_component("real")
         tests_list = data_types.Tests_List_Creator().create("one test", "I007")
         # tests_list = data_types.Tests_List_Creator().create("all tests")
         self.framework = framework.Functionalities_Tests_Framework(
@@ -45,7 +45,7 @@ class GUI(QMainWindow):
             self.gui_widgets.framework_stop_1st_err.isChecked()
         )
         self._thread1 = Thread(target=self.framework.run)
-        self._thread2 = Thread(target=self.framework.get_status)
+        self._thread2 = Thread(target=self.framework.update_status)
 
         self.update_timer = QTimer(self)
         self.update_timer.timeout.connect(self.update_app)

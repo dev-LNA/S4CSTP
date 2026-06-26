@@ -3,7 +3,7 @@ import logging
 import subprocess
 from pathlib import Path
 from time import sleep
-from typing import Any
+from typing import Any, Final
 
 import func_tests.data_types as data_types
 
@@ -106,3 +106,24 @@ def _is_window_open(title: str) -> Any | None:
         if title in window.window_text():
             return window
     return None
+
+
+S4GUI_JSON: Final = {
+    "OBJECT": "Test",
+    "OBSERVER": "Denis",
+    "CTRLINTE": "S4GEI",
+    "PROJID": "ENG",
+    "SYNCMODE": "ASYNC",
+    "INSTMODE": "PHOT",
+    "FILTER": "CLEAR",
+    "OBSTYPE": "OBJECT",
+    "GUIVRSN": "v0.0.0",
+    "COMMENT": "",
+    "broker": "S4GEI",
+    "timestamp": "0000-00-00T00:00:00.0",
+    "CHANNEL 1": True,
+    "CHANNEL 2": False,
+    "CHANNEL 3": False,
+    "CHANNEL 4": False,
+    "TCSMODE": True,
+}

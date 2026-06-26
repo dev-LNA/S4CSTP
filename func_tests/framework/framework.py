@@ -29,6 +29,7 @@ class Functionalities_Tests_Framework:
     ) -> None:
         self.s4acs = s4acs
         self.tests_list = tests_list
+        self._external_apps = data_types.Framework_setup().create_external_apps()
         self._gui = _gui
         self.log_dir = Path("func_tests/_logs")
         self.log_level = data_types.Log_Level.INFO
@@ -41,8 +42,14 @@ class Functionalities_Tests_Framework:
         logging.info("Framework was started")
         utils.run_s4acs_exe()
         self._initialize_s4acs()
+        self._initialize_external_apps()
         logging.debug("Framework was initialized succesfully")
         return
+
+    def _initialize_external_apps(self) -> None:
+        for key, app in self._external_apps.items():
+            app.initialize()
+            logging.debug(f"External application {key.upper()} was started")
 
     def create_log_file(self) -> None:
         now = datetime.now(timezone.utc)
@@ -104,11 +111,16 @@ class Functionalities_Tests_Framework:
             self.s4acs.send_command("STOP_APP")
             sleep(0.5)
         self.s4acs.end()
+        for key, app in self._external_apps.items():
+            app.end()
+            logging.debug(f"External application {key.upper()} was stopped")
         logging.info("Framework was stopped")
 
-    def get_status(self) -> None:
+    def update_status(self) -> None:
         while not self.stop_thread:
             self.s4acs.get_status_message()
+            for app in self._external_apps.values():
+                app.publish_status()
 
     def run(self) -> None:
         while not self.stop_thread:

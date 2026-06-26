@@ -11,3 +11,9 @@ class External_Application:
     def publish_status(self) -> None:
         self._publisher.send_msg(json.dumps(self.status))
         return
+
+    def initialize(self) -> None:
+        self._publisher.initialize_comm()
+
+    def end(self) -> None:
+        self._publisher.close_comm()

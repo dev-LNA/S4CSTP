@@ -10,7 +10,9 @@ from pydantic import BaseModel, Field, field_validator
 
 import func_tests.comm_channel as comm_channel
 import func_tests.component as component
+import func_tests.external_app as external_app
 import func_tests.strategy as strategy
+import func_tests.utils as utils
 
 
 class Camera_Configuration(BaseModel):
@@ -289,12 +291,12 @@ class Test_Result(BaseModel):
     message: str
 
 
-class Component_Creator:
-    def create(self, _type: str) -> component.S4ACS:
+class Framework_setup:
+    def create_component(self, _type: str) -> component.S4ACS:
         """create a Component
 
         Args:
-            _type (str): _description_
+            _type (str): construtor type
 
         Returns:
             component.Component: _description_
@@ -315,6 +317,20 @@ class Component_Creator:
 
         else:
             raise ValueError(f"Unknown type: {_type}")
+
+    def create_external_apps(self) -> dict[str, external_app.External_Application]:
+        """Create external applications
+
+        Returns:
+            dict[str, external_app.External_Application]
+        """
+
+        context = zmq.Context()
+        end_point = End_Point(ip="200.131.64.25", port=5554)
+        publisher = comm_channel.ZeroMQ_PUB(end_point, context)
+        s4gui = external_app.External_Application(publisher)
+        s4gui.status = utils.S4GUI_JSON.copy()
+        return {"s4gui": s4gui}
 
 
 class Tests_List_Creator:

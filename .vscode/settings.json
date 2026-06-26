@@ -10,6 +10,7 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+    "python.analysis.typeCheckingMode": "standard",
     // terminal
     // "terminal.integrated.profiles.windows": {
     //     "PowerShell": {
