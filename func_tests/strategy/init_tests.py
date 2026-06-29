@@ -11,11 +11,11 @@ class I001(Test_Strategy):
     _test_code = "I001"
 
     def run_test(self) -> None:
-        self._s4acs.send_command("EXPOSE")
+        self.s4acs.send_command("EXPOSE")
         self.wait_acquisition_start()
         self.wait_acquisition_finish()
         sleep(2)
-        cam_status = self._s4acs.camera.cam_status
+        cam_status = self.s4acs.camera.cam_status
         image_name = cam_status.last_image_name
         image_path = self.cfg_file_content.image_path / image_name
         self._validate_channel(image_name)
@@ -57,7 +57,7 @@ class I002(Test_Strategy):
     _test_code = "I002"
 
     def run_test(self) -> None:
-        comm_status = self._s4acs.camera.comm_status
+        comm_status = self.s4acs.camera.comm_status
         for key, val in comm_status.model_dump().items():
             if not val:
                 self.set_result(
@@ -84,7 +84,7 @@ class I004(Test_Strategy):
     _test_code = "I004"
 
     def run_test(self) -> None:
-        self._s4acs.send_command("STOP_APP")
+        self.s4acs.send_command("STOP_APP")
         sleep(1)
 
         cfg_file_name = "_acs_config.cfg"
@@ -113,9 +113,9 @@ class I005(Test_Strategy):
     _test_code = "I005"
 
     def run_test(self) -> None:
-        self._s4acs.send_command("EXPOSE")
+        self.s4acs.send_command("EXPOSE")
         self.wait_acquisition_finish()
-        img_name = self._s4acs.camera.cam_status.last_image_name
+        img_name = self.s4acs.camera.cam_status.last_image_name
         img_idx = img_name.split(".fits")[0].split("_")[2]
         if img_idx != "000011":
             self.set_result("error", f"Unexpected image index: {img_idx}")
@@ -126,7 +126,7 @@ class I006(Test_Strategy):
     _test_code = "I006"
 
     def run_test(self) -> None:
-        self._s4acs.send_command("STOP_APP")
+        self.s4acs.send_command("STOP_APP")
         sleep(1)
 
         cfg_file_name = "_acs_config.cfg"
@@ -155,7 +155,7 @@ class I007(Test_Strategy):
     _test_code = "I007"
 
     def run_test(self) -> None:
-        self._s4acs.send_command("STOP_APP")
+        self.s4acs.send_command("STOP_APP")
         sleep(1)
 
         cfg_file_name = "_acs_config.cfg"

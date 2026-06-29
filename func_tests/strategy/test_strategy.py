@@ -108,7 +108,7 @@ class Test_Strategy(ABC):
         return
 
     def wait_comm(self, condition: bool) -> bool:
-        for _ in range(80):
+        for _ in range(120):
             if self.s4acs.return_comm_status() is condition:
                 logging.debug("Communication condition was reached")
                 return True
@@ -127,7 +127,7 @@ class Test_Strategy(ABC):
         """
         if app not in ["s4gui", "s4ics", "tcs", "weather_st", "focuser"]:
             raise ValueError(f"Unknown external application {app}")
-        for _ in range(100):
+        for _ in range(120):
             status = self.s4acs.status
             if status is None:
                 raise ValueError("None status")

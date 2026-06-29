@@ -25,7 +25,7 @@ class Functionalities_Tests_Framework:
         _gui: gui.GUI,
     ) -> None:
         self.s4acs = s4acs
-        self._external_apps = data_types.Framework_setup().create_external_apps()
+        self._external_apps = data_types.Framework_Setup().create_external_apps()
         self._do_not_pub: list[str] = []
         self._gui = _gui
         self.log_dir = Path("func_tests/_logs")
@@ -35,7 +35,7 @@ class Functionalities_Tests_Framework:
         return
 
     def set_tests_list(self, test_type: str, test_code: str = "") -> None:
-        self.tests_list = data_types.Framework_setup().create_tests_list(
+        self.tests_list = data_types.Framework_Setup().create_tests_list(
             test_type, test_code
         )
 

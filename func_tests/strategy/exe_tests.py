@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from time import sleep
 
 import func_tests.data_types as data_types
+import func_tests.utils as utils
 
 from .test_strategy import Test_Strategy
 
@@ -116,6 +117,23 @@ class E005(Test_Strategy):
             command = command.split(" ")[0]
             if f"The {command} command was ignored" not in filtered_log_lines:
                 self.set_result("error", f"Log msg related to {command} cmd not found")
+
+        return super().run_test()
+
+
+class E006(Test_Strategy):
+    _test_code = "E006"
+
+    def run_test(self) -> None:
+        self.s4acs.send_command("STOP_APP")
+        sleep(1)
+
+        if not self.wait_comm(False):
+            self.set_result("error", "S4ACS did not stop")
+
+        utils.run_s4acs_exe()
+        if not self.wait_comm(True):
+            self.set_result("error", "S4ACS did not initialize")
 
         return super().run_test()
 

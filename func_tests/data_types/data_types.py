@@ -291,7 +291,7 @@ class Test_Result(BaseModel):
     message: str
 
 
-class Framework_setup:
+class Framework_Setup:
     tests_list = [
         strategy.I001,
         strategy.I002,
@@ -304,6 +304,7 @@ class Framework_setup:
         strategy.E002,
         strategy.E003,
         strategy.E005,
+        strategy.E006,
         strategy.E007,
         strategy.E009,
         strategy.E010,

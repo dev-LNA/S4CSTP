@@ -6,7 +6,7 @@ from .data_types import (
     Communication_Status,
     End_Point,
     Execution_Status,
-    Framework_setup,
+    Framework_Setup,
     Led_Status,
     Log_Level,
     S4ACS_Cfg_File,
