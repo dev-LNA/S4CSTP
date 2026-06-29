@@ -32,6 +32,8 @@ class E002(Test_Strategy):
     _test_code = "E002"
 
     def run_test(self) -> None:
+        time_stamp = datetime.now(timezone.utc)
+
         for external_app in ["s4gui", "s4ics", "tcs", "focuser", "weather_st"]:
             self.framework._do_not_pub = [external_app]
             if not self.wait_comm_ext_app(external_app, False):
@@ -44,8 +46,6 @@ class E002(Test_Strategy):
                     "error", f"The condition {True} was not met: {external_app}"
                 )
 
-        sleep(1)
-        time_stamp = datetime.now(timezone.utc)
         lines_list = self.get_log_file_lines()
         filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
         filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "WARNING")
