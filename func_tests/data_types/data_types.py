@@ -306,6 +306,7 @@ class Framework_Setup:
         strategy.E005,
         strategy.E006,
         strategy.E007,
+        strategy.E008,
         strategy.E009,
         strategy.E010,
         strategy.E011,

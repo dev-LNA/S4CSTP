@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timezone
 from time import sleep
 
@@ -154,6 +155,23 @@ class E007(Test_Strategy):
         self.s4acs.set_cam_config(self._default_cam_config)
         sleep(2)
 
+        return super().run_test()
+
+
+class E008(Test_Strategy):
+    _test_code = "E008"
+
+    def run_test(self) -> None:
+        mechanism_status = utils.S4ICS_MECHANISM_STATUS.copy()
+        mechanism_status["condition"] = "BUSY"
+        mechanism = utils.S4ICS_MECHANISM.copy()
+        mechanism["status"] = mechanism_status
+        second_part_s4ics_pub = utils.SECOND_PART_S4ICS_PUB.copy()
+        second_part_s4ics_pub["mechanisms"] = [mechanism]
+
+        self.framework._external_apps["s4ics"].status = (
+            utils.FIRST_PART_S4ICS_PUB + json.dumps(second_part_s4ics_pub)
+        )
         return super().run_test()
 
 

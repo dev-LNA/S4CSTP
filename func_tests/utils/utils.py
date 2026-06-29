@@ -129,7 +129,25 @@ S4GUI_JSON: Final = {
     "TCSMODE": True,
 }
 
-_2nd_PART_S4ICS_PUB = {
+S4ICS_MECHANISM_STATUS = {
+    "mode": "ACTIVE",
+    "condition": "READY",
+    "position": "0",
+    "pos_name": "HOME",
+    "pos_id": "-1",
+}
+S4ICS_MECHANISM = {
+    "name": "WPROT",
+    "status": {
+        "mode": "ACTIVE",
+        "condition": "READY",
+        "position": "0",
+        "pos_name": "HOME",
+        "pos_id": "-1",
+    },
+}
+FIRST_PART_S4ICS_PUB = "WPROT SIMULATED READY 0.000 NONE -1, WPSEL SIMULATED READY 80.000 OFF 2, CALW SIMULATED READY 216.000 SHUTTER 4, ASEL SIMULATED READY 0.000 OFF 1, GMIR SIMULATED READY 0.000 TARGET 1, GFOC SIMULATED READY 0.000 TARGET 1\n"
+SECOND_PART_S4ICS_PUB = {
     "broker": "S4ICS",
     "version": "v0.0.0",
     "comment": "this is a comment",
@@ -199,10 +217,8 @@ _2nd_PART_S4ICS_PUB = {
         },
     ],
 }
-S4ICS_JSON: Final = (
-    "WPROT SIMULATED READY 0.000 NONE -1, WPSEL SIMULATED READY 80.000 OFF 2, CALW SIMULATED READY 216.000 SHUTTER 4, ASEL SIMULATED READY 0.000 OFF 1, GMIR SIMULATED READY 0.000 TARGET 1, GFOC SIMULATED READY 0.000 TARGET 1\n"
-    + json.dumps(_2nd_PART_S4ICS_PUB)
-)
+S4ICS_JSON: Final = FIRST_PART_S4ICS_PUB + json.dumps(SECOND_PART_S4ICS_PUB)
+
 
 WEATHER_JSON: Final = {
     "broker": "Weather160",
