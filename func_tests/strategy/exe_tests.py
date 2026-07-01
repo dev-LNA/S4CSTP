@@ -162,6 +162,7 @@ class E008(Test_Strategy):
     _test_code = "E008"
 
     def run_test(self) -> None:
+        time_stamp_1 = datetime.now(timezone.utc)
         mechanism_status = utils.S4ICS_MECHANISM_STATUS.copy()
         mechanism_status["condition"] = "BUSY"
         mechanism = utils.S4ICS_MECHANISM.copy()
@@ -172,6 +173,31 @@ class E008(Test_Strategy):
         self.framework._external_apps["s4ics"].status = (
             utils.FIRST_PART_S4ICS_PUB + json.dumps(second_part_s4ics_pub)
         )
+        s4gui_json = utils.S4GUI_JSON.copy()
+        s4gui_json["INSTMODE"] = "POLAR"
+        self.framework._external_apps["s4gui"].status = s4gui_json
+        self.s4acs.send_command("WAIT_EXPOSE_COMMAND ON")
+        sleep(1)
+        self.s4acs.send_command("EXPOSE")
+        sleep(2)
+        lines_list = self.get_log_file_lines()
+        filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
+        debug_logs = self.filter_logs_by_str(filtered_log_lines, "DEBUG")
+        debug_logs = self.extract_log_msg(filtered_log_lines)
+        if "Verifying the waveplate status" not in debug_logs:
+            self.set_result("error", "Log msg related to waveplate not found")
+
+        error_logs = self.filter_logs_by_str(filtered_log_lines, "ERROR")
+        error_logs = self.extract_log_msg(filtered_log_lines)
+        if "The communication with S4ICS has failed" not in error_logs:
+            self.set_result("error", "Log msg related to waveplate not found")
+
+        self.framework._external_apps["s4ics"].status = (
+            utils.FIRST_PART_S4ICS_PUB + json.dumps(utils.SECOND_PART_S4ICS_PUB)
+        )
+        self.framework._external_apps["s4gui"].status = utils.S4GUI_JSON.copy()
+        self.s4acs.send_command("WAIT_EXPOSE_COMMAND OFF")
+
         return super().run_test()
 
 
