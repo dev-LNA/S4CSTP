@@ -183,12 +183,12 @@ class E008(Test_Strategy):
         lines_list = self.get_log_file_lines()
         filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)
         debug_logs = self.filter_logs_by_str(filtered_log_lines, "DEBUG")
-        debug_logs = self.extract_log_msg(filtered_log_lines)
+        debug_logs = self.extract_log_msg(debug_logs)
         if "Verifying the waveplate status" not in debug_logs:
             self.set_result("error", "Log msg related to waveplate not found")
 
         error_logs = self.filter_logs_by_str(filtered_log_lines, "ERROR")
-        error_logs = self.extract_log_msg(filtered_log_lines)
+        error_logs = self.extract_log_msg(error_logs)
         if "The communication with S4ICS has failed" not in error_logs:
             self.set_result("error", "Log msg related to waveplate not found")
 
@@ -210,7 +210,9 @@ class E009(Test_Strategy):
 
         self._default_acq_config["#CYCLES"] = 3
         self.s4acs.set_acquisition_config(self._default_acq_config)
-        self.validate_acq_config()
+        if not self.s4acs.validate_acq_config():
+            self.set_result("error", "Unexpected acquisition configuration.")
+
         self.s4acs.send_command("EXPOSE")
         self.wait_acquisition_start()
         self.s4acs.send_command(cmd)
@@ -231,7 +233,8 @@ class E010(Test_Strategy):
 
         self._default_acq_config["#CYCLES"] = 3
         self.s4acs.set_acquisition_config(self._default_acq_config)
-        self.validate_acq_config()
+        if not self.s4acs.validate_acq_config():
+            self.set_result("error", "Unexpected acquisition configuration.")
 
         self.s4acs.send_command("EXPOSE")
         self.wait_acquisition_start()
@@ -266,7 +269,8 @@ class E012(Test_Strategy):
 
         self._default_acq_config["EXPTIME"] = 5
         self.s4acs.set_acquisition_config(self._default_acq_config)
-        self.validate_acq_config()
+        if not self.s4acs.validate_acq_config():
+            self.set_result("error", "Unexpected acquisition configuration.")
         self.s4acs.send_command("EXPOSE")
         self.wait_acquisition_start()
         self.s4acs.send_command(cmd)
@@ -279,20 +283,28 @@ class E012(Test_Strategy):
         return super().run_test()
 
 
-class E013(Test_Strategy):  # TODO: este teste precisa ser mudado
-    _test_code = "E013"
+class E014(Test_Strategy):
+    _test_code = "E014"
 
     def run_test(self) -> None:
-        self._default_acq_config["WAVEPLATE_POS"] = 11
-        self.s4acs.set_acquisition_config(self._default_acq_config)
-        self.validate_acq_config()
-        self.s4acs.send_command("EXPOSE")
-        self.wait_acquisition_finish()
-        sleep(2)
-        # if self.s4acs.camera.cam_status.status != "ACQUISITION_ABORTED":
-        #     self.set_result("error", f"{cmmd} command failed")
-        self._default_acq_config["WAVEPLATE_POS"] = 1
-        self.s4acs.set_acquisition_config(self._default_acq_config)
+        limit_values = {"WAVEPLATE_POS": (0, 2**16 - 1)}
+        for key, (_min, _max) in limit_values.items():
+            time_stamp = datetime.now(timezone.utc)
+            self.s4acs.send_command(f"SET {key} {_max + 1}")
+            self.s4acs.send_command(f"SET {key} {_max}")
+
+            lines_list = self.get_log_file_lines()
+            filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
+            filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
+            filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+            expected_string = f"The value {_max + 1:.2f} was received for the WAVEPLATE_POS parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            if expected_string not in filtered_log_lines:
+                self.set_result(
+                    "error", f"Log msg related the {key} parameter was not found"
+                )
+
+            self.s4acs.send_command(f"SET {key} {_min - 1}")
+            # self.s4acs.send_command(f"SET {key} {_min}")
 
         return super().run_test()
 

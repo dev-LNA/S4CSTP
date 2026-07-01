@@ -62,12 +62,6 @@ class Test_Strategy(ABC):
             self.set_result("error", f"Log msg related to {cmd} cmd not found")
         return
 
-    def validate_acq_config(self) -> None:
-        sleep(self._timeout_time)
-        if not self.s4acs.validate_acq_config():
-            self.set_result("error", "Unexpected acquisition configuration.")
-        return
-
     def calculate_pub_delay(self) -> timedelta:
         while not self.s4acs._subscriber.new_msg:
             sleep(self._min_iteration_time)
