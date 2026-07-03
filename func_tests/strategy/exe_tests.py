@@ -287,34 +287,55 @@ class E014(Test_Strategy):
     _test_code = "E014"
 
     def run_test(self) -> None:
-        limit_values = {"WAVEPLATE_POS": (0, 2**16 - 1)}
+        limit_values = {
+            "WAVEPLATE_POS": (0, 2**16 - 1),
+            "#FRAMES": (1, 1500),
+            "TEMP": (-80, 20),
+            "EXPTIME": (0.00001, 86400),
+            "COOLER_POWER_STATUS": (0, 1),
+            "#CYCLES": (1, 10000),
+        }
         for key, (_min, _max) in limit_values.items():
             time_stamp = datetime.now(timezone.utc)
-            self.s4acs.send_command(f"SET {key} {_max + 1}")
-            # sleep(1)
-            # if not self.s4acs.camera.opmode_err.status:
-            #     self.set_result("error", "The published error msg was not found")
+            self._send_commands_sequence(key, _max, _max + 1)
+            self._send_commands_sequence(key, _min, _min - 1)
 
-            # self.s4acs.send_command(f"SET {key} {_max}")
-            # sleep(1)
-            # if not self.s4acs.camera.verify_opmode_err():
-            #     self.set_result("error", "The published error msg was not cleaned")
+            lines_list = self.get_log_file_lines()
+            filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
+            filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
+            filtered_log_lines = self.extract_log_msg(filtered_log_lines)
 
-            # lines_list = self.get_log_file_lines()
-            # filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
-            # filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
-            # filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-            # expected_string = f"The value {_max + 1:.2f} was received for the WAVEPLATE_POS parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
-
-            # if expected_string not in filtered_log_lines:
-            #     self.set_result(
-            #         "error", f"Log msg related the {key} parameter was not found"
-            #     )
-
-            # self.s4acs.send_command(f"SET {key} {_min - 1}")
-            # self.s4acs.send_command(f"SET {key} {_min}")
+            self._verify_log_files(filtered_log_lines, key, _min, _max, _max + 1)
+            self._verify_log_files(filtered_log_lines, key, _min, _max, _min - 1)
 
         return super().run_test()
+
+    def _send_commands_sequence(
+        self, key: str, val: float | int, adjusted_val: float | int
+    ) -> None:
+        self.s4acs.send_command(f"SET {key} {adjusted_val}")
+        sleep(1)
+        if not self.s4acs.camera.acq_config_err[key].status:
+            self.set_result("error", "The published error msg was not found")
+
+        self.s4acs.send_command(f"SET {key} {val}")
+        sleep(1)
+        if self.s4acs.camera.acq_config_err[key].status:
+            self.set_result("error", "The published error msg was not cleaned")
+
+    def _verify_log_files(
+        self,
+        filtered_log_lines: list,
+        key: str,
+        _min: float | int,
+        _max: float | int,
+        adjusted_val: float | int,
+    ) -> None:
+        expected_string = f"The value {adjusted_val:.2f} was received for the {key} parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+        if expected_string not in filtered_log_lines:
+            self.set_result(
+                "error", f"Log msg related set value {adjusted_val} was not found"
+            )
 
 
 class E019(Test_Strategy):
