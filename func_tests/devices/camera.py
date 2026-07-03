@@ -4,6 +4,16 @@ import func_tests.data_types as data_types
 
 
 class Camera:
+    ACQUISITION_CONFIG_PARAMETERS = [
+        "WAVEPLATE_POS",
+        "SUFFIX",
+        "#CYCLES",
+        "#FRAMES",
+        "COOLER_POWER_STATUS",
+        "EXPTIME",
+        "TEMP",
+    ]
+
     def __init__(self) -> None:
         self._requested_cam_config: data_types.Camera_Configuration
         self._received_cam_config: data_types.Camera_Configuration
@@ -13,7 +23,11 @@ class Camera:
 
         self._cam_status: data_types.Camera_Status
         self._comm_status: data_types.Communication_Status
-        self._opmode_err: list[dict]
+        self._opmode_err: data_types.Error_Type
+        self._acq_config_err: dict[str, data_types.Error_Type] = {
+            key: data_types.Error_Type(status=False, code=0, source="")
+            for key in self.ACQUISITION_CONFIG_PARAMETERS
+        }
 
     @property
     def requested_cam_config(self) -> data_types.Camera_Configuration:
@@ -72,12 +86,24 @@ class Camera:
         self._comm_status = data_types.Communication_Status.from_dict(comm_status)
 
     @property
-    def opmode_err(self) -> list:
+    def opmode_err(self) -> data_types.Error_Type:
         return self._opmode_err
 
     @opmode_err.setter
-    def opmode_err(self, opmode_err: list[dict]) -> None:
-        self._opmode_err = opmode_err
+    def opmode_err(self, opmode_err: dict) -> None:
+        self._opmode_err = data_types.Error_Type.from_dict(opmode_err)
+
+    @property
+    def acq_config_err(self) -> dict[str, data_types.Error_Type]:
+        return self._acq_config_err
+
+    @acq_config_err.setter
+    def acq_config_err(self, acq_config_err: dict) -> None:
+        parameters = acq_config_err.keys()
+        if self.ACQUISITION_CONFIG_PARAMETERS.sort() != list(parameters).sort():
+            raise ValueError(f"Unexpected set of parameters: {parameters}")
+        for key, val in acq_config_err.items():
+            self._acq_config_err[key] = data_types.Error_Type.from_dict(val)
 
     def format_cam_config(self) -> str:
         return json.dumps({
@@ -95,5 +121,8 @@ class Camera:
         _dict["COOLER_POWER_STATUS"] = _dict.pop("COOLER")
         return _dict
 
-    def verify_opmode_err(self) -> bool:
-        return len(self._opmode_err) > 0
+    def return_acquisition_error(self) -> bool:
+        return True in [val.status for val in self._acq_config_err.values()]
+
+    def convert_acq_cfg_err_to_dict(self) -> dict:
+        return {key: val.model_dump() for key, val in self._acq_config_err.items()}

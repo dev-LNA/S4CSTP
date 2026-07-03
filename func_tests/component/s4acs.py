@@ -42,6 +42,8 @@ class S4ACS:
             "cam_status": self.camera.cam_status.model_dump(),
             "acq_config": self.camera.received_acq_config.model_dump(),
             "comm_status": self.camera.comm_status.model_dump(),
+            "opmode_err": self.camera.opmode_err.model_dump(),
+            "acq_config_err": json.dumps(self.camera.convert_acq_cfg_err_to_dict()),
         }
 
     @property
@@ -61,6 +63,7 @@ class S4ACS:
         self.camera.cam_status = json.loads(self._status["CCD status"])
         self.camera.comm_status = json.loads(self._status["Communication status"])
         self.camera.opmode_err = json.loads(self._status["WRITE SETUP error"])
+        self.camera.acq_config_err = json.loads(self._status["SET error"])
         self.update_exe_status()
 
     def initialize(self) -> None:

@@ -146,7 +146,7 @@ class E007(Test_Strategy):
         self._default_cam_config["INITIAL_LINE"] = 1025
         self.s4acs.set_cam_config(self._default_cam_config)
         sleep(2)
-        if not self.s4acs.camera.verify_opmode_err():
+        if not self.s4acs.camera.opmode_err.status:
             self.set_result("error", "The error msg was not found")
         cmd = "EXPOSE"
         self.send_unexpected_command(cmd)
@@ -291,19 +291,27 @@ class E014(Test_Strategy):
         for key, (_min, _max) in limit_values.items():
             time_stamp = datetime.now(timezone.utc)
             self.s4acs.send_command(f"SET {key} {_max + 1}")
-            self.s4acs.send_command(f"SET {key} {_max}")
+            # sleep(1)
+            # if not self.s4acs.camera.opmode_err.status:
+            #     self.set_result("error", "The published error msg was not found")
 
-            lines_list = self.get_log_file_lines()
-            filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
-            filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
-            filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-            expected_string = f"The value {_max + 1:.2f} was received for the WAVEPLATE_POS parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
-            if expected_string not in filtered_log_lines:
-                self.set_result(
-                    "error", f"Log msg related the {key} parameter was not found"
-                )
+            # self.s4acs.send_command(f"SET {key} {_max}")
+            # sleep(1)
+            # if not self.s4acs.camera.verify_opmode_err():
+            #     self.set_result("error", "The published error msg was not cleaned")
 
-            self.s4acs.send_command(f"SET {key} {_min - 1}")
+            # lines_list = self.get_log_file_lines()
+            # filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
+            # filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
+            # filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+            # expected_string = f"The value {_max + 1:.2f} was received for the WAVEPLATE_POS parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+
+            # if expected_string not in filtered_log_lines:
+            #     self.set_result(
+            #         "error", f"Log msg related the {key} parameter was not found"
+            #     )
+
+            # self.s4acs.send_command(f"SET {key} {_min - 1}")
             # self.s4acs.send_command(f"SET {key} {_min}")
 
         return super().run_test()

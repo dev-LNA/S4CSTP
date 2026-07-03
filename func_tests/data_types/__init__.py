@@ -5,6 +5,7 @@ from .data_types import (
     Command,
     Communication_Status,
     End_Point,
+    Error_Type,
     Execution_Status,
     Framework_Setup,
     Led_Status,

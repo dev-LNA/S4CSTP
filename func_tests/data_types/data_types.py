@@ -177,6 +177,18 @@ class Communication_Status(BaseModel):
         )
 
 
+class Error_Type(BaseModel):
+    status: bool
+    code: int
+    source: str
+
+    @classmethod
+    def from_dict(cls, error: dict) -> Error_Type:
+        return Error_Type(
+            status=error["status"], code=error["code"], source=error["source"]
+        )
+
+
 class Execution_Status(Enum):
     NONE = auto()
     IDLE = auto()
