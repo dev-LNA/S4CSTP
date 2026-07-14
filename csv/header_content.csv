@@ -74,6 +74,7 @@ HUMIDITY;OUTHUMIDITY;float;0,100;Relative humidity (%), weather tower
 ACSVRSN;;string;;S4ACS software version
 ICSVRSN;;string;;S4ICS software version
 GUIVRSN;;string;;S4GUI software version
+SDKVRSN;;string;;Camera SDK version
 CTRLINTE;;string;S4GUI,S4GEI;Graphical control interface of ACS
 ACSMODE;;boolean;true,false;ACS: real (T) or simulated (F)
 WPROMODE;;boolean;true,false;Waveplate rotator: real (T) or simulated (F)
@@ -102,3 +103,5 @@ ACQERROR;;boolean;true,false;Acquisition error - see comments
 DATEFILE;;string;;File creation date
 CHECKSUM;;string;;HDU checksum
 DATASUM;;string;;Data unit checksum
+HWSYNC;;boolean;true,false;Acquisition synchronization by hardware
+WPPOSSEQ;;string;[None] or [1,2,3,....,16];Set of selected WP positions

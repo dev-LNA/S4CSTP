@@ -15,9 +15,8 @@ import re
 import unittest
 import warnings
 from datetime import datetime, timedelta
-from getpass import getuser
 from os import listdir
-from os.path import isdir, join
+from os.path import join
 from pathlib import Path
 
 import astropy.io.fits as fits
@@ -61,6 +60,7 @@ class Test_Keywords(unittest.TestCase):
         "ACSVRSN": r"v\d+\.\d+\.\d+",
         "GUIVRSN": r"v\d+\.\d+\.\d+",
         "ICSVRSN": r"v\d+\.\d+\.\d+",
+        "SDKVRSN": r"\d[.]\d{3}[.]\d{5}[.]\d",
     }
     kws_fixed_str_size = [("PROPID", 15), ("OBJECT", 30), ("OBSERVER", 54)]
     simulated_mode_kws = [
@@ -79,17 +79,21 @@ class Test_Keywords(unittest.TestCase):
         cfg = cls._read_config_file()
         cls.images_folder = cls._get_images_folder(cfg)
         cls.files = cls._get_files_in_folder(cls.images_folder)
-        cls.hdrs_list = cls._get_headers(cls.images_folder, cls.files)
+        cls.hdrs_list: list[fits.Header] = cls._get_headers(
+            cls.images_folder, cls.files
+        )
         cls.read_noises, cls.ccd_gains, cls.header_content = cls._read_csvs()
 
+    @staticmethod
     def _read_config_file() -> configparser.ConfigParser:
-        sparc4_folder = Path(f"C:/Users/{getuser()}/SPARC4/ACS")
+        sparc4_folder = Path.home() / "SPARC4" / "ACS"
         cfg_file = sparc4_folder / "acs_config.cfg"
         cfg = configparser.ConfigParser()
         cfg.read(cfg_file)
         return cfg
 
-    def _get_images_folder(cfg) -> Path:
+    @staticmethod
+    def _get_images_folder(cfg: configparser.ConfigParser) -> Path:
         today = Path(cfg.get("channel configuration", "image path").strip(r"\""))
         today_list = [file for file in listdir(today) if ".fits" in file]
         if today_list != []:
@@ -100,16 +104,19 @@ class Test_Keywords(unittest.TestCase):
             raise FileNotFoundError(f"The folder {yesterday} does not exist.")
         return yesterday
 
-    def _get_files_in_folder(folder_path) -> list:
+    @staticmethod
+    def _get_files_in_folder(folder_path: Path) -> list[str]:
         return [file for file in listdir(folder_path) if file[-4:] == "fits"]
 
-    def _get_headers(images_folder, files) -> list:
+    @staticmethod
+    def _get_headers(images_folder: Path, files: list[str]) -> list[fits.Header]:
         hdrs_list = []
         for file in files:
-            hdr = fits.getheader(join(images_folder, file))
+            hdr = fits.getheader(images_folder / file)
             hdrs_list.append(hdr)
         return hdrs_list
 
+    @staticmethod
     def _read_csvs() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         read_noises = pd.read_csv(join("csv", "read_noises.csv"))
         ccd_gains = pd.read_csv(join("csv", "preamp_gains.csv"))
@@ -183,7 +190,7 @@ class Test_Keywords(unittest.TestCase):
                 del hdr["COMMENT"]
             hdr_keywords = list(hdr.keys())
             csv_keywords = list(self.header_content["Keyword"].values)
-            func_name = inspect.currentframe().f_code.co_name
+            func_name = inspect.currentframe().f_code.co_name  # type: ignore
             self.compare_lists(csv_keywords, hdr_keywords, hdr["FILENAME"], func_name)
 
     def test_kw_comments(self) -> None:
@@ -192,11 +199,11 @@ class Test_Keywords(unittest.TestCase):
                 del hdr["COMMENT"]
             hdr_comment = hdr.comments
             csv_comment = self.header_content["Comment"]
-            func_name = inspect.currentframe().f_code.co_name
+            func_name = inspect.currentframe().f_code.co_name  # type: ignore
             self.compare_lists(csv_comment, hdr_comment, hdr["FILENAME"], func_name)
 
     def test_keywords_types(self) -> None:
-        func_name = inspect.currentframe().f_code.co_name
+        func_name = inspect.currentframe().f_code.co_name  # type: ignore
         for hdr in self.hdrs_list:
             for _, row in self.header_content.iterrows():
                 kw = row["Keyword"]
@@ -211,7 +218,7 @@ class Test_Keywords(unittest.TestCase):
         return
 
     def test_kws_in_interval(self) -> None:
-        func_name = inspect.currentframe().f_code.co_name
+        func_name = inspect.currentframe().f_code.co_name  # type: ignore
         filtered_hdr_content = self.header_content[
             self.header_content["Type"].isin(["integer", "float"])
         ]
@@ -249,7 +256,7 @@ class Test_Keywords(unittest.TestCase):
                         self.var_types[_type](new_val) for new_val in allowed_vals
                     ]
                 file_name = hdr["FILENAME"]
-                func_name = inspect.currentframe().f_code.co_name
+                func_name = inspect.currentframe().f_code.co_name  # type: ignore
                 value = hdr[kw]
                 self.val_in_list(value, allowed_vals, kw, file_name, func_name)
                 assert hdr[kw] in allowed_vals
@@ -260,7 +267,7 @@ class Test_Keywords(unittest.TestCase):
                 expression = self.regex_expressions[kw]
                 value = hdr[kw]
                 filename = hdr["FILENAME"]
-                func_name = inspect.currentframe().f_code.co_name
+                func_name = inspect.currentframe().f_code.co_name  # type: ignore
                 self.verify_regex(value, expression, kw, filename, func_name)
         return
 
@@ -279,7 +286,7 @@ class Test_Keywords(unittest.TestCase):
                 filename = hdr["FILENAME"]
                 expected = ""
                 received = hdr["COMMENT"]
-                func_name = inspect.currentframe().f_code.co_name
+                func_name = inspect.currentframe().f_code.co_name  # type: ignore
                 self.verify_if_different(expected, received, filename, func_name)
 
     # -------------------- tests to verify the keywords content ----------------------------
@@ -287,7 +294,7 @@ class Test_Keywords(unittest.TestCase):
     def test_observatory_coords(self) -> None:
         for hdr in self.hdrs_list:
             filename = hdr["FILENAME"]
-            func_name = inspect.currentframe().f_code.co_name
+            func_name = inspect.currentframe().f_code.co_name  # type: ignore
 
             received = hdr["OBSLONG"]
             expected = -45.5825
@@ -307,7 +314,7 @@ class Test_Keywords(unittest.TestCase):
             if em_mode != "Conventional":
                 em_mode = "EM"
             readout = hdr["READRATE"]
-            preamp = float(hdr["PREAMP"][-1])
+            preamp = float(hdr["PREAMP"][-1])  # type: ignore
             serial_number = f"{hdr['CCDSERN']}"
             gain = hdr["GAIN"]
             filter = (
@@ -321,7 +328,7 @@ class Test_Keywords(unittest.TestCase):
                 line[serial_number].values[0],
                 gain,
             )
-            func_name = inspect.currentframe().f_code.co_name
+            func_name = inspect.currentframe().f_code.co_name  # type: ignore
             self.compare_numbers(expected, received, filename, func_name)
 
     def test_read_noise(self) -> None:
@@ -330,7 +337,7 @@ class Test_Keywords(unittest.TestCase):
             if em_mode != "Conventional":
                 em_mode = "EM"
             readout = hdr["READRATE"]
-            preamp = float(hdr["PREAMP"][-1])
+            preamp = float(hdr["PREAMP"][-1])  # type: ignore
             serial_number = f"{hdr['CCDSERN']}"
             read_noise = hdr["RDNOISE"]
             filter = (
@@ -344,19 +351,19 @@ class Test_Keywords(unittest.TestCase):
                 line[serial_number].values[0],
                 read_noise,
             )
-            func_name = inspect.currentframe().f_code.co_name
+            func_name = inspect.currentframe().f_code.co_name  # type: ignore
             self.compare_numbers(expected, received, filename, func_name)
 
     def test_equinox(self) -> None:
         for hdr in self.hdrs_list:
             filename, expected, received = (hdr["FILENAME"], 2000.0, hdr["EQUINOX"])
-            func_name = inspect.currentframe().f_code.co_name
+            func_name = inspect.currentframe().f_code.co_name  # type: ignore
             self.compare_numbers(expected, received, filename, func_name)
 
     def test_BSCALE(self) -> None:
         for hdr in self.hdrs_list:
             filename, expected, received = (hdr["FILENAME"], 1, hdr["BSCALE"])
-            func_name = inspect.currentframe().f_code.co_name
+            func_name = inspect.currentframe().f_code.co_name  # type: ignore
             self.compare_numbers(expected, received, filename, func_name)
 
     def test_BZERO(self) -> None:
@@ -364,30 +371,30 @@ class Test_Keywords(unittest.TestCase):
             received = hdr["BZERO"]
             expected = 2**15
             filename = hdr["FILENAME"]
-            func_name = inspect.currentframe().f_code.co_name
+            func_name = inspect.currentframe().f_code.co_name  # type: ignore
             self.compare_numbers(expected, received, filename, func_name)
 
     def test_BITPIX(self) -> None:
         for hdr in self.hdrs_list:
             filename, expected, received = (hdr["FILENAME"], 16, hdr["BITPIX"])
-            func_name = inspect.currentframe().f_code.co_name
+            func_name = inspect.currentframe().f_code.co_name  # type: ignore
             self.compare_numbers(expected, received, filename, func_name)
 
     def test_NAXIS(self) -> None:
         for hdr in self.hdrs_list:
             filename, expected, received = (hdr["FILENAME"], 2, hdr["NAXIS"])
-            func_name = inspect.currentframe().f_code.co_name
+            func_name = inspect.currentframe().f_code.co_name  # type: ignore
             self.compare_numbers(expected, received, filename, func_name)
 
     def test_kw_sizes(self) -> None:
         for hdr in self.hdrs_list:
             for kw, str_size in self.kws_fixed_str_size:
                 kw_value, filename = hdr[kw], hdr["FILENAME"]
-                func_name = inspect.currentframe().f_code.co_name
+                func_name = inspect.currentframe().f_code.co_name  # type: ignore
                 self.verify_str_size(kw_value, str_size, kw, filename, func_name)
 
     def test_simulated_mode(self) -> None:
-        func_name = inspect.currentframe().f_code.co_name
+        func_name = inspect.currentframe().f_code.co_name  # type: ignore
         for hdr in self.hdrs_list:
             for kw in self.simulated_mode_kws:
                 if not hdr[kw]:
@@ -396,7 +403,7 @@ class Test_Keywords(unittest.TestCase):
                     )
 
     def test_empty_kws(self) -> None:
-        func_name = inspect.currentframe().f_code.co_name
+        func_name = inspect.currentframe().f_code.co_name  # type: ignore
         for hdr in self.hdrs_list:
             for kw in ["OBSERVER", "PROPID", "OBJECT"]:
                 if hdr[kw] == "":
@@ -405,13 +412,13 @@ class Test_Keywords(unittest.TestCase):
                     )
 
     def test_checksum_datasum(self) -> None:
-        func_name = inspect.currentframe().f_code.co_name
+        func_name = inspect.currentframe().f_code.co_name  # type: ignore
         for file in self.files:
             with warnings.catch_warnings(record=True) as w:
                 warnings.simplefilter("always", AstropyUserWarning)
-                hdu = fits.open(join(self.images_folder, file), checksum=True)[0]
+                hdu = fits.open(self.images_folder / file, checksum=True)[0]
             for warn in w:
                 print(warn.message)
                 logging.error(
-                    f"Test: {func_name}, filename: {hdu.header['FILENAME']}, {str(warn.message).replace('\n', '')}"
+                    f"Test: {func_name}, filename: {hdu.header['FILENAME']}, {str(warn.message).replace('\n', '')}"  # type: ignore
                 )

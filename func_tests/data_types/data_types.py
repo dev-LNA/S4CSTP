@@ -409,9 +409,12 @@ class Framework_Setup:
             return [strategy.Fake_Positive_Test() for _ in range(17)] + [
                 strategy.Fake_Negative_Test() for _ in range(10)
             ]
-
         if _type == "all tests":
             return [_test() for _test in self.tests_list]
+        if _type == "quick tests":
+            return [
+                _test() for _test in self.tests_list if _test not in self.complex_tests
+            ]
         if _type == "one test":
             for _test in self.tests_list:
                 if _test.__name__ == test_code:
