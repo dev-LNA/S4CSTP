@@ -126,3 +126,5 @@ class Camera:
 
     def convert_acq_cfg_err_to_dict(self) -> dict:
         return {key: val.model_dump() for key, val in self._acq_config_err.items()}
+
+    def get_opmode_param_limits(self)-> None:

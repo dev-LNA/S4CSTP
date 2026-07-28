@@ -324,6 +324,7 @@ class Framework_Setup:
         strategy.E011,
         strategy.E012,
         strategy.E014,
+        strategy.E015,
         strategy.E019,
         strategy.S001,
     ]
@@ -334,6 +335,7 @@ class Framework_Setup:
         strategy.I007,
         strategy.E002,
         strategy.E014,
+        strategy.E015,
     ]
 
     def create_component(self, _type: str) -> component.S4ACS:

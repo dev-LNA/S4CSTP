@@ -338,6 +338,62 @@ class E014(Test_Strategy):
             )
 
 
+class E015(Test_Strategy):
+    _test_code = "E015"
+
+    def run_test(self) -> None:
+        cam_config = self._default_cam_config
+        self.s4acs.set_cam_config(cam_config)
+
+        return super().run_test()
+
+    def run_test_1(self) -> None:
+        limit_values = {
+            "WAVEPLATE_POS": (0, 2**16 - 1),
+        }
+        for key, (_min, _max) in limit_values.items():
+            time_stamp = datetime.now(timezone.utc)
+            self._send_commands_sequence(key, _max, _max + 1)
+            self._send_commands_sequence(key, _min, _min - 1)
+
+            lines_list = self.get_log_file_lines()
+            filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
+            filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
+            filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+            self._verify_log_files(filtered_log_lines, key, _min, _max, _max + 1)
+            self._verify_log_files(filtered_log_lines, key, _min, _max, _min - 1)
+
+        return super().run_test()
+
+    def _send_commands_sequence(
+        self, key: str, val: float | int, adjusted_val: float | int
+    ) -> None:
+        self.s4acs.send_command(f"SET {key} {adjusted_val}")
+        sleep(1)
+        if not self.s4acs.camera.acq_config_err[key].status:
+            self.set_result("error", "The published error msg was not found")
+
+        self.s4acs.send_command(f"SET {key} {val}")
+        sleep(1)
+        if self.s4acs.camera.acq_config_err[key].status:
+            self.set_result("error", "The published error msg was not cleaned")
+
+    def _verify_log_files(
+        self,
+        filtered_log_lines: list,
+        key: str,
+        _min: float | int,
+        _max: float | int,
+        adjusted_val: float | int,
+    ) -> None:
+        expected_string = f"The value {adjusted_val:.2f} was received for the {key} parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+        if expected_string not in filtered_log_lines:
+            self.set_result(
+                "error", f"Log msg related set value {adjusted_val} was not found"
+            )
+
+
 class E019(Test_Strategy):
     _test_code = "E019"
 

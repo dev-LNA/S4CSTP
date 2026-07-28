@@ -53,7 +53,7 @@ _log_levels = {
 
 def read_config_file(file_name: str = "acs_config.cfg") -> data_types.S4ACS_Cfg_File:
     section_name = "channel configuration"
-    cfg_file_folder = Path.home() / "SPARC4" / "ACS"
+    cfg_file_folder = Path(Path.cwd().root) / "sparc4" / "config"
     cfg_file = cfg_file_folder / file_name
     cfg_file_content = {}
     if not cfg_file.exists():

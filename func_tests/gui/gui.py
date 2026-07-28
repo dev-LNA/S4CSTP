@@ -23,7 +23,7 @@ class GUI(QMainWindow):
         # Load the UI page
         file_path = join("func_tests", "gui", "gui.ui")
         uic.loadUi(file_path, self)  # type: ignore
-        self.setWindowTitle("S4ACS Functionalities Tests Framework")
+        self.setWindowTitle("S4ACS Integration Tests Framework")
         self.resize(700, 500)
 
         self.gui_widgets = gui.GUI_Widgets(self)
@@ -37,8 +37,8 @@ class GUI(QMainWindow):
 
         s4acs = data_types.Framework_Setup().create_component("real")
         self.framework = framework.Functionalities_Tests_Framework(s4acs, self)
-        self.framework.set_tests_list("quick tests")
-        # self.framework.set_tests_list("one test", "E014")
+        # self.framework.set_tests_list("quick tests")
+        self.framework.set_tests_list("one test", "E015")
         self.framework.stop_1st_err = (
             self.gui_widgets.framework_stop_1st_err.isChecked()
         )
