@@ -407,6 +407,19 @@ class Framework_Setup:
     def create_tests_list(
         self, _type: str, test_code: str = ""
     ) -> Sequence[strategy.Test_Strategy]:
+        """Create list of tests
+
+        Args:
+            _type (str): test type. Allowed values are fake, all tests, quick tests, init tests, exe tests and one test
+            test_code (str, optional): For a single test only. Defaults to "".
+
+        Raises:
+            ValueError: if the test code was not found
+            ValueError: if the test type is unkonwn
+
+        Returns:
+            Sequence[strategy.Test_Strategy]: list of tests
+        """
         if _type == "fake":
             return [strategy.Fake_Positive_Test() for _ in range(17)] + [
                 strategy.Fake_Negative_Test() for _ in range(10)
@@ -417,9 +430,21 @@ class Framework_Setup:
             return [
                 _test() for _test in self.tests_list if _test not in self.complex_tests
             ]
+
+        if _type == "init tests":
+            return [_test() for _test in self.tests_list if "I" in _test.__name__]
+        if _type == "exe tests":
+            return [_test() for _test in self.tests_list if "E" in _test.__name__]
         if _type == "one test":
             for _test in self.tests_list:
                 if _test.__name__ == test_code:
                     return [_test()]
             raise ValueError(f"Test does no found: {test_code}")
+        if _type == "start with":
+            return [
+                _test()
+                for _test in self.tests_list
+                if int(_test.__name__[1:]) >= int(test_code[1:])
+                and test_code[0] in _test.__name__
+            ]
         raise ValueError(f"Unknown type: {_type}")

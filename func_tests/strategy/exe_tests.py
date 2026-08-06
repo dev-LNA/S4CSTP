@@ -143,7 +143,7 @@ class E007(Test_Strategy):
     _test_code = "E007"
 
     def run_test(self) -> None:
-        self._default_cam_config["INITIAL_LINE"] = 1025
+        self._default_cam_config["FINAL_LINE"] = 1025
         self.s4acs.set_cam_config(self._default_cam_config)
         sleep(2)
         if not self.s4acs.camera.opmode_err.status:
@@ -151,7 +151,7 @@ class E007(Test_Strategy):
         cmd = "EXPOSE"
         self.send_unexpected_command(cmd)
 
-        self._default_cam_config["INITIAL_LINE"] = 1024
+        self._default_cam_config["FINAL_LINE"] = 1024
         self.s4acs.set_cam_config(self._default_cam_config)
         sleep(2)
 
@@ -280,6 +280,7 @@ class E012(Test_Strategy):
 
         self._default_acq_config["EXPTIME"] = 2
         self.s4acs.set_acquisition_config(self._default_acq_config)
+        sleep(1)
         return super().run_test()
 
 
@@ -314,14 +315,16 @@ class E014(Test_Strategy):
         self, key: str, val: float | int, adjusted_val: float | int
     ) -> None:
         self.s4acs.send_command(f"SET {key} {adjusted_val}")
-        sleep(1)
+        sleep(1.2)
         if not self.s4acs.camera.acq_config_err[key].status:
-            self.set_result("error", "The published error msg was not found")
+            self.set_result("error", f"{key} - The published error msg was not found")
+            return
 
         self.s4acs.send_command(f"SET {key} {val}")
-        sleep(1)
+        sleep(1.2)
         if self.s4acs.camera.acq_config_err[key].status:
-            self.set_result("error", "The published error msg was not cleaned")
+            self.set_result("error", f"{key} - The published error msg was not cleaned")
+            return
 
     def _verify_log_files(
         self,
@@ -342,17 +345,34 @@ class E015(Test_Strategy):
     _test_code = "E015"
 
     def run_test(self) -> None:
-        cam_config = self._default_cam_config
-        self.s4acs.set_cam_config(cam_config)
+        parameters = [
+            "PREAMP",
+            # "EM_MODE",
+            # "EM_GAIN",
+            # "INITIAL_LINE",
+            # "INITIAL_COLUMN",
+            # "FINAL_LINE",
+            # "FINAL_COLUMN",
+            # "VBIN",
+            # "HBIN",
+            # "SHUTTER_MODE",
+            # "SHUTTER_TTL",
+            # "SHUTTER_OPENING_TIME",
+            # "SHUTTER_CLOSING_TIME",
+            # "VERTICAL_SHIFT_SPEED",
+            # "VERTICAL_CLOCK_VOLTAGE",
+        ]
 
-        return super().run_test()
-
-    def run_test_1(self) -> None:
-        limit_values = {
-            "WAVEPLATE_POS": (0, 2**16 - 1),
-        }
-        for key, (_min, _max) in limit_values.items():
+        parameters2 = [
+            "ACQUISITION_MODE",
+            "TRIGGER_MODE",
+            "READ_MODE",
+            "READOUT_RATE",
+            "AD_CHANNEL",
+        ]
+        for key in parameters:
             time_stamp = datetime.now(timezone.utc)
+            _min, _max = self.s4acs.camera.opmode_params_limits[key]
             self._send_commands_sequence(key, _max, _max + 1)
             self._send_commands_sequence(key, _min, _min - 1)
 
@@ -366,18 +386,21 @@ class E015(Test_Strategy):
 
         return super().run_test()
 
-    def _send_commands_sequence(
-        self, key: str, val: float | int, adjusted_val: float | int
-    ) -> None:
-        self.s4acs.send_command(f"SET {key} {adjusted_val}")
+    def _send_commands_sequence(self, key: str, val: int, adjusted_val: int) -> None:
+        cam_config = self._default_cam_config
+        cam_config[key] = adjusted_val
+        self.s4acs.set_cam_config(cam_config)
         sleep(1)
-        if not self.s4acs.camera.acq_config_err[key].status:
+        if not self.s4acs.camera.opmode_err.status:
             self.set_result("error", "The published error msg was not found")
+            return
 
-        self.s4acs.send_command(f"SET {key} {val}")
+        cam_config[key] = val
+        self.s4acs.set_cam_config(cam_config)
         sleep(1)
-        if self.s4acs.camera.acq_config_err[key].status:
+        if self.s4acs.camera.opmode_err.status:
             self.set_result("error", "The published error msg was not cleaned")
+            return
 
     def _verify_log_files(
         self,
@@ -402,6 +425,7 @@ class E019(Test_Strategy):
         self.s4acs.send_command("EXPOSE")
         self.wait_acquisition_start()
         self.wait_acquisition_finish()
+        sleep(1)
 
         lines_list = self.get_log_file_lines()
         filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp_1)

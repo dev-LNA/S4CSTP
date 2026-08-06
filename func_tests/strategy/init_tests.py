@@ -161,7 +161,7 @@ class I007(Test_Strategy):
         cfg_file_name = "_acs_config.cfg"
         cfg_file_content = utils.read_config_file()
         utils.write_cfg_file(cfg_file_content, cfg_file_name)
-        cfg_file = Path.home() / "SPARC4" / "ACS" / "acs_config.cfg"
+        cfg_file = Path(Path.cwd().root) / "sparc4" / "config" / "acs_config.cfg"
         os.remove(cfg_file)
 
         utils.run_s4acs_exe()

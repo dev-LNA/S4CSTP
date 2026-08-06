@@ -76,7 +76,7 @@ def read_config_file(file_name: str = "acs_config.cfg") -> data_types.S4ACS_Cfg_
 def write_cfg_file(
     new_cfg: data_types.S4ACS_Cfg_File, file_name: str = "acs_config.cfg"
 ) -> None:
-    cfg_file_folder = Path.home() / "SPARC4" / "ACS"
+    cfg_file_folder = Path(Path.cwd().root) / "sparc4" / "config"
     cfg_file = cfg_file_folder / file_name
     config = configparser.ConfigParser()
     config["channel configuration"] = new_cfg.to_sparc4_format()

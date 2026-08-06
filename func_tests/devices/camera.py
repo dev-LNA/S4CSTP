@@ -1,4 +1,7 @@
 import json
+from pathlib import Path
+
+import pandas as pd
 
 import func_tests.data_types as data_types
 
@@ -28,6 +31,8 @@ class Camera:
             key: data_types.Error_Type(status=False, code=0, source="")
             for key in self.ACQUISITION_CONFIG_PARAMETERS
         }
+        self.opmode_params_limits: dict
+        self.get_opmode_param_limits()
 
     @property
     def requested_cam_config(self) -> data_types.Camera_Configuration:
@@ -127,4 +132,11 @@ class Camera:
     def convert_acq_cfg_err_to_dict(self) -> dict:
         return {key: val.model_dump() for key, val in self._acq_config_err.items()}
 
-    def get_opmode_param_limits(self)-> None:
+    def get_opmode_param_limits(self) -> None:
+        file_path = (
+            Path.cwd() / "func_tests" / "_csv" / "cam_parameters_limit_values.csv"
+        )
+        df = pd.read_csv(file_path)
+        self.opmode_params_limits = dict(
+            zip(df["parameter"], zip(df["lower limit"], df["upper limit"]))
+        )
