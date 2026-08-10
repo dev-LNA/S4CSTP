@@ -41,40 +41,42 @@ default_acq_config = {
     "WAVEPLATE_POS": 1,
 }
 
-_log_levels = {
-    "0": "STATUS",
-    "1": logging.DEBUG,
-    "2": logging.INFO,
-    "3": logging.WARNING,
-    "4": logging.ERROR,
-    "5": logging.CRITICAL,
-}
 
-
-def read_config_file(file_name: str = "acs_config.cfg") -> data_types.S4ACS_Cfg_File:
-    section_name = "channel configuration"
+def read_config_file(file_name: str) -> configparser.ConfigParser:
     cfg_file_folder = Path(Path.cwd().root) / "sparc4" / "config"
     cfg_file = cfg_file_folder / file_name
-    cfg_file_content = {}
     if not cfg_file.exists():
         raise RuntimeError(f"file {cfg_file} not found")
     config = configparser.ConfigParser()
     config.read(cfg_file)
 
-    cfg_file_content = data_types.S4ACS_Cfg_File(
-        channel=int(config.get(section_name, "channel")),
-        acs_mode=config.get(section_name, "ACS mode") == 1,
-        image_path=Path(config.get(section_name, "image path")),
-        log_file_path=Path(config.get(section_name, "log file path")),
-        log_level=data_types.Log_Level(
-            _log_levels[config.get(section_name, "log level")]
-        ),
-    )
-    return cfg_file_content
+    return config
+
+
+# def read_config_file_2(file_name: str = "acs_config.cfg") -> data_types.S4ACS_Cfg_File:
+#     section_name = "channel configuration"
+#     cfg_file_folder = Path(Path.cwd().root) / "sparc4" / "config"
+#     cfg_file = cfg_file_folder / file_name
+#     cfg_file_content = {}
+#     if not cfg_file.exists():
+#         raise RuntimeError(f"file {cfg_file} not found")
+#     config = configparser.ConfigParser()
+#     config.read(cfg_file)
+
+#     cfg_file_content = data_types.S4ACS_Cfg_File(
+#         channel=int(config.get(section_name, "channel")),
+#         acs_mode=config.get(section_name, "ACS mode") == 1,
+#         image_path=Path(config.get(section_name, "image path")),
+#         log_file_path=Path(config.get(section_name, "log file path")),
+#         log_level=data_types.Log_Level(
+#             _log_levels[config.get(section_name, "log level")]
+#         ),
+#     )
+#     return cfg_file_content
 
 
 def write_cfg_file(
-    new_cfg: data_types.S4ACS_Cfg_File, file_name: str = "acs_config.cfg"
+    new_cfg: data_types.S4ACS_Config, file_name: str = "acs_config.cfg"
 ) -> None:
     cfg_file_folder = Path(Path.cwd().root) / "sparc4" / "config"
     cfg_file = cfg_file_folder / file_name

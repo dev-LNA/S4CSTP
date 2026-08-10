@@ -1,3 +1,4 @@
+import configparser
 import logging
 from enum import Enum, IntEnum, StrEnum, auto
 from ipaddress import IPv4Address, IPv6Address
@@ -5,6 +6,17 @@ from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
+
+import func_tests.utils as utils
+
+_log_levels = {
+    "0": "STATUS",
+    "1": logging.DEBUG,
+    "2": logging.INFO,
+    "3": logging.WARNING,
+    "4": logging.ERROR,
+    "5": logging.CRITICAL,
+}
 
 
 class Camera_Configuration(BaseModel):
@@ -251,7 +263,7 @@ class Command:
             self.__dict[f"field{idx + 1}"] = word
 
 
-class S4ACS_Cfg_File(BaseModel):
+class S4ACS_Config(BaseModel):
     channel: int
     acs_mode: int
     image_path: Path
@@ -264,6 +276,18 @@ class S4ACS_Cfg_File(BaseModel):
         }
         new_dict["log level"] //= 10
         return new_dict
+
+    @classmethod
+    def from_config_file(cls, file_name: str) -> S4ACS_Config:
+        parser = utils.read_config_file(file_name)
+        section_name = "channel configuration"
+        return S4ACS_Config(
+            channel=int(parser.get(section_name, "channel")),
+            acs_mode=parser.get(section_name, "ACS mode") == 1,
+            image_path=Path(parser.get(section_name, "image path")),
+            log_file_path=Path(parser.get(section_name, "log file path")),
+            log_level=Log_Level(_log_levels[parser.get(section_name, "log level")]),
+        )
 
 
 class End_Point(BaseModel):
@@ -279,6 +303,11 @@ class End_Point(BaseModel):
 
     def to_str(self) -> str:
         return f"tcp://{self.ip}:{self.port}"
+
+    @classmethod
+    def from_str(cls, end_point: str) -> End_Point:
+        ip, port = end_point.split(":")
+        return End_Point(ip=ip, port=int(port))
 
 
 class Log_Level(IntEnum):

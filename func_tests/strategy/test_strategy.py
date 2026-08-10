@@ -22,8 +22,10 @@ class Test_Strategy(ABC):
         self._commands_list: list[data_types.Command]
         self.result = data_types.Test_Result(success="off", test_code="", message="")
         self._create_today_str()
-        self.cfg_file_content = utils.read_config_file()
-        self.events_log_file = self.cfg_file_content.log_file_path / (
+        self.acs_config: data_types.S4ACS_Config = (
+            data_types.S4ACS_Config.from_config_file("acs_config.cfg")
+        )
+        self.events_log_file = self.acs_config.log_file_path / (
             self._today_str + "_events.log"
         )
 

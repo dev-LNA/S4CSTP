@@ -9,6 +9,6 @@ from .data_types import (
     Execution_Status,
     Led_Status,
     Log_Level,
-    S4ACS_Cfg_File,
+    S4ACS_Config,
     Test_Result,
 )
