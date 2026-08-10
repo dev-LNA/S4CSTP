@@ -9,6 +9,7 @@ import numpy as np
 
 import func_tests.component as component
 import func_tests.data_types as data_types
+import func_tests.framework_setup as setup
 import func_tests.gui as gui
 import func_tests.utils as utils
 
@@ -25,7 +26,7 @@ class Functionalities_Tests_Framework:
         _gui: gui.GUI,
     ) -> None:
         self.s4acs = s4acs
-        self._external_apps = data_types.Framework_Setup().create_external_apps()
+        self._external_apps = setup.Framework_Setup().create_external_apps()
         self._do_not_pub: list[str] = []
         self._gui = _gui
         self.log_dir = Path("func_tests/_logs")
@@ -35,7 +36,7 @@ class Functionalities_Tests_Framework:
         return
 
     def set_tests_list(self, test_type: str, test_code: str = "") -> None:
-        self.tests_list = data_types.Framework_Setup().create_tests_list(
+        self.tests_list = setup.Framework_Setup().create_tests_list(
             test_type, test_code
         )
 

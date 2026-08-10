@@ -7,7 +7,6 @@ from .data_types import (
     End_Point,
     Error_Type,
     Execution_Status,
-    Framework_Setup,
     Led_Status,
     Log_Level,
     S4ACS_Cfg_File,
