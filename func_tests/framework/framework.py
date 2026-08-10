@@ -92,8 +92,7 @@ class Functionalities_Tests_Framework:
 
     def _prepare_imgs_folder(self) -> None:
         logging.debug("Preparing images folder")
-        config_parser = utils.read_config_file("acs_config.cfg")
-        s4acs_config = data_types.S4ACS_Config.from_config_parser(config_parser)
+        s4acs_config = data_types.S4ACS_Config.from_config_file("acs_config.cfg")
         channel = s4acs_config.channel
         imgs_folder = s4acs_config.image_path
         destination_folder = imgs_folder / Path("../_temp")

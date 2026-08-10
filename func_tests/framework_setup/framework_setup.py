@@ -82,28 +82,35 @@ class Framework_Setup:
             dict[str, external_app.External_Application]
         """
 
+        socket_config = utils.read_config_file("socket.cfg")
         context = zmq.Context()
-        end_point = End_Point(ip=self.localhost, port=5554)
+
+        end_point_str = socket_config.get("SUB_GUI", "address")
+        end_point = End_Point.from_str(end_point_str)
         publisher = comm_channel.ZeroMQ_PUB(end_point, context)
         s4gui = external_app.External_Application(publisher)
         s4gui.status = utils.S4GUI_JSON.copy()
 
-        end_point = End_Point(ip=self.localhost, port=5565)
+        end_point_str = socket_config.get("SUB_ICS", "address")
+        end_point = End_Point.from_str(end_point_str)
         publisher = comm_channel.ZeroMQ_PUB(end_point, context)
         s4ics = external_app.External_Application(publisher)
         s4ics.status = utils.S4ICS_JSON
 
-        end_point = End_Point(ip=self.localhost, port=5575)
+        end_point_str = socket_config.get("SUB_TCS", "address")
+        end_point = End_Point.from_str(end_point_str)
         publisher = comm_channel.ZeroMQ_PUB(end_point, context)
         tcs = external_app.External_Application(publisher)
         tcs.status = utils.TCS_JSON.copy()
 
-        end_point = End_Point(ip=self.localhost, port=5576)
+        end_point_str = socket_config.get("SUB_WSTATION", "address")
+        end_point = End_Point.from_str(end_point_str)
         publisher = comm_channel.ZeroMQ_PUB(end_point, context)
         weather = external_app.External_Application(publisher)
         weather.status = utils.WEATHER_JSON.copy()
 
-        end_point = End_Point(ip=self.localhost, port=5577)
+        end_point_str = socket_config.get("SUB_FOCUSER", "address")
+        end_point = End_Point.from_str(end_point_str)
         publisher = comm_channel.ZeroMQ_PUB(end_point, context)
         focuser = external_app.External_Application(publisher)
         focuser.status = utils.FOCUSER_JSON.copy()
