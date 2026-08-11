@@ -283,7 +283,7 @@ class S4ACS_Config(BaseModel):
         section_name = "channel configuration"
         return S4ACS_Config(
             channel=int(parser.get(section_name, "channel")),
-            acs_mode=parser.get(section_name, "ACS mode") == 1,
+            acs_mode=int(parser.get(section_name, "ACS mode")) == 1,
             image_path=Path(parser.get(section_name, "image path")),
             log_file_path=Path(parser.get(section_name, "log file path")),
             log_level=Log_Level(_log_levels[parser.get(section_name, "log level")]),
