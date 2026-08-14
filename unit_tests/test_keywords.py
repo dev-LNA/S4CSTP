@@ -86,7 +86,7 @@ class Test_Keywords(unittest.TestCase):
 
     @staticmethod
     def _read_config_file() -> configparser.ConfigParser:
-        sparc4_folder = Path.home() / "SPARC4" / "ACS"
+        sparc4_folder = Path(Path.cwd().root) / "sparc4" / "config"
         cfg_file = sparc4_folder / "acs_config.cfg"
         cfg = configparser.ConfigParser()
         cfg.read(cfg_file)
@@ -249,11 +249,12 @@ class Test_Keywords(unittest.TestCase):
         for hdr in self.hdrs_list:
             for kw in self.kws_specific_values:
                 row = self.header_content[self.header_content["Keyword"] == kw]
-                allowed_vals = row["Allowed values"].values[0].split(",")
+                allowed_vals = row["Allowed values"].values[0].split(",")  # type: ignore
                 _type = row["Type"].values[0]
                 if _type in ["integer", "float"]:
                     allowed_vals = [
-                        self.var_types[_type](new_val) for new_val in allowed_vals
+                        self.var_types[_type](new_val)  # type: ignore
+                        for new_val in allowed_vals  # type: ignore
                     ]
                 file_name = hdr["FILENAME"]
                 func_name = inspect.currentframe().f_code.co_name  # type: ignore
