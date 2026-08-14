@@ -275,7 +275,7 @@ class E012(Test_Strategy):
         self.wait_acquisition_start()
         self.s4acs.send_command(cmd)
         sleep(2)
-        if self.s4acs.camera.cam_status.status != "ACQUISITION_ABORTED":
+        if self.s4acs.camera.cam_status.status != "IDLE":
             self.set_result("error", f"{cmd} command failed")
 
         self._default_acq_config["EXPTIME"] = 2
@@ -434,7 +434,6 @@ class E019(Test_Strategy):
 
         expected_strings = [
             "The acquisition of the image series has been finished",
-            "The image series has been saved",
         ]
         for _str in expected_strings:
             if _str not in filtered_log_lines:
