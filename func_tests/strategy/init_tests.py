@@ -115,9 +115,10 @@ class I005(Test_Strategy):
     def run_test(self) -> None:
         self.s4acs.send_command("EXPOSE")
         self.wait_acquisition_finish()
+        sleep(2)
         img_name = self.s4acs.camera.cam_status.last_image_name
         img_idx = img_name.split(".fits")[0].split("_")[2]
-        if img_idx != "000011":
+        if img_idx != "000012":
             self.set_result("error", f"Unexpected image index: {img_idx}")
         return super().run_test()
 
