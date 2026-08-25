@@ -291,8 +291,8 @@ class E014(Test_Strategy):
         limit_values = {
             "WAVEPLATE_POS": (0, 2**16 - 1),
             "#FRAMES": (1, 1500),
-            "TEMP": (-80, 20),
-            "EXPTIME": (0.00001, 86400),
+            "TEMP": (-80, 10),
+            "EXPTIME": (0.00001, 3600),
             "COOLER_POWER_STATUS": (0, 1),
             "#CYCLES": (1, 10000),
         }

@@ -37,7 +37,7 @@ default_acq_config = {
     "#CYCLES": 1,
     "suffix": "",
     "COOLER_POWER_STATUS": 1,
-    "TEMP": 20,
+    "TEMP": 10,
     "WAVEPLATE_POS": 1,
 }
 

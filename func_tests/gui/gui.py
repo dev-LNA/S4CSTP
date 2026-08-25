@@ -38,8 +38,8 @@ class GUI(QMainWindow):
 
         s4acs = setup.Framework_Setup().create_component("real")
         self.framework = framework.Functionalities_Tests_Framework(s4acs, self)
-        self.framework.set_tests_list("all tests")
-        # self.framework.set_tests_list("one test", "S001")
+        # self.framework.set_tests_list("all tests")
+        self.framework.set_tests_list("start with", "E014")
         self.framework.stop_1st_err = (
             self.gui_widgets.framework_stop_1st_err.isChecked()
         )
