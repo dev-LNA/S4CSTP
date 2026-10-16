@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime, timezone
 from time import sleep
 
@@ -74,8 +75,9 @@ class E003(Test_Strategy):
 
     def run_test(self) -> None:
         self.s4acs.send_command("_CRITICAL_LOG_")
-        self._default_cam_config["INITIAL_LINE"] = 1025
-        self.s4acs.set_cam_config(self._default_cam_config)
+        cam_config = self._default_cam_config.copy()
+        cam_config["INITIAL_LINE"] = 1025
+        self.s4acs.set_cam_config(cam_config)
 
         with open(self.events_log_file) as file:
             file_content = file.read()
@@ -85,8 +87,8 @@ class E003(Test_Strategy):
             if level.name not in file_content:
                 self.set_result("error", f"Log level {level.name} not found")
 
-        self._default_cam_config["INITIAL_LINE"] = 1024
-        self.s4acs.set_cam_config(self._default_cam_config)
+        cam_config["INITIAL_LINE"] = 1024
+        self.s4acs.set_cam_config(cam_config)
         sleep(2)
 
         return super().run_test()
@@ -143,16 +145,17 @@ class E007(Test_Strategy):
     _test_code = "E007"
 
     def run_test(self) -> None:
-        self._default_cam_config["FINAL_LINE"] = 1025
-        self.s4acs.set_cam_config(self._default_cam_config)
+        cam_config = self._default_cam_config.copy()
+        cam_config["FINAL_LINE"] = 1025
+        self.s4acs.set_cam_config(cam_config)
         sleep(2)
         if not self.s4acs.camera.opmode_err.status:
             self.set_result("error", "The error msg was not found")
         cmd = "EXPOSE"
         self.send_unexpected_command(cmd)
 
-        self._default_cam_config["FINAL_LINE"] = 1024
-        self.s4acs.set_cam_config(self._default_cam_config)
+        cam_config["FINAL_LINE"] = 1024
+        self.s4acs.set_cam_config(cam_config)
         sleep(2)
 
         return super().run_test()
@@ -353,12 +356,7 @@ class E015(Test_Strategy):
             "FINAL_COLUMN",
             "VBIN",
             "HBIN",
-            "SHUTTER_MODE",
             "SHUTTER_TTL",
-            "SHUTTER_OPENING_TIME",
-            "SHUTTER_CLOSING_TIME",
-            "VERTICAL_SHIFT_SPEED",
-            "VERTICAL_CLOCK_VOLTAGE",
         ]
 
         parameters2 = [
@@ -367,8 +365,14 @@ class E015(Test_Strategy):
             "READ_MODE",
             "READOUT_RATE",
             "AD_CHANNEL",
+            "SHUTTER_MODE",
+            "VERTICAL_SHIFT_SPEED",
+            "VERTICAL_CLOCK_VOLTAGE",
+            "SHUTTER_OPENING_TIME",
+            "SHUTTER_CLOSING_TIME",
         ]
         for key in parameters:
+            self.s4acs.send_command(f"==== Evaluating {key} parameter ====")
             time_stamp = datetime.now(timezone.utc)
             _min, _max = self.s4acs.camera.opmode_params_limits[key]
             self._send_commands_sequence(key, _max, _max + 1)
@@ -381,11 +385,12 @@ class E015(Test_Strategy):
 
             self._verify_log_files(filtered_log_lines, key, _min, _max, _max + 1)
             self._verify_log_files(filtered_log_lines, key, _min, _max, _min - 1)
+            self.s4acs.set_cam_config(self._default_cam_config)
 
         return super().run_test()
 
     def _send_commands_sequence(self, key: str, val: int, adjusted_val: int) -> None:
-        cam_config = self._default_cam_config
+        cam_config = self._default_cam_config.copy()
         cam_config[key] = adjusted_val
         self.s4acs.set_cam_config(cam_config)
         sleep(1)
