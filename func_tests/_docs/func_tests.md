@@ -38,6 +38,7 @@ These tests should be run before releasing a new S4ACS version
 - [x] **E018** - A message should be logged after then end of the acquisition of an image series and after the end of writting the images to disk.
 - [ ] **E019** - If S4ACS is run in the video mode, no image should be created after an exposure.
 - [ ] **E020** - The exposure time calculation should be validated as a function of the camera frame transfer modes.
+- [ ] **E021** - The cooler and temperature parameters limit values should be validated using the `SET` command.
 
 ----------------------------------------------------------------------------------------
 

@@ -291,9 +291,7 @@ class E014(Test_Strategy):
         limit_values = {
             "WAVEPLATE_POS": (0, 2**16 - 1),
             "#FRAMES": (1, 1500),
-            "TEMP": (-80, 10),
             "EXPTIME": (0.00001, 3600),
-            "COOLER_POWER_STATUS": (0, 1),
             "#CYCLES": (1, 10000),
         }
         for key, (_min, _max) in limit_values.items():
@@ -347,20 +345,20 @@ class E015(Test_Strategy):
     def run_test(self) -> None:
         parameters = [
             "PREAMP",
-            # "EM_MODE",
-            # "EM_GAIN",
-            # "INITIAL_LINE",
-            # "INITIAL_COLUMN",
-            # "FINAL_LINE",
-            # "FINAL_COLUMN",
-            # "VBIN",
-            # "HBIN",
-            # "SHUTTER_MODE",
-            # "SHUTTER_TTL",
-            # "SHUTTER_OPENING_TIME",
-            # "SHUTTER_CLOSING_TIME",
-            # "VERTICAL_SHIFT_SPEED",
-            # "VERTICAL_CLOCK_VOLTAGE",
+            "EM_MODE",
+            "EM_GAIN",
+            "INITIAL_LINE",
+            "INITIAL_COLUMN",
+            "FINAL_LINE",
+            "FINAL_COLUMN",
+            "VBIN",
+            "HBIN",
+            "SHUTTER_MODE",
+            "SHUTTER_TTL",
+            "SHUTTER_OPENING_TIME",
+            "SHUTTER_CLOSING_TIME",
+            "VERTICAL_SHIFT_SPEED",
+            "VERTICAL_CLOCK_VOLTAGE",
         ]
 
         parameters2 = [
@@ -439,3 +437,56 @@ class E019(Test_Strategy):
             if _str not in filtered_log_lines:
                 self.set_result("error", "Expected log msg was not found")
         return super().run_test()
+
+
+class E021(Test_Strategy):
+    _test_code = "E021"
+
+    def run_test(self) -> None:
+        limit_values = {
+            "TEMP": (-80, 10),
+            "COOLER_POWER_STATUS": (0, 1),
+        }
+        for key, (_min, _max) in limit_values.items():
+            time_stamp = datetime.now(timezone.utc)
+            self._send_commands_sequence(key, _max, _max + 1)
+            self._send_commands_sequence(key, _min, _min - 1)
+
+            lines_list = self.get_log_file_lines()
+            filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
+            filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
+            filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+            self._verify_log_files(filtered_log_lines, key, _min, _max, _max + 1)
+            self._verify_log_files(filtered_log_lines, key, _min, _max, _min - 1)
+
+        return super().run_test()
+
+    def _send_commands_sequence(
+        self, key: str, val: float | int, adjusted_val: float | int
+    ) -> None:
+        self.s4acs.send_command(f"SET {key} {adjusted_val}")
+        sleep(1.2)
+        if not self.s4acs.camera.opmode_err.status:
+            self.set_result("error", "The published error msg was not found")
+            return
+
+        self.s4acs.send_command(f"SET {key} {val}")
+        sleep(1.2)
+        if self.s4acs.camera.opmode_err.status:
+            self.set_result("error", "The published error msg was not cleaned")
+            return
+
+    def _verify_log_files(
+        self,
+        filtered_log_lines: list,
+        key: str,
+        _min: float | int,
+        _max: float | int,
+        adjusted_val: float | int,
+    ) -> None:
+        expected_string = f"The value {adjusted_val:.2f} was received for the {key} parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+        if expected_string not in filtered_log_lines:
+            self.set_result(
+                "error", f"Log msg related set value {adjusted_val} was not found"
+            )
