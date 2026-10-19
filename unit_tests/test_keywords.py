@@ -79,9 +79,7 @@ class Test_Keywords(unittest.TestCase):
         cfg = cls._read_config_file()
         cls.images_folder = cls._get_images_folder(cfg)
         cls.files = cls._get_files_in_folder(cls.images_folder)
-        cls.hdrs_list: list[fits.Header] = cls._get_headers(
-            cls.images_folder, cls.files
-        )
+        cls.hdrs_list: list[fits.Header] = cls._get_headers(cls.images_folder, cls.files)
         cls.read_noises, cls.ccd_gains, cls.header_content = cls._read_csvs()
 
     @staticmethod
