@@ -61,9 +61,7 @@ class I002(Test_Strategy):
         comm_status = self.s4acs.camera.comm_status
         for key, val in comm_status.model_dump().items():
             if not val:
-                self.set_result(
-                    "error", f"There is no communication with {key.upper()}"
-                )
+                self.set_result("error", f"There is no communication with {key.upper()}")
                 break
         return super().run_test()
 
@@ -115,7 +113,7 @@ class I005(Test_Strategy):
     def run_test(self) -> None:
         self.s4acs.send_command("EXPOSE")
         self.wait_acquisition_finish()
-        sleep(2)
+        sleep(4)
         img_name = self.s4acs.camera.cam_status.last_image_name
         img_idx = img_name.split(".fits")[0].split("_")[2]
         if img_idx != "000012":
