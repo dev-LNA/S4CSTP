@@ -169,6 +169,21 @@ class Test_Strategy(ABC):
             return [""]
         return [line.split("--> ")[1] for line in lines_list]
 
+    def _search_expected_log_msg(
+        self,
+        log_lines: list,
+        key: str,
+        _min: float | int,
+        _max: float | int,
+        adjusted_val: float | int,
+    ) -> None:
+        expected_string = f"The value {adjusted_val:.2f} was received for the {key} "
+        f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+        if expected_string not in log_lines:
+            self.set_result(
+                "error", f"Log msg related set value {adjusted_val} was not found"
+            )
+
     # ========================== CFG FILE =============================
 
 

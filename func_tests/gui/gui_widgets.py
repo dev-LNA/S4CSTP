@@ -18,7 +18,9 @@ class GUI_Widgets:
         self.framework_current_status = window.findChild(
             QLineEdit, "framework_current_status"
         )
+        self.framework_test_code = window.findChild(QLineEdit, "framework_test_code")
         self.framework_log_level = window.findChild(QComboBox, "framework_log_level")
+        self.framework_test_type = window.findChild(QComboBox, "framework_test_type")
         self.framework_stop_1st_err = window.findChild(
             QPushButton, "framework_stop_1st_err"
         )

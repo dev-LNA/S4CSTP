@@ -31,10 +31,10 @@ class Framework_Setup:
         strategy.E010,
         strategy.E011,
         strategy.E012,
+        strategy.E013,
         strategy.E014,
         strategy.E015,
-        strategy.E019,
-        strategy.E021,
+        strategy.E020,
         strategy.S001,
     ]
 

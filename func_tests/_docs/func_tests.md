@@ -32,13 +32,15 @@ These tests should be run before releasing a new S4ACS version
 
 - [ ] **E013** - When receiving a request for a new operation mode, the provided parameters should be validated as a function of the allowed intervals and predefined values, when applicable. Moreover, there are some parameters that present an interdependence, which are sutther and sub-image. These parameters should be tested for valid and invalid values. In case of invalid values, a respective warning should be logged in the events log file. In addition, the camera operation mode should be set only if no error is detected in the operation mode.
 - [ ] **E014** - When receiveing a request for configuring an acquisition parameter, the provided value should be validated as a function of the allowed intervals or predefined values, when applicable. Besides, an error should be logged in the case of any inconsistency. In addition, the request for configuring a new acquisition parameter should be accepted only if the provided value is valid. (falta checar sufixo)
-- [ ] **E015** - The number of sequences and waveplate positions should be validated as a function of the provided `WAVEPLATE_POS` parameter.
-- [ ] **E016** - The image readout times, electronic gain, and read noise values should be validated as a function of the operation mode.
-- [ ] **E017** - S4ACS should freeze the information to be written in the image header immediately before the start of an exposure.
-- [x] **E018** - A message should be logged after then end of the acquisition of an image series and after the end of writting the images to disk.
-- [ ] **E019** - If S4ACS is run in the video mode, no image should be created after an exposure.
-- [ ] **E020** - The exposure time calculation should be validated as a function of the camera frame transfer modes.
-- [ ] **E021** - The cooler and temperature parameters limit values should be validated using the `SET` command.
+- [ ] **E015** - The cooler and temperature parameters limit values should be validated using the `SET` command.
+- [ ] **E016** - The specific values used by SPARC4 for some of the camera operation mode parameters should be tested.
+- [ ] **E017** - The number of sequences and waveplate positions should be validated as a function of the provided `WAVEPLATE_POS` parameter.
+- [ ] **E018** - The image readout times, electronic gain, and read noise values should be validated as a function of the operation mode.
+- [ ] **E019** - S4ACS should freeze the information to be written in the image header immediately before the start of an exposure.
+- [x] **E020** - A message should be logged after then end of the acquisition of an image series and after the end of writting the images to disk.
+- [ ] **E021** - If S4ACS is run in the video mode, no image should be created after an exposure.
+- [ ] **E022** - The exposure time calculation should be validated as a function of the camera frame transfer modes.
+
 
 ----------------------------------------------------------------------------------------
 

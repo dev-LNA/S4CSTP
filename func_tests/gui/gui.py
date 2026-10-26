@@ -35,20 +35,17 @@ class GUI(QMainWindow):
         self.gui_widgets.framework_stop_1st_err.clicked.connect(
             self.toggle_stop_1st_error
         )
-
-        s4acs = setup.Framework_Setup().create_component("real")
-        self.framework = framework.Functionalities_Tests_Framework(s4acs, self)
-        self.framework.set_tests_list("all tests")
-        # self.framework.set_tests_list("start with", "S001")
-        self.framework.stop_1st_err = self.gui_widgets.framework_stop_1st_err.isChecked()
-        self._thread1 = Thread(target=self.framework.run)
-        self._thread2 = Thread(target=self.framework.update_status)
+        self.gui_widgets.framework_test_type.currentIndexChanged.connect(
+            self._toggle_test_code_enabled
+        )
 
         self.update_timer = QTimer(self)
         self.update_timer.timeout.connect(self.update_app)
         self.update_timer.start(200)
 
     def update_app(self) -> None:
+        if not self._START_BTN_CLICKED:
+            return
         self._update_framework()
         self._update_comm_status()
         self._update_tests()
@@ -126,6 +123,16 @@ class GUI(QMainWindow):
         self._update_gui_obj(self.gui_widgets.framework_on_off_led)
         self.gui_widgets.framework_start_btn.setDisabled(True)
 
+        s4acs = setup.Framework_Setup().create_component("real")
+        self.framework = framework.Functionalities_Tests_Framework(s4acs, self)
+        self.framework.set_tests_list(
+            test_type=self.gui_widgets.framework_test_type.currentText(),
+            test_code=self.gui_widgets.framework_test_code.text(),
+        )
+        self.framework.stop_1st_err = self.gui_widgets.framework_stop_1st_err.isChecked()
+        self._thread1 = Thread(target=self.framework.run)
+        self._thread2 = Thread(target=self.framework.update_status)
+
         log_level = self._return_log_level()
         self.framework.log_level = log_level
         self.framework.initialize()
@@ -152,3 +159,11 @@ class GUI(QMainWindow):
 
     def toggle_stop_1st_error(self) -> None:
         self.framework.stop_1st_err = self.gui_widgets.framework_stop_1st_err.isChecked()
+
+    def _toggle_test_code_enabled(self) -> None:
+        match self.gui_widgets.framework_test_type.currentText():
+            case "one test" | "start with":
+                self.gui_widgets.framework_test_code.setEnabled(True)
+            case _:
+                self.gui_widgets.framework_test_code.setEnabled(False)
+                self.gui_widgets.framework_test_code.setText("")
