@@ -344,18 +344,6 @@ class E014(Test_Strategy):
             "SHUTTER_TTL",
         ]
 
-        parameters2 = [
-            "ACQUISITION_MODE",
-            "TRIGGER_MODE",
-            "READ_MODE",
-            "READOUT_RATE",
-            "AD_CHANNEL",
-            "SHUTTER_MODE",
-            "VERTICAL_SHIFT_SPEED",
-            "VERTICAL_CLOCK_VOLTAGE",
-            "SHUTTER_OPENING_TIME",
-            "SHUTTER_CLOSING_TIME",
-        ]
         for key in parameters:
             self.s4acs.send_command(f"==== Evaluating {key} parameter ====")
             time_stamp = datetime.now(timezone.utc)
@@ -425,6 +413,70 @@ class E015(Test_Strategy):
 
         self.s4acs.send_command(f"SET {key} {val}")
         sleep(1.2)
+        if self.s4acs.camera.opmode_err.status:
+            self.set_result("error", "The published error msg was not cleaned")
+            return
+
+
+class E016(Test_Strategy):
+    _test_code = "E016"
+
+    def run_test(self) -> None:
+        parameters = [
+            "PREAMP",
+            "EM_MODE",
+            "EM_GAIN",
+            "INITIAL_LINE",
+            "INITIAL_COLUMN",
+            "FINAL_LINE",
+            "FINAL_COLUMN",
+            "VBIN",
+            "HBIN",
+            "SHUTTER_TTL",
+        ]
+
+        parameters2 = [
+            "ACQUISITION_MODE",
+            "TRIGGER_MODE",
+            "READ_MODE",
+            "READOUT_RATE",
+            "AD_CHANNEL",
+            "SHUTTER_MODE",
+            "VERTICAL_SHIFT_SPEED",
+            "VERTICAL_CLOCK_VOLTAGE",
+            "SHUTTER_OPENING_TIME",
+            "SHUTTER_CLOSING_TIME",
+        ]
+        for key in parameters:
+            self.s4acs.send_command(f"==== Evaluating {key} parameter ====")
+            time_stamp = datetime.now(timezone.utc)
+            _min, _max = self.s4acs.camera.opmode_params_limits[key]
+            self._send_commands_sequence(key, _max, _max + 1)
+            self._send_commands_sequence(key, _min, _min - 1)
+
+            lines_list = self.get_log_file_lines()
+            filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
+            filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
+            filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+            self._search_expected_log_msg(filtered_log_lines, key, _min, _max, _max + 1)
+            self._search_expected_log_msg(filtered_log_lines, key, _min, _max, _min - 1)
+            self.s4acs.set_cam_config(self._default_cam_config)
+
+        return super().run_test()
+
+    def _send_commands_sequence(self, key: str, val: int, adjusted_val: int) -> None:
+        cam_config = self._default_cam_config.copy()
+        cam_config[key] = adjusted_val
+        self.s4acs.set_cam_config(cam_config)
+        sleep(1)
+        if not self.s4acs.camera.opmode_err.status:
+            self.set_result("error", "The published error msg was not found")
+            return
+
+        cam_config[key] = val
+        self.s4acs.set_cam_config(cam_config)
+        sleep(1)
         if self.s4acs.camera.opmode_err.status:
             self.set_result("error", "The published error msg was not cleaned")
             return
