@@ -93,6 +93,7 @@ class Camera_Configuration(BaseModel):
 class Acquisition_Configuration(BaseModel):
     exptime: float
     frames: int
+    seqs: int
     cycles: int
     suffix: str
     cooler: int
@@ -101,21 +102,16 @@ class Acquisition_Configuration(BaseModel):
 
     @classmethod
     def from_dict(cls, acq_config: dict) -> Acquisition_Configuration:
-        exptime = acq_config["EXPTIME"]
-        frames = acq_config["#FRAMES"]
-        cycles = acq_config["#CYCLES"]
-        suffix = acq_config["suffix"]
-        cooler = acq_config["COOLER_POWER_STATUS"]
-        temp = acq_config["TEMP"]
-        waveplate_pos = acq_config["WAVEPLATE_POS"]
+
         return Acquisition_Configuration(
-            exptime=exptime,
-            frames=frames,
-            cycles=cycles,
-            suffix=suffix,
-            cooler=cooler,
-            temp=temp,
-            waveplate_pos=waveplate_pos,
+            exptime=acq_config["EXPTIME"],
+            frames=acq_config["#FRAMES"],
+            seqs=acq_config["#SEQS"],
+            cycles=acq_config["#CYCLES"],
+            suffix=acq_config["suffix"],
+            cooler=acq_config["COOLER_POWER_STATUS"],
+            temp=acq_config["TEMP"],
+            waveplate_pos=acq_config["WAVEPLATE_POS"],
         )
 
 
@@ -271,9 +267,7 @@ class S4ACS_Config(BaseModel):
     log_level: Log_Level
 
     def to_sparc4_format(self) -> dict[str, Any]:
-        new_dict = {
-            key.replace("_", " "): val for key, val in self.model_dump().items()
-        }
+        new_dict = {key.replace("_", " "): val for key, val in self.model_dump().items()}
         new_dict["log level"] //= 10
         return new_dict
 

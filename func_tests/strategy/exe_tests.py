@@ -395,7 +395,6 @@ class E015(Test_Strategy):
             "ACQUISITION_MODE": (2, 3),
             "TRIGGER_MODE": (1, 0),
             "READ_MODE": (0, 4),
-            # "READOUT_RATE": (4, 0),
             "VERTICAL_SHIFT_SPEED": (0, 3),
         }
         for key, (forbidden_val, allowed_val) in parameters.items():
@@ -456,8 +455,8 @@ class E016(Test_Strategy):
 
     def _test_sub_image(self) -> None:
         params_set = [
-            (("INITIAL_LINE", 1024), ("FINAL_LINE", 1), ("HBIN", 1)),
-            (("INITIAL_COLUMN", 1024), ("FINAL_COLUMN", 1), ("HBIN", 1)),
+            (("INITIAL_LINE", 1024), ("FINAL_LINE", 1)),
+            (("INITIAL_COLUMN", 1024), ("FINAL_COLUMN", 1)),
             (("INITIAL_COLUMN", 1), ("FINAL_COLUMN", 8), ("HBIN", 3)),
             (("INITIAL_LINE", 1), ("FINAL_LINE", 8), ("VBIN", 3)),
         ]
@@ -516,6 +515,20 @@ class E017(Test_Strategy):
         if self.s4acs.camera.acq_config_err[key].status:
             self.set_result("error", f"{key} - The published error msg was not cleaned")
             return
+
+
+class E018(Test_Strategy):
+    _test_code = "E018"
+
+    def run_test(self) -> None:
+        wppos = 0b1010101010101010
+        self.s4acs.send_command(f"SET WAVEPLATE_POS {wppos!s}")
+        sleep(1)
+        seqs_number = self.s4acs.camera.received_acq_config.seqs
+        if not seqs_number == 8:
+            self.set_result("error", f"Unexpected sequences number: {seqs_number}")
+
+        return super().run_test()
 
 
 class E020(Test_Strategy):
