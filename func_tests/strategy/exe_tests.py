@@ -397,8 +397,6 @@ class E015(Test_Strategy):
             "READ_MODE": (0, 4),
             # "READOUT_RATE": (4, 0),
             "VERTICAL_SHIFT_SPEED": (0, 3),
-            # "SHUTTER_OPENING_TIME": (),
-            # "SHUTTER_CLOSING_TIME": (),
         }
         for key, (forbidden_val, allowed_val) in parameters.items():
             self.s4acs.send_command(f"==== Evaluating {key} parameter ====")
@@ -434,6 +432,45 @@ class E015(Test_Strategy):
         if self.s4acs.camera.opmode_err.status:
             self.set_result("error", "The published error msg was not cleaned")
             return
+
+
+class E016(Test_Strategy):
+    _test_code = "E016"
+
+    def run_test(self) -> None:
+        self._test_cooler_open_close_time()
+        self._test_sub_image()
+        return super().run_test()
+
+    def _test_cooler_open_close_time(self) -> None:
+        cam_config = self._default_cam_config.copy()
+        cam_config["SHUTTER_OPENING_TIME"] = 27
+        cam_config["SHUTTER_MODE"] = 1
+        # cam_config["SHUTTER_CLOSING_TIME"] = 0
+        self.s4acs.set_cam_config(cam_config)
+        sleep(1)
+        if not self.s4acs.camera.opmode_err.status:
+            self.set_result("error", "The published error msg was not found")
+            return
+        self.s4acs.set_cam_config(self._default_cam_config)
+
+    def _test_sub_image(self) -> None:
+        params_set = [
+            (("INITIAL_LINE", 1024), ("FINAL_LINE", 1), ("HBIN", 1)),
+            (("INITIAL_COLUMN", 1024), ("FINAL_COLUMN", 1), ("HBIN", 1)),
+            (("INITIAL_COLUMN", 1), ("FINAL_COLUMN", 8), ("HBIN", 3)),
+            (("INITIAL_LINE", 1), ("FINAL_LINE", 8), ("VBIN", 3)),
+        ]
+        for _set in params_set:
+            cam_config = self._default_cam_config.copy()
+            for param, val in _set:
+                cam_config[param] = val
+            self.s4acs.set_cam_config(cam_config)
+            sleep(1)
+            if not self.s4acs.camera.opmode_err.status:
+                self.set_result("error", "The published error msg was not found")
+                return
+        self.s4acs.set_cam_config(self._default_cam_config)
 
 
 class E017(Test_Strategy):

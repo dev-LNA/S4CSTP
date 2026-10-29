@@ -111,7 +111,7 @@ def _is_window_open(title: str) -> Any | None:
     return None
 
 
-S4GUI_JSON: Final = {
+S4GUI_JSON = {
     "OBJECT": "Test",
     "OBSERVER": "Denis",
     "CTRLINTE": "S4GEI",
