@@ -290,47 +290,6 @@ class E013(Test_Strategy):
     _test_code = "E013"
 
     def run_test(self) -> None:
-        limit_values = {
-            "WAVEPLATE_POS": (0, 2**16 - 1),
-            "#FRAMES": (1, 1500),
-            "EXPTIME": (0.00001, 3600),
-            "#CYCLES": (1, 10000),
-        }
-        for key, (_min, _max) in limit_values.items():
-            time_stamp = datetime.now(timezone.utc)
-            self._send_commands_sequence(key, _max, _max + 1)
-            self._send_commands_sequence(key, _min, _min - 1)
-
-            lines_list = self.get_log_file_lines()
-            filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
-            filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
-            filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-
-            self._search_expected_log_msg(filtered_log_lines, key, _min, _max, _max + 1)
-            self._search_expected_log_msg(filtered_log_lines, key, _min, _max, _min - 1)
-
-        return super().run_test()
-
-    def _send_commands_sequence(
-        self, key: str, val: float | int, adjusted_val: float | int
-    ) -> None:
-        self.s4acs.send_command(f"SET {key} {adjusted_val}")
-        sleep(1.2)
-        if not self.s4acs.camera.acq_config_err[key].status:
-            self.set_result("error", f"{key} - The published error msg was not found")
-            return
-
-        self.s4acs.send_command(f"SET {key} {val}")
-        sleep(1.2)
-        if self.s4acs.camera.acq_config_err[key].status:
-            self.set_result("error", f"{key} - The published error msg was not cleaned")
-            return
-
-
-class E014(Test_Strategy):
-    _test_code = "E014"
-
-    def run_test(self) -> None:
         parameters = [
             "PREAMP",
             "EM_MODE",
@@ -342,6 +301,9 @@ class E014(Test_Strategy):
             "VBIN",
             "HBIN",
             "SHUTTER_TTL",
+            "SHUTTER_MODE",
+            "VERTICAL_CLOCK_VOLTAGE",
+            "AD_CHANNEL",
         ]
 
         for key in parameters:
@@ -355,9 +317,12 @@ class E014(Test_Strategy):
             filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
             filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
             filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-
-            self._search_expected_log_msg(filtered_log_lines, key, _min, _max, _max + 1)
-            self._search_expected_log_msg(filtered_log_lines, key, _min, _max, _min - 1)
+            expected_string = f"The value {_max + 1:.2f} was received for the {key} "
+            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            self._search_expected_log_msg(filtered_log_lines, expected_string)
+            expected_string = f"The value {_min - 1:.2f} was received for the {key} "
+            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            self._search_expected_log_msg(filtered_log_lines, expected_string)
             self.s4acs.set_cam_config(self._default_cam_config)
 
         return super().run_test()
@@ -379,8 +344,8 @@ class E014(Test_Strategy):
             return
 
 
-class E015(Test_Strategy):
-    _test_code = "E015"
+class E014(Test_Strategy):
+    _test_code = "E014"
 
     def run_test(self) -> None:
         limit_values = {
@@ -397,8 +362,12 @@ class E015(Test_Strategy):
             filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
             filtered_log_lines = self.extract_log_msg(filtered_log_lines)
 
-            self._search_expected_log_msg(filtered_log_lines, key, _min, _max, _max + 1)
-            self._search_expected_log_msg(filtered_log_lines, key, _min, _max, _min - 1)
+            expected_string = f"The value {_max + 1:.2f} was received for the {key} "
+            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            self._search_expected_log_msg(filtered_log_lines, expected_string)
+            expected_string = f"The value {_min - 1:.2f} was received for the {key} "
+            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            self._search_expected_log_msg(filtered_log_lines, expected_string)
 
         return super().run_test()
 
@@ -418,39 +387,67 @@ class E015(Test_Strategy):
             return
 
 
-class E016(Test_Strategy):
-    _test_code = "E016"
+class E015(Test_Strategy):
+    _test_code = "E015"
 
     def run_test(self) -> None:
-        parameters = [
-            "PREAMP",
-            "EM_MODE",
-            "EM_GAIN",
-            "INITIAL_LINE",
-            "INITIAL_COLUMN",
-            "FINAL_LINE",
-            "FINAL_COLUMN",
-            "VBIN",
-            "HBIN",
-            "SHUTTER_TTL",
-        ]
-
-        parameters2 = [
-            "ACQUISITION_MODE",
-            "TRIGGER_MODE",
-            "READ_MODE",
-            "READOUT_RATE",
-            "AD_CHANNEL",
-            "SHUTTER_MODE",
-            "VERTICAL_SHIFT_SPEED",
-            "VERTICAL_CLOCK_VOLTAGE",
-            "SHUTTER_OPENING_TIME",
-            "SHUTTER_CLOSING_TIME",
-        ]
-        for key in parameters:
+        parameters = {
+            "ACQUISITION_MODE": (2, 3),
+            "TRIGGER_MODE": (1, 0),
+            "READ_MODE": (0, 4),
+            # "READOUT_RATE": (4, 0),
+            "VERTICAL_SHIFT_SPEED": (0, 3),
+            # "SHUTTER_OPENING_TIME": (),
+            # "SHUTTER_CLOSING_TIME": (),
+        }
+        for key, (forbidden_val, allowed_val) in parameters.items():
             self.s4acs.send_command(f"==== Evaluating {key} parameter ====")
             time_stamp = datetime.now(timezone.utc)
-            _min, _max = self.s4acs.camera.opmode_params_limits[key]
+            self._send_commands_sequence(key, forbidden_val, allowed_val)
+
+            lines_list = self.get_log_file_lines()
+            filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
+            filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
+            filtered_log_lines = self.extract_log_msg(filtered_log_lines)
+
+            expected_string = f"The invalid value of {forbidden_val} was found for the {key} parameter."
+
+            self._search_expected_log_msg(filtered_log_lines, expected_string)
+            self.s4acs.set_cam_config(self._default_cam_config)
+
+        return super().run_test()
+
+    def _send_commands_sequence(
+        self, key: str, forbidden_val: int, allowed_val: int
+    ) -> None:
+        cam_config = self._default_cam_config.copy()
+        cam_config[key] = forbidden_val
+        self.s4acs.set_cam_config(cam_config)
+        sleep(1)
+        if not self.s4acs.camera.opmode_err.status:
+            self.set_result("error", "The published error msg was not found")
+            return
+
+        cam_config[key] = allowed_val
+        self.s4acs.set_cam_config(cam_config)
+        sleep(1)
+        if self.s4acs.camera.opmode_err.status:
+            self.set_result("error", "The published error msg was not cleaned")
+            return
+
+
+class E017(Test_Strategy):
+    _test_code = "E017"
+
+    def run_test(self) -> None:
+        limit_values = {
+            "WAVEPLATE_POS": (0, 2**16 - 1),
+            "#FRAMES": (1, 1500),
+            "EXPTIME": (0.00001, 3600),
+            "#CYCLES": (1, 10000),
+        }
+        for key, (_min, _max) in limit_values.items():
+            time_stamp = datetime.now(timezone.utc)
             self._send_commands_sequence(key, _max, _max + 1)
             self._send_commands_sequence(key, _min, _min - 1)
 
@@ -459,26 +456,28 @@ class E016(Test_Strategy):
             filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
             filtered_log_lines = self.extract_log_msg(filtered_log_lines)
 
-            self._search_expected_log_msg(filtered_log_lines, key, _min, _max, _max + 1)
-            self._search_expected_log_msg(filtered_log_lines, key, _min, _max, _min - 1)
-            self.s4acs.set_cam_config(self._default_cam_config)
+            expected_string = f"The value {_max + 1:.2f} was received for the {key} "
+            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            self._search_expected_log_msg(filtered_log_lines, expected_string)
+            expected_string = f"The value {_min - 1:.2f} was received for the {key} "
+            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            self._search_expected_log_msg(filtered_log_lines, expected_string)
 
         return super().run_test()
 
-    def _send_commands_sequence(self, key: str, val: int, adjusted_val: int) -> None:
-        cam_config = self._default_cam_config.copy()
-        cam_config[key] = adjusted_val
-        self.s4acs.set_cam_config(cam_config)
-        sleep(1)
-        if not self.s4acs.camera.opmode_err.status:
-            self.set_result("error", "The published error msg was not found")
+    def _send_commands_sequence(
+        self, key: str, val: float | int, adjusted_val: float | int
+    ) -> None:
+        self.s4acs.send_command(f"SET {key} {adjusted_val}")
+        sleep(1.2)
+        if not self.s4acs.camera.acq_config_err[key].status:
+            self.set_result("error", f"{key} - The published error msg was not found")
             return
 
-        cam_config[key] = val
-        self.s4acs.set_cam_config(cam_config)
-        sleep(1)
-        if self.s4acs.camera.opmode_err.status:
-            self.set_result("error", "The published error msg was not cleaned")
+        self.s4acs.send_command(f"SET {key} {val}")
+        sleep(1.2)
+        if self.s4acs.camera.acq_config_err[key].status:
+            self.set_result("error", f"{key} - The published error msg was not cleaned")
             return
 
 
