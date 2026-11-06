@@ -58,7 +58,7 @@ logger.info(f"There is (are) {len_lines} line(s) to log")
 
 
 BASE_STRING = f"Hello,\
-\nYou are receiving the ACS errors found for the SPARC4 channel {acs_config.channel},\
+\nYou are receiving the ACS errors found for the SPARC4 channel {acs_config.channel}, \
 for the observation night {yesterday}.\n\n"
 for line in lines:
     BASE_STRING += line + "\n"
