@@ -131,7 +131,7 @@ class GUI(QMainWindow):
         )
         # self.framework.set_tests_list(
         #     test_type="one test",
-        #     test_code="E022",
+        #     test_code="E015",
         # )
         self.framework.stop_1st_err = self.gui_widgets.framework_stop_1st_err.isChecked()
         self._thread1 = Thread(target=self.framework.run)

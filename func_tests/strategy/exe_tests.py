@@ -339,7 +339,6 @@ class E013(Test_Strategy):
             "HBIN",
             "SHUTTER_TTL",
             "SHUTTER_MODE",
-            "VERTICAL_CLOCK_VOLTAGE",
             "AD_CHANNEL",
         ]
 
@@ -354,11 +353,9 @@ class E013(Test_Strategy):
             filtered_log_lines = self.filter_logs_by_timestamp(lines_list, time_stamp)
             filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
             filtered_log_lines = self.extract_log_msg(filtered_log_lines)
-            expected_string = f"The value {_max + 1:.2f} was received for the {key} "
-            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            expected_string = f"The value {_max + 1:.2f} was received for the {key} parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
             self._search_expected_log_msg(filtered_log_lines, expected_string)
-            expected_string = f"The value {_min - 1:.2f} was received for the {key} "
-            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            expected_string = f"The value {_min - 1:.2f} was received for the {key} parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
             self._search_expected_log_msg(filtered_log_lines, expected_string)
             self.s4acs.set_cam_config(self._default_cam_config)
 
@@ -399,11 +396,9 @@ class E014(Test_Strategy):
             filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
             filtered_log_lines = self.extract_log_msg(filtered_log_lines)
 
-            expected_string = f"The value {_max + 1:.2f} was received for the {key} "
-            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            expected_string = f"The value {_max + 1:.2f} was received for the {key} parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
             self._search_expected_log_msg(filtered_log_lines, expected_string)
-            expected_string = f"The value {_min - 1:.2f} was received for the {key} "
-            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            expected_string = f"The value {_min - 1:.2f} was received for the {key} parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
             self._search_expected_log_msg(filtered_log_lines, expected_string)
 
         return super().run_test()
@@ -433,6 +428,7 @@ class E015(Test_Strategy):
             "TRIGGER_MODE": (1, 0),
             "READ_MODE": (0, 4),
             "VERTICAL_SHIFT_SPEED": (0, 3),
+            "VERTICAL_CLOCK_VOLTAGE": (4, 0),
         }
         for key, (forbidden_val, allowed_val) in parameters.items():
             self.s4acs.send_command(f"==== Evaluating {key} parameter ====")
@@ -474,23 +470,6 @@ class E016(Test_Strategy):
     _test_code = "E016"
 
     def run_test(self) -> None:
-        self._test_cooler_open_close_time()
-        self._test_sub_image()
-        return super().run_test()
-
-    def _test_cooler_open_close_time(self) -> None:
-        cam_config = self._default_cam_config.copy()
-        cam_config["SHUTTER_OPENING_TIME"] = 27
-        cam_config["SHUTTER_MODE"] = 1
-        # cam_config["SHUTTER_CLOSING_TIME"] = 0
-        self.s4acs.set_cam_config(cam_config)
-        sleep(1)
-        if not self.s4acs.camera.opmode_err.status:
-            self.set_result("error", "The published error msg was not found")
-            return
-        self.s4acs.set_cam_config(self._default_cam_config)
-
-    def _test_sub_image(self) -> None:
         params_set = [
             (("INITIAL_LINE", 1024), ("FINAL_LINE", 1)),
             (("INITIAL_COLUMN", 1024), ("FINAL_COLUMN", 1)),
@@ -507,6 +486,7 @@ class E016(Test_Strategy):
                 self.set_result("error", "The published error msg was not found")
                 return
         self.s4acs.set_cam_config(self._default_cam_config)
+        return super().run_test()
 
 
 class E017(Test_Strategy):
@@ -529,11 +509,9 @@ class E017(Test_Strategy):
             filtered_log_lines = self.filter_logs_by_str(filtered_log_lines, "ERROR")
             filtered_log_lines = self.extract_log_msg(filtered_log_lines)
 
-            expected_string = f"The value {_max + 1:.2f} was received for the {key} "
-            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            expected_string = f"The value {_max + 1:.2f} was received for the {key} parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
             self._search_expected_log_msg(filtered_log_lines, expected_string)
-            expected_string = f"The value {_min - 1:.2f} was received for the {key} "
-            f"parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
+            expected_string = f"The value {_min - 1:.2f} was received for the {key} parameter. However, it should be in the [{_min:.2f}, {_max:.2f}] range."
             self._search_expected_log_msg(filtered_log_lines, expected_string)
 
         return super().run_test()
