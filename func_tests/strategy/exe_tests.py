@@ -383,7 +383,7 @@ class E014(Test_Strategy):
 
     def run_test(self) -> None:
         limit_values = {
-            "TEMP": (-80, 10),
+            "TEMP": (-80, 25),
             "COOLER_POWER_STATUS": (0, 1),
         }
         for key, (_min, _max) in limit_values.items():

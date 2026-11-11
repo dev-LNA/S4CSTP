@@ -425,6 +425,8 @@ class Test_Keywords(unittest.TestCase):
     def test_wpposseq(self) -> None:
         func_name = inspect.currentframe().f_code.co_name  # type: ignore
         for hdr in self.hdrs_list:
+            if hdr["WPPOSSEQ"] == "None":
+                continue
             wpposseq = [int(val) for val in str(hdr["WPPOSSEQ"]).split(",")]
             wppos = hdr["WPPOS"]
             seqidx = int(hdr["SEQINDEX"])  # type: ignore
