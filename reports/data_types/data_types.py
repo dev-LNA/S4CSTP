@@ -33,9 +33,7 @@ class S4ACS_Config(BaseModel):
     log_level: Log_Level
 
     def to_sparc4_format(self) -> dict[str, Any]:
-        new_dict = {
-            key.replace("_", " "): val for key, val in self.model_dump().items()
-        }
+        new_dict = {key.replace("_", " "): val for key, val in self.model_dump().items()}
         new_dict["log level"] //= 10
         return new_dict
 
